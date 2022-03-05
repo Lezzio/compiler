@@ -21,9 +21,9 @@ public:
    */
     virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *context) = 0;
 
-    virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *context) = 0;
-
     virtual antlrcpp::Any visitProg(ifccParser::ProgContext *context) = 0;
+
+    virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *context) = 0;
 
     virtual antlrcpp::Any visitStatements(ifccParser::StatementsContext *context) = 0;
 
@@ -34,6 +34,8 @@ public:
     virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *context) = 0;
 
     virtual antlrcpp::Any visitRetcode(ifccParser::RetcodeContext *context) = 0;
+
+    virtual antlrcpp::Any visitType(ifccParser::TypeContext *context) = 0;
 
 
 };

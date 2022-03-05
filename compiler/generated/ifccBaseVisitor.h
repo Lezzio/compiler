@@ -19,11 +19,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *ctx) override {
+  virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override {
+  virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -44,6 +44,10 @@ public:
   }
 
   virtual antlrcpp::Any visitRetcode(ifccParser::RetcodeContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitType(ifccParser::TypeContext *ctx) override {
     return visitChildren(ctx);
   }
 

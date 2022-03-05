@@ -1,0 +1,6 @@
+line 2:7 token recognition error at: 'a'
+line 3:10 token recognition error at: 'a'
+line 2:3 mismatched input 'int' expecting 'return'
+error: syntax error during parsing
+
+return code: 1

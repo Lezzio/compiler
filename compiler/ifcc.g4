@@ -2,20 +2,28 @@ grammar ifcc;
 
 axiom : prog ;
 
-block : '{' statements '}' ;
-
 prog : INT 'main' '(' ')' block ;
+
+block : '{' statements '}' ; 
 
 statements : statement
            | statement statements ;
 
 statement : declaration ';'
-          | affectation ';'
+          | affectation ';' 
           | retcode ';' ;
 
-declaration : INT VAR ;
-affectation : VAR '=' CONST ;
-retcode : RETURN CONST ;
+declaration : type VAR ;
+
+affectation : type VAR '=' VAR 
+            | type VAR '=' CONST
+            | VAR '=' VAR
+            | VAR '=' CONST ;
+
+retcode : RETURN CONST
+        | RETURN VAR ;
+
+type : INT ;
 
 RETURN : 'return' ;
 CONST : [0-9]+ ;
@@ -25,5 +33,3 @@ WS    : [ \t\r\n] -> channel(HIDDEN);
 INT : 'int' ;
 VAR : IDENT ;
 IDENT : [a-zA-Z_][a-zA-Z1-9_]* ;
-
-
