@@ -15,10 +15,11 @@ statement : declaration ';'
 
 declaration : type VAR ;
 
-affectation : type VAR '=' VAR 
-            | type VAR '=' CONST
-            | VAR '=' VAR
-            | VAR '=' CONST ;
+affectation : type VAR '=' VAR # cas1 
+            | type VAR '=' CONST # cas2
+            | VAR '=' VAR # cas3
+            | VAR '=' CONST # cas4 
+            ;
 
 retcode : RETURN CONST
         | RETURN VAR ;

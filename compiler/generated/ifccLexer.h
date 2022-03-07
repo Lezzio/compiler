@@ -1,5 +1,5 @@
 
-// Generated from ifcc.g4 by ANTLR 4.9.2
+// Generated from ifcc.g4 by ANTLR 4.7.2
 
 #pragma once
 
@@ -17,7 +17,7 @@ public:
     VAR = 14, IDENT = 15
   };
 
-  explicit ifccLexer(antlr4::CharStream *input);
+  ifccLexer(antlr4::CharStream *input);
   ~ifccLexer();
 
   virtual std::string getGrammarFileName() const override;

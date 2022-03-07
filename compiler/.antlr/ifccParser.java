@@ -1,4 +1,4 @@
-// Generated from c:\Users\Benoi\OneDrive\Bureau\Cours\4A\PLDcomp\tp\compiler\compiler\ifcc.g4 by ANTLR 4.8
+// Generated from /home/maxime/doss/compiler/compiler/ifcc.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -346,6 +346,29 @@ public class ifccParser extends Parser {
 	}
 
 	public static class AffectationContext extends ParserRuleContext {
+		public AffectationContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_affectation; }
+	 
+		public AffectationContext() { }
+		public void copyFrom(AffectationContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class Cas3Context extends AffectationContext {
+		public List<TerminalNode> VAR() { return getTokens(ifccParser.VAR); }
+		public TerminalNode VAR(int i) {
+			return getToken(ifccParser.VAR, i);
+		}
+		public Cas3Context(AffectationContext ctx) { copyFrom(ctx); }
+	}
+	public static class Cas4Context extends AffectationContext {
+		public TerminalNode VAR() { return getToken(ifccParser.VAR, 0); }
+		public TerminalNode CONST() { return getToken(ifccParser.CONST, 0); }
+		public Cas4Context(AffectationContext ctx) { copyFrom(ctx); }
+	}
+	public static class Cas1Context extends AffectationContext {
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
@@ -353,11 +376,15 @@ public class ifccParser extends Parser {
 		public TerminalNode VAR(int i) {
 			return getToken(ifccParser.VAR, i);
 		}
-		public TerminalNode CONST() { return getToken(ifccParser.CONST, 0); }
-		public AffectationContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
+		public Cas1Context(AffectationContext ctx) { copyFrom(ctx); }
+	}
+	public static class Cas2Context extends AffectationContext {
+		public TypeContext type() {
+			return getRuleContext(TypeContext.class,0);
 		}
-		@Override public int getRuleIndex() { return RULE_affectation; }
+		public TerminalNode VAR() { return getToken(ifccParser.VAR, 0); }
+		public TerminalNode CONST() { return getToken(ifccParser.CONST, 0); }
+		public Cas2Context(AffectationContext ctx) { copyFrom(ctx); }
 	}
 
 	public final AffectationContext affectation() throws RecognitionException {
@@ -368,6 +395,7 @@ public class ifccParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
+				_localctx = new Cas1Context(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(50);
@@ -381,6 +409,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new Cas2Context(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(55);
@@ -394,6 +423,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new Cas3Context(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(60);
@@ -405,6 +435,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 4:
+				_localctx = new Cas4Context(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(63);

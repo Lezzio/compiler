@@ -1,5 +1,5 @@
 
-// Generated from ifcc.g4 by ANTLR 4.9.2
+// Generated from ifcc.g4 by ANTLR 4.7.2
 
 #pragma once
 
@@ -22,7 +22,7 @@ public:
     RuleDeclaration = 5, RuleAffectation = 6, RuleRetcode = 7, RuleType = 8
   };
 
-  explicit ifccParser(antlr4::TokenStream *input);
+  ifccParser(antlr4::TokenStream *input);
   ~ifccParser();
 
   virtual std::string getGrammarFileName() const override;
@@ -48,7 +48,6 @@ public:
     virtual size_t getRuleIndex() const override;
     ProgContext *prog();
 
-
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
@@ -62,7 +61,6 @@ public:
     antlr4::tree::TerminalNode *INT();
     BlockContext *block();
 
-
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
@@ -74,7 +72,6 @@ public:
     BlockContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     StatementsContext *statements();
-
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
@@ -88,7 +85,6 @@ public:
     virtual size_t getRuleIndex() const override;
     StatementContext *statement();
     StatementsContext *statements();
-
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
@@ -104,7 +100,6 @@ public:
     AffectationContext *affectation();
     RetcodeContext *retcode();
 
-
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
@@ -118,7 +113,6 @@ public:
     TypeContext *type();
     antlr4::tree::TerminalNode *VAR();
 
-
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
@@ -128,15 +122,52 @@ public:
   class  AffectationContext : public antlr4::ParserRuleContext {
   public:
     AffectationContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    AffectationContext() = default;
+    void copyFrom(AffectationContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Cas3Context : public AffectationContext {
+  public:
+    Cas3Context(AffectationContext *ctx);
+
+    std::vector<antlr4::tree::TerminalNode *> VAR();
+    antlr4::tree::TerminalNode* VAR(size_t i);
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Cas4Context : public AffectationContext {
+  public:
+    Cas4Context(AffectationContext *ctx);
+
+    antlr4::tree::TerminalNode *VAR();
+    antlr4::tree::TerminalNode *CONST();
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Cas1Context : public AffectationContext {
+  public:
+    Cas1Context(AffectationContext *ctx);
+
     TypeContext *type();
     std::vector<antlr4::tree::TerminalNode *> VAR();
     antlr4::tree::TerminalNode* VAR(size_t i);
-    antlr4::tree::TerminalNode *CONST();
-
-
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  Cas2Context : public AffectationContext {
+  public:
+    Cas2Context(AffectationContext *ctx);
+
+    TypeContext *type();
+    antlr4::tree::TerminalNode *VAR();
+    antlr4::tree::TerminalNode *CONST();
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   AffectationContext* affectation();
@@ -149,7 +180,6 @@ public:
     antlr4::tree::TerminalNode *CONST();
     antlr4::tree::TerminalNode *VAR();
 
-
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
@@ -161,7 +191,6 @@ public:
     TypeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *INT();
-
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    

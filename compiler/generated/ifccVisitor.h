@@ -1,5 +1,5 @@
 
-// Generated from ifcc.g4 by ANTLR 4.9.2
+// Generated from ifcc.g4 by ANTLR 4.7.2
 
 #pragma once
 
@@ -31,7 +31,13 @@ public:
 
     virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *context) = 0;
 
-    virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *context) = 0;
+    virtual antlrcpp::Any visitCas1(ifccParser::Cas1Context *context) = 0;
+
+    virtual antlrcpp::Any visitCas2(ifccParser::Cas2Context *context) = 0;
+
+    virtual antlrcpp::Any visitCas3(ifccParser::Cas3Context *context) = 0;
+
+    virtual antlrcpp::Any visitCas4(ifccParser::Cas4Context *context) = 0;
 
     virtual antlrcpp::Any visitRetcode(ifccParser::RetcodeContext *context) = 0;
 
