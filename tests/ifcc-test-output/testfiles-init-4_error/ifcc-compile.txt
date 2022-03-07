@@ -1,0 +1,4 @@
+line 2:9 no viable alternative at input 'int a 42'
+error: syntax error during parsing
+
+return code: 1
