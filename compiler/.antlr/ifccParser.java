@@ -200,16 +200,30 @@ public class ifccParser extends Parser {
 	}
 
 	public static class StatementsContext extends ParserRuleContext {
+		public StatementsContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_statements; }
+	 
+		public StatementsContext() { }
+		public void copyFrom(StatementsContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class Statements2Context extends StatementsContext {
 		public StatementContext statement() {
 			return getRuleContext(StatementContext.class,0);
 		}
 		public StatementsContext statements() {
 			return getRuleContext(StatementsContext.class,0);
 		}
-		public StatementsContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
+		public Statements2Context(StatementsContext ctx) { copyFrom(ctx); }
+	}
+	public static class Statements1Context extends StatementsContext {
+		public StatementContext statement() {
+			return getRuleContext(StatementContext.class,0);
 		}
-		@Override public int getRuleIndex() { return RULE_statements; }
+		public Statements1Context(StatementsContext ctx) { copyFrom(ctx); }
 	}
 
 	public final StatementsContext statements() throws RecognitionException {
@@ -220,6 +234,7 @@ public class ifccParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,0,_ctx) ) {
 			case 1:
+				_localctx = new Statements1Context(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(30);
@@ -227,6 +242,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new Statements2Context(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(31);
@@ -249,19 +265,33 @@ public class ifccParser extends Parser {
 	}
 
 	public static class StatementContext extends ParserRuleContext {
-		public DeclarationContext declaration() {
-			return getRuleContext(DeclarationContext.class,0);
-		}
-		public AffectationContext affectation() {
-			return getRuleContext(AffectationContext.class,0);
-		}
-		public RetcodeContext retcode() {
-			return getRuleContext(RetcodeContext.class,0);
-		}
 		public StatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_statement; }
+	 
+		public StatementContext() { }
+		public void copyFrom(StatementContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class Statement3Context extends StatementContext {
+		public RetcodeContext retcode() {
+			return getRuleContext(RetcodeContext.class,0);
+		}
+		public Statement3Context(StatementContext ctx) { copyFrom(ctx); }
+	}
+	public static class Statement1Context extends StatementContext {
+		public DeclarationContext declaration() {
+			return getRuleContext(DeclarationContext.class,0);
+		}
+		public Statement1Context(StatementContext ctx) { copyFrom(ctx); }
+	}
+	public static class Statement2Context extends StatementContext {
+		public AffectationContext affectation() {
+			return getRuleContext(AffectationContext.class,0);
+		}
+		public Statement2Context(StatementContext ctx) { copyFrom(ctx); }
 	}
 
 	public final StatementContext statement() throws RecognitionException {
@@ -272,6 +302,7 @@ public class ifccParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
 			case 1:
+				_localctx = new Statement1Context(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(36);
@@ -281,6 +312,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new Statement2Context(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(39);
@@ -290,6 +322,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new Statement3Context(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(42);
@@ -346,6 +379,32 @@ public class ifccParser extends Parser {
 	}
 
 	public static class AffectationContext extends ParserRuleContext {
+		public AffectationContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_affectation; }
+	 
+		public AffectationContext() { }
+		public void copyFrom(AffectationContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class Affectation3Context extends AffectationContext {
+		public List<TerminalNode> VAR() { return getTokens(ifccParser.VAR); }
+		public TerminalNode VAR(int i) {
+			return getToken(ifccParser.VAR, i);
+		}
+		public Affectation3Context(AffectationContext ctx) { copyFrom(ctx); }
+	}
+	public static class Affectation2Context extends AffectationContext {
+		public TypeContext type() {
+			return getRuleContext(TypeContext.class,0);
+		}
+		public TerminalNode VAR() { return getToken(ifccParser.VAR, 0); }
+		public TerminalNode CONST() { return getToken(ifccParser.CONST, 0); }
+		public Affectation2Context(AffectationContext ctx) { copyFrom(ctx); }
+	}
+	public static class Affectation1Context extends AffectationContext {
 		public TypeContext type() {
 			return getRuleContext(TypeContext.class,0);
 		}
@@ -353,11 +412,12 @@ public class ifccParser extends Parser {
 		public TerminalNode VAR(int i) {
 			return getToken(ifccParser.VAR, i);
 		}
+		public Affectation1Context(AffectationContext ctx) { copyFrom(ctx); }
+	}
+	public static class Affectation4Context extends AffectationContext {
+		public TerminalNode VAR() { return getToken(ifccParser.VAR, 0); }
 		public TerminalNode CONST() { return getToken(ifccParser.CONST, 0); }
-		public AffectationContext(ParserRuleContext parent, int invokingState) {
-			super(parent, invokingState);
-		}
-		@Override public int getRuleIndex() { return RULE_affectation; }
+		public Affectation4Context(AffectationContext ctx) { copyFrom(ctx); }
 	}
 
 	public final AffectationContext affectation() throws RecognitionException {
@@ -368,6 +428,7 @@ public class ifccParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 			case 1:
+				_localctx = new Affectation1Context(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(50);
@@ -381,6 +442,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new Affectation2Context(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(55);
@@ -394,6 +456,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 3:
+				_localctx = new Affectation3Context(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(60);
@@ -405,6 +468,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 4:
+				_localctx = new Affectation4Context(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(63);
@@ -429,13 +493,25 @@ public class ifccParser extends Parser {
 	}
 
 	public static class RetcodeContext extends ParserRuleContext {
-		public TerminalNode RETURN() { return getToken(ifccParser.RETURN, 0); }
-		public TerminalNode CONST() { return getToken(ifccParser.CONST, 0); }
-		public TerminalNode VAR() { return getToken(ifccParser.VAR, 0); }
 		public RetcodeContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
 		@Override public int getRuleIndex() { return RULE_retcode; }
+	 
+		public RetcodeContext() { }
+		public void copyFrom(RetcodeContext ctx) {
+			super.copyFrom(ctx);
+		}
+	}
+	public static class Ret2Context extends RetcodeContext {
+		public TerminalNode RETURN() { return getToken(ifccParser.RETURN, 0); }
+		public TerminalNode VAR() { return getToken(ifccParser.VAR, 0); }
+		public Ret2Context(RetcodeContext ctx) { copyFrom(ctx); }
+	}
+	public static class Ret1Context extends RetcodeContext {
+		public TerminalNode RETURN() { return getToken(ifccParser.RETURN, 0); }
+		public TerminalNode CONST() { return getToken(ifccParser.CONST, 0); }
+		public Ret1Context(RetcodeContext ctx) { copyFrom(ctx); }
 	}
 
 	public final RetcodeContext retcode() throws RecognitionException {
@@ -446,6 +522,7 @@ public class ifccParser extends Parser {
 			_errHandler.sync(this);
 			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
 			case 1:
+				_localctx = new Ret1Context(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(68);
@@ -455,6 +532,7 @@ public class ifccParser extends Parser {
 				}
 				break;
 			case 2:
+				_localctx = new Ret2Context(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(70);
