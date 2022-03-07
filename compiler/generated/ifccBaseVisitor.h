@@ -27,11 +27,23 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitStatements(ifccParser::StatementsContext *ctx) override {
+  virtual antlrcpp::Any visitStatements1(ifccParser::Statements1Context *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *ctx) override {
+  virtual antlrcpp::Any visitStatements2(ifccParser::Statements2Context *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitStatement1(ifccParser::Statement1Context *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitStatement2(ifccParser::Statement2Context *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitStatement3(ifccParser::Statement3Context *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -39,6 +51,7 @@ public:
     return visitChildren(ctx);
   }
 
+<<<<<<< HEAD
   virtual antlrcpp::Any visitCas1(ifccParser::Cas1Context *ctx) override {
     return visitChildren(ctx);
   }
@@ -52,10 +65,29 @@ public:
   }
 
   virtual antlrcpp::Any visitCas4(ifccParser::Cas4Context *ctx) override {
+=======
+  virtual antlrcpp::Any visitAffectation1(ifccParser::Affectation1Context *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitRetcode(ifccParser::RetcodeContext *ctx) override {
+  virtual antlrcpp::Any visitAffectation2(ifccParser::Affectation2Context *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAffectation3(ifccParser::Affectation3Context *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAffectation4(ifccParser::Affectation4Context *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitRet1(ifccParser::Ret1Context *ctx) override {
+>>>>>>> 926982dc6434e97012ef64a66a1e344978a0bde7
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitRet2(ifccParser::Ret2Context *ctx) override {
     return visitChildren(ctx);
   }
 

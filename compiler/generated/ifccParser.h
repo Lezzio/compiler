@@ -82,12 +82,36 @@ public:
   class  StatementsContext : public antlr4::ParserRuleContext {
   public:
     StatementsContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    StatementsContext() = default;
+    void copyFrom(StatementsContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Statements2Context : public StatementsContext {
+  public:
+    Statements2Context(StatementsContext *ctx);
+
     StatementContext *statement();
     StatementsContext *statements();
 
+<<<<<<< HEAD
+=======
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  Statements1Context : public StatementsContext {
+  public:
+    Statements1Context(StatementsContext *ctx);
+
+    StatementContext *statement();
+
+>>>>>>> 926982dc6434e97012ef64a66a1e344978a0bde7
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   StatementsContext* statements();
@@ -95,13 +119,44 @@ public:
   class  StatementContext : public antlr4::ParserRuleContext {
   public:
     StatementContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    StatementContext() = default;
+    void copyFrom(StatementContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
-    DeclarationContext *declaration();
-    AffectationContext *affectation();
+
+   
+  };
+
+  class  Statement3Context : public StatementContext {
+  public:
+    Statement3Context(StatementContext *ctx);
+
     RetcodeContext *retcode();
 
+<<<<<<< HEAD
+=======
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  Statement1Context : public StatementContext {
+  public:
+    Statement1Context(StatementContext *ctx);
+
+    DeclarationContext *declaration();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Statement2Context : public StatementContext {
+  public:
+    Statement2Context(StatementContext *ctx);
+
+    AffectationContext *affectation();
+
+>>>>>>> 926982dc6434e97012ef64a66a1e344978a0bde7
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   StatementContext* statement();
@@ -132,6 +187,7 @@ public:
    
   };
 
+<<<<<<< HEAD
   class  Cas3Context : public AffectationContext {
   public:
     Cas3Context(AffectationContext *ctx);
@@ -145,14 +201,54 @@ public:
   public:
     Cas4Context(AffectationContext *ctx);
 
+=======
+  class  Affectation3Context : public AffectationContext {
+  public:
+    Affectation3Context(AffectationContext *ctx);
+
+    std::vector<antlr4::tree::TerminalNode *> VAR();
+    antlr4::tree::TerminalNode* VAR(size_t i);
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Affectation2Context : public AffectationContext {
+  public:
+    Affectation2Context(AffectationContext *ctx);
+
+    TypeContext *type();
+>>>>>>> 926982dc6434e97012ef64a66a1e344978a0bde7
     antlr4::tree::TerminalNode *VAR();
     antlr4::tree::TerminalNode *CONST();
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
+<<<<<<< HEAD
   class  Cas1Context : public AffectationContext {
   public:
     Cas1Context(AffectationContext *ctx);
+=======
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Affectation1Context : public AffectationContext {
+  public:
+    Affectation1Context(AffectationContext *ctx);
+
+    TypeContext *type();
+    std::vector<antlr4::tree::TerminalNode *> VAR();
+    antlr4::tree::TerminalNode* VAR(size_t i);
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  Affectation4Context : public AffectationContext {
+  public:
+    Affectation4Context(AffectationContext *ctx);
+
+    antlr4::tree::TerminalNode *VAR();
+    antlr4::tree::TerminalNode *CONST();
+>>>>>>> 926982dc6434e97012ef64a66a1e344978a0bde7
 
     TypeContext *type();
     std::vector<antlr4::tree::TerminalNode *> VAR();
@@ -175,13 +271,37 @@ public:
   class  RetcodeContext : public antlr4::ParserRuleContext {
   public:
     RetcodeContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    RetcodeContext() = default;
+    void copyFrom(RetcodeContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  Ret2Context : public RetcodeContext {
+  public:
+    Ret2Context(RetcodeContext *ctx);
+
     antlr4::tree::TerminalNode *RETURN();
-    antlr4::tree::TerminalNode *CONST();
     antlr4::tree::TerminalNode *VAR();
 
+<<<<<<< HEAD
+=======
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  Ret1Context : public RetcodeContext {
+  public:
+    Ret1Context(RetcodeContext *ctx);
+
+    antlr4::tree::TerminalNode *RETURN();
+    antlr4::tree::TerminalNode *CONST();
+
+>>>>>>> 926982dc6434e97012ef64a66a1e344978a0bde7
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   RetcodeContext* retcode();
