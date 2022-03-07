@@ -25,7 +25,8 @@ public :
     virtual ~SymbolTable();
     bool doesSymbolExist(string ident);
     SYMBOL returnSymbol(string name);
-    bool addSymbol(string type, int address, int additional);
+    bool addSymbol(string symbolName, int levelSymbol, string type, int address, int additional);
+    void affiche_dico(void);
 
 protected :
     map<string, SYMBOL> table;
