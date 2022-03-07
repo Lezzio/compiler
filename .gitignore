@@ -3,4 +3,5 @@
 ./compiler/build/**
 ./compiler/*.o
 ./compiler/*.out
-
+./cmake-build-debug
+./cmake-build-debug/**
