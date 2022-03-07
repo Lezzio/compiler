@@ -6,6 +6,7 @@
 
 
 class  Visitor : public ifccBaseVisitor {
+    
 	public:
 		virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *context) override;
 

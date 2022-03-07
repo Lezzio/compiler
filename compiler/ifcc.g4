@@ -6,22 +6,22 @@ prog : INT 'main' '(' ')' block ;
 
 block : '{' statements '}' ; 
 
-statements : statement
-           | statement statements ;
+statements : statement #statements1
+           | statement statements #statements2;
 
-statement : declaration ';'
-          | affectation ';' 
-          | retcode ';' ;
+statement : declaration ';' #statement1
+          | affectation ';' #statement2
+          | retcode ';' #statement3 ;
 
 declaration : type VAR ;
 
-affectation : type VAR '=' VAR 
-            | type VAR '=' CONST
-            | VAR '=' VAR
-            | VAR '=' CONST ;
+affectation : type VAR '=' VAR #affectation1
+            | type VAR '=' CONST #affectation2
+            | VAR '=' VAR #affectation3
+            | VAR '=' CONST #affectation4 ; 
 
-retcode : RETURN CONST
-        | RETURN VAR ;
+retcode : RETURN CONST #ret1
+        | RETURN VAR #ret2 ;
 
 type : INT ;
 
