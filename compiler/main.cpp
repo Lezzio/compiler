@@ -8,13 +8,15 @@
 #include "generated/ifccParser.h"
 #include "generated/ifccBaseVisitor.h"
 
-#include "CodeGenVisitor.h"
+//#include "CodeGenVisitor.h"
+#include "Visitor.h"
 
 using namespace antlr4;
 using namespace std;
 
 int main(int argn, const char **argv)
 {
+  //TODO:: arg to disable warnings
   stringstream in;
   if (argn==2)
   {
@@ -44,7 +46,8 @@ int main(int argn, const char **argv)
   }
 
   
-  CodeGenVisitor v;
+  //CodeGenVisitor v;
+  Visitor v;
   v.visit(tree);
 
   return 0;

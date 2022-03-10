@@ -1,0 +1,4 @@
+line 2:12 no viable alternative at input 'INTEGER variable'
+error: syntax error during parsing
+
+return code: 1
