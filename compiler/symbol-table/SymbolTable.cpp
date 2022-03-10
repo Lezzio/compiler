@@ -1,37 +1,39 @@
 #include "SymbolTable.h"
 #include <iostream>
+#include <string>
 
-/*bool SymbolTable::addSymbol(string symbolName, int levelSymbol, int type, int address, int additional)
+using namespace std;
+
+bool SymbolTable::addSymbol(string symbolName, int levelSymbol, int type, int address, int additional)
 {
-    SYMBOL symbolToAdd;
-    symbolToAdd.type = Type[type];
-    symbolToAdd.additional = additional;
-    symbolToAdd.address = address;
+    string nameSymbol = symbolName;
     if(levelSymbol != -1){
-        symbolToAdd.name = concat(symbolName, "_"+levelSymbol);
+        nameSymbol = symbolName + "_" + to_string(levelSymbol);
     }
-    if(!doesSymbolExist(symbolToAdd)){
-        this.table.insert(symbolToAdd.name, symbolToAdd);
+    Symbol * symbolToAdd = new Symbol(nameSymbol, type, address, additional);
+    
+    if(!doesSymbolExist(nameSymbol)){
+        this->table.emplace(nameSymbol, symbolToAdd);
         return true;
-    }else {
-        return false;
     }
+    return false;
 }
 
 
 void SymbolTable::print_dictionary(){
     cout << endl << "***   Actual Symbol Table   ***" << endl;
-    cout << "--------------------------------------------------------------------------------------------" << endl;
-    cout << "| Name ; Scope ; Type ; Address ; Additionnal | ";
-    cout << "--------------------------------------------------------------------------------------------" << endl;
+    cout << "-------------------------------------------------------------------" << endl;
+    cout << "|   Name   ;   Scope   ;   Type   ;   Address   ;   Additionnal   | " << endl;
+    cout << "-------------------------------------------------------------------" << endl;
 
-    for (const auto& symbol : table) {
-        cout << "| " << symbol.name << " ; " << symbol.scope << " ; " << symbol.type << " ; " << symbol.address << " ; " << symbol.additionnal << " | ";
+    for (const auto myPair : table) {
+        cout << "|  " << myPair.second->getName() << "  ;  " << myPair.second->getScope() << "  ;  " << myPair.second->getType() << "  ;  " << to_string(myPair.second->getAddress()) << "  ;  " << to_string(myPair.second->getAdditional()) << "  | " << endl;
     }
 
-    cout << "--------------------------------------------------------------------------------------------" << endl;
+    cout << "-------------------------------------------------------------------" << endl;
 }
-*/
+
+
 
 /**
  * @brief 
@@ -56,10 +58,11 @@ bool SymbolTable::doesSymbolExist(string ident){
  * @param name 
  * @return SYMBOL 
  */
-SYMBOL SymbolTable::returnSymbol(string name){
+Symbol * SymbolTable::returnSymbol(string name){
     if(table.find(name) != table.end())
         return table.find(name)->second;
-    SYMBOL ret;
-    ret.name = "fcc::error";
-    return ret;
+    /*Symbol * ret = new Symbol();
+    ret.setName("fcc::error");
+    return ret;*/
+    return nullptr;
 }

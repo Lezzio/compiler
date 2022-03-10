@@ -3,12 +3,11 @@
 
 #include <string>
 using namespace std;
-        const string Type[] = { "INTEGER", "ARGUMENT", "FONCTION", "VARIABLE", "TABLEAU" };
-
 
 class Symbol{
     public:
-        Symbol(string name, string type, int address, int additionnal);
+        Symbol();
+        Symbol(string name, int type, int address, int additionnal);
         ~Symbol();
         
         void setName(string name);
