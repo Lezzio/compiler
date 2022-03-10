@@ -15,21 +15,21 @@ int main(int argn, const char **argv){
 
     cout << "TEST SymbolTable.returnSymbol() :" << endl;
     // Name existing
-    cout << "  Functionnal - Expected value \"a\" - ";
+    cout << "  Expected value \"a\" - ";
     if(ST->returnSymbol("a") != nullptr){
         cout << ST->returnSymbol("a")->getName() << endl;
     }else{
         cout << "error" <<endl;
     }
     // Name renamed
-    cout << "  Functionnal - Expected value \"a_1\" - ";
+    cout << "  Expected value \"a_1\" - ";
     if(ST->returnSymbol("a_1") != nullptr){
         cout << ST->returnSymbol("a_1")->getName() << endl;
     }else{
         cout << "error" <<endl;
     }
     // Name non existing
-    cout << "  Disfunctionnal - Expected value \"error\" - ";
+    cout << "  Expected value \"error\" - ";
     if(ST->returnSymbol("babar") != nullptr){
         cout << ST->returnSymbol("babar")->getName() << endl;
     }else{
