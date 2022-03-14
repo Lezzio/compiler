@@ -1,7 +1,7 @@
 # You can override these from the command-line, as illustrated by the various `runmake_*.sh` scripts
 ANTLRJAR=../antlr/jar/antlr-4.9.2-complete.jar
-ANTLRINC=../antlr/include
-ANTLRLIB=../antlr/lib/libantlr4-runtime.a
+ANTLRINC=/usr/include/antlr4-runtime
+ANTLRLIB=/usr/lib/x86_64-linux-gnu/libantlr4-runtime.a
 
 CC=g++
 CCFLAGS=-g -c -std=c++11 -I$(ANTLRINC) -Wno-attributes # -Wno-defaulted-function-deleted -Wno-unknown-warning-option
