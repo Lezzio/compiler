@@ -84,7 +84,6 @@ class  Visitor : public ifccBaseVisitor {
     private:
         Register edx;
         Register eax;
-
         
 
 };

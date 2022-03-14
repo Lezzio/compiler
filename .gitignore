@@ -1,4 +1,4 @@
-./compiler/Makefile
+./antlr
 ./compiler/generated/**
 ./compiler/build/**
 ./compiler/*.o
