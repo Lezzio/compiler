@@ -1,5 +1,4 @@
 #include "Visitor.h"
-#include "SymbolTable.h"
 using namespace std;
 
 Visitor::Visitor() : edx{"", false}, eax{"", false}

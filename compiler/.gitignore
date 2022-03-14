@@ -1,5 +1,5 @@
 antlr
-./compiler/Makefile
+.vscode
 ./compiler/generated/**
 ./compiler/build/**
 ./compiler/*.o

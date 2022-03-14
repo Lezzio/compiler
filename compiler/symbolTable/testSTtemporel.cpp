@@ -13,6 +13,22 @@ int main(int argn, const char **argv){
     ST->print_dictionary();
 
 
+    newTest("SymboleTable", "returnSymbol", "nameExisting");
+    if(ST->returnSymbol("a") != nullptr){
+        Iassert("a", ST->returnSymbol("a")->getName())
+    }else{
+        cout << "error" <<endl;
+    }
+    
+    newtest("SymboleTable", "retrunSymbol", "renamed");
+    if(ST->returnSymbol("a_1") != nullptr){
+        Iassert("a_1", ST->returnSymbol("a_1")->getName());
+    }else{
+        cout << "error" <<endl;
+    }
+
+
+
     cout << "TEST SymbolTable.returnSymbol() :" << endl;
     // Name existing
     cout << "  Expected value \"a\" - ";
@@ -39,5 +55,19 @@ int main(int argn, const char **argv){
     delete ST;
 }
 
+
+string newTest(string classname, string methode, string testName){
+    return cout << "TEST -- " << classname << "::" << methode << "() -- " << testName << " : " << endl;
+}
+
+bool Iassert(string expected, string returned){
+    if(expected == returned){
+        cout << "   PASSED" << endl;
+        return true;
+    }else{
+        cout << "   FAILED" << endl;
+        return false;
+    }
+}
 
 

@@ -19,7 +19,8 @@ bool SymbolTable::addSymbol(string symbolName, int levelSymbol, int type, int ad
     staticAddress = staticAddress + 1;
 
     if(!doesSymbolExist(nameSymbol)){
-        this->table.emplace(nameSymbol, symbolToAdd);
+
+        this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
         return true;
     }
     delete symbolToAdd;
