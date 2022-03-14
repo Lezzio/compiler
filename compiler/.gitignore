@@ -5,3 +5,4 @@ antlr
 ./compiler/*.o
 ./compiler/*.out
 antlr/**
+../antlr
