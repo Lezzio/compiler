@@ -5,11 +5,11 @@
 
 int main(int argn, const char **argv){
     SymbolTable * ST = new SymbolTable();
-    ST->addSymbol("a", -1, 0, 0, -1);
-    ST->addSymbol("b", -1, 4, 4, 3);
-    ST->addSymbol("a", 1, 0, 0, -1);
+    ST->addSymbol("a", -1, 0, -1);
+    ST->addSymbol("b", -1, 4, 3);
+    ST->addSymbol("a", 1, 0, -1);
     cout << "Doit retourner false : ";
-    cout << ST->addSymbol("a", 1, 0, 0, -1) << endl;
+    cout << ST->addSymbol("a", 1, 0, -1) << endl;
     ST->print_dictionary();
 
 

@@ -4,17 +4,19 @@
 
 using namespace std;
 
-int SymbolTable::index;
+int SymbolTable::staticIndex;
+int SymbolTable::staticAddress;
 
-bool SymbolTable::addSymbol(string symbolName, int levelSymbol, int type, int address, int additional)
+bool SymbolTable::addSymbol(string symbolName, int levelSymbol, int type, int additional)
 {
     string nameSymbol = symbolName;
     if(levelSymbol != -1){
         nameSymbol = symbolName + "_" + to_string(levelSymbol);
     }
     
-    Symbol * symbolToAdd = new Symbol(index, nameSymbol, type, address, additional);
-    index = index + 4;
+    Symbol * symbolToAdd = new Symbol(staticIndex, nameSymbol, type, staticAddress, additional);
+    staticIndex = staticIndex + 4;
+    staticAddress = staticAddress + 1;
 
     if(!doesSymbolExist(nameSymbol)){
         this->table.emplace(nameSymbol, symbolToAdd);
@@ -36,7 +38,6 @@ void SymbolTable::print_dictionary(){
 
     cout << "--------------------------------------------------------------------------------" << endl;
 }
-
 
 
 /**
