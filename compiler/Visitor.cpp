@@ -3,7 +3,7 @@ using namespace std;
 
 Visitor::Visitor() : edx{"", false}, eax{"", false}
 {
-
+    
 }
 
 Visitor::~Visitor() {}
