@@ -63,6 +63,9 @@ antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *context)
     return visitChildren(context);
 }
 
+/**
+* Visit affection following the pattern type VAR '=' VAR
+*/
 antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *context)
 {
     // TODO:: affect in symbole table
@@ -73,6 +76,8 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     // TODO:: getInfo first variable; save second and get address
     int addressCopy = 0;
     int address = 0;
+    
+    //SymbolTable.
 
     cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
                                             "   movl     %eax, "
@@ -136,8 +141,9 @@ antlrcpp::Any Visitor::visitAffectation5(ifccParser::Affectation5Context *contex
     // TODO:: affect in symbole table
     // declaration + affectation
     string newVariableName = context->VAR()->getText();
-    string last_tmp = visitChildren(context).as<string>();
-    
+    antlrcpp::Any toto = visitChildren(context);
+    cout << "entre" << endl;
+    string last_tmp = (string) toto;
     cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
         // TODO:: get address variable
     
@@ -200,19 +206,23 @@ antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
 
 antlrcpp::Any Visitor::visitUnaryexpr(ifccParser::UnaryexprContext *context)
 {
+    return string("");
 }
 
 antlrcpp::Any Visitor::visitCharexpr(ifccParser::CharexprContext *context)
 {
+    return string("");
 }
 
 antlrcpp::Any Visitor::visitRelationalexpr(ifccParser::RelationalexprContext *context)
 {
+    return string("");
 }
 
 antlrcpp::Any Visitor::visitBracketexpr(ifccParser::BracketexprContext *context)
 {
-    return visitChildren(context);
+    visitChildren(context);
+    return string("");
 }
 
 antlrcpp::Any Visitor::visitVarexpr(ifccParser::VarexprContext *context)
@@ -237,6 +247,7 @@ antlrcpp::Any Visitor::visitVarexpr(ifccParser::VarexprContext *context)
 
 antlrcpp::Any Visitor::visitMultplicationexpr(ifccParser::MultplicationexprContext *context)
 {
+    return string("");
 }
 
 antlrcpp::Any Visitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *context)
@@ -273,6 +284,7 @@ antlrcpp::Any Visitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *contex
 
 antlrcpp::Any Visitor::visitBitsexpr(ifccParser::BitsexprContext *context)
 {
+    return string("");
 }
 
 antlrcpp::Any Visitor::visitConstexpr(ifccParser::ConstexprContext *context)
@@ -288,7 +300,7 @@ antlrcpp::Any Visitor::visitConstexpr(ifccParser::ConstexprContext *context)
 
 antlrcpp::Any Visitor::visitEqualityexpr(ifccParser::EqualityexprContext *context)
 {
-
+    return string("");
 }
 
 antlrcpp::Any Visitor::visitType(ifccParser::TypeContext *context)
