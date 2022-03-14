@@ -10,6 +10,7 @@
 
 //#include "CodeGenVisitor.h"
 #include "Visitor.h"
+#include "symbol-table/SymbolTable.h"
 
 
 using namespace antlr4;
@@ -46,10 +47,10 @@ int main(int argn, const char **argv)
       exit(1);
   }
 
-  SymbolTable * symbolTable = new SymbolTable();
-  //CodeGenVisitor v;
-  Visitor v;
-  v.visit(tree);
+  //SymbolTable * symbolTable = new SymbolTable();
+  //CodeGenVisitor visitor;
+  Visitor * visitor = new Visitor();
+  visitor->visit(tree);
 
   return 0;
 }

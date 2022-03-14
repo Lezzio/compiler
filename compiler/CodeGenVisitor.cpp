@@ -14,4 +14,3 @@ antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx)
 
 	return 0;
 }
-

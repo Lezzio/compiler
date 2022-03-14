@@ -12,7 +12,7 @@ public :
     //lookup 
     //insert
     
-    SymbolTable(){ staticIndex = 0; staticAddress = 0;};
+    SymbolTable();
     ~SymbolTable();
     bool doesSymbolExist(string ident);
     Symbol * returnSymbol(string name);

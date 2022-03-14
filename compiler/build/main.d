@@ -127,4 +127,5 @@ build/main.o: main.cpp ../antlr/include/antlr4-runtime.h \
  ../antlr/include/tree/xpath/XPathWildcardAnywhereElement.h \
  ../antlr/include/tree/xpath/XPathWildcardElement.h generated/ifccLexer.h \
  generated/ifccParser.h generated/ifccBaseVisitor.h \
- generated/ifccVisitor.h Visitor.h
+ generated/ifccVisitor.h Visitor.h symbol-table/SymbolTable.h \
+ symbol-table/Symbol.h

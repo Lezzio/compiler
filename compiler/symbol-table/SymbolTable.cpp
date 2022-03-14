@@ -7,6 +7,8 @@ using namespace std;
 int SymbolTable::staticIndex;
 int SymbolTable::staticAddress;
 
+SymbolTable::SymbolTable(){ staticIndex = 0; staticAddress = 0;}
+
 bool SymbolTable::addSymbol(string symbolName, int levelSymbol, int type, int additional)
 {
     string nameSymbol = symbolName;
