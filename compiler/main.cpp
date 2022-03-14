@@ -11,6 +11,7 @@
 //#include "CodeGenVisitor.h"
 #include "Visitor.h"
 
+
 using namespace antlr4;
 using namespace std;
 
@@ -45,7 +46,7 @@ int main(int argn, const char **argv)
       exit(1);
   }
 
-  
+  SymbolTable * symbolTable = new SymbolTable();
   //CodeGenVisitor v;
   Visitor v;
   v.visit(tree);

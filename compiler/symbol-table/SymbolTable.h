@@ -12,16 +12,18 @@ public :
     //lookup 
     //insert
     
-    SymbolTable(){};
+    SymbolTable(){ staticIndex = 0; staticAddress = 0;};
     ~SymbolTable();
     bool doesSymbolExist(string ident);
     Symbol * returnSymbol(string name);
-    bool addSymbol(string symbolName, int levelSymbol, int type, int address, int additional);
+    bool addSymbol(string symbolName, int levelSymbol, int type, int additional);
     void print_dictionary();
+
+    static int staticIndex;
+    static int staticAddress;
 
 protected :
     map<string, Symbol *> table;
-
 };
 
 #endif // SYMBOLTABLE_H

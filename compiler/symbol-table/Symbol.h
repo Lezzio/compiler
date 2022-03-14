@@ -7,7 +7,7 @@ using namespace std;
 class Symbol{
     public:
         Symbol();
-        Symbol(string name, int type, int address, int additionnal);
+        Symbol(int index, string name, int type, int address, int additionnal);
         ~Symbol();
         
         void setName(string name);
@@ -16,6 +16,7 @@ class Symbol{
         void setAddress(int address);
         void setAdditional(int additional);
 
+        int getIndex();
         string getName();
         string getScope();
         string getType();
@@ -23,6 +24,7 @@ class Symbol{
         int getAdditional();
     
     protected:
+        int index;
         string name;
         const string scope = "LOCAL";
         string type;

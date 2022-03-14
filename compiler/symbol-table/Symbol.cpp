@@ -2,12 +2,15 @@
 
 const string Type[] = { "INTEGER", "ARGUMENT", "FONCTION", "VARIABLE", "TABLEAU" };
 
-Symbol::Symbol(string name, int type, int address, int additionnal){
+Symbol::Symbol(int index, string name, int type, int address, int additionnal){
+    this->index = index;
     this->name = name;
     this->type = Type[type];
     this->address = address;
     this->additional = additionnal;
 }
+
+Symbol::~Symbol(){ }
 
 
 void Symbol::setName(string name){
@@ -44,5 +47,9 @@ int Symbol::getAddress(){
 
 int Symbol::getAdditional(){
     return this->additional;
+}
+
+int Symbol::getIndex(){
+    return this->index;
 }
 
