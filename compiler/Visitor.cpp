@@ -1,9 +1,11 @@
 #include "Visitor.h"
-#include "SymbolTable.h"
+#include "symbol-table/SymbolTable.h"
 using namespace std;
 
-Visitor::Visitor() : edx{"", false}, eax{"", false}
+Visitor::Visitor(SymbolTable * symbolTable, ErrorManager *errorManager) : edx{"", false}, eax{"", false}
 {
+    this->symbolTable = symbolTable;
+    this->errorManager = errorManager;
 }
 
 Visitor::~Visitor() {}
@@ -64,6 +66,9 @@ antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *context)
     return visitChildren(context);
 }
 
+/**
+ * Visit affectation with the following pattern : type VAR '=' VAR
+ */
 antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *context)
 {
     // TODO:: affect in symbole table
@@ -74,6 +79,10 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     // TODO:: getInfo first variable; save second and get address
     int addressCopy = 0;
     int address = 0;
+
+    if (!this->symbolTable->doesSymbolExist(existingVariableName)) {
+        this->errorManager->throwSemanticError(context->VAR()[1]->getSymbol(), "awesome");
+    }
 
     cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
                                             "   movl     %eax, "

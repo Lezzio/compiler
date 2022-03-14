@@ -15,41 +15,37 @@
 using namespace antlr4;
 using namespace std;
 
-int main(int argn, const char **argv)
-{
-  //TODO:: arg to disable warnings
-  stringstream in;
-  if (argn==2)
-  {
-     ifstream lecture(argv[1]);
-     in << lecture.rdbuf();
-  }
-  else
-  {
-      cerr << "usage: ifcc path/to/file.c" << endl ;
-      exit(1);
-  }
-  
-  ANTLRInputStream input(in.str());
+int main(int argn, const char **argv) {
+    //TODO:: arg to disable warnings
+    stringstream in;
+    if (argn == 2) {
+        ifstream lecture(argv[1]);
+        in << lecture.rdbuf();
+    } else {
+        cerr << "usage: ifcc path/to/file.c" << endl;
+        exit(1);
+    }
 
-  ifccLexer lexer(&input);
-  CommonTokenStream tokens(&lexer);
+    ANTLRInputStream input(in.str());
 
-  tokens.fill();
+    ifccLexer lexer(&input);
+    CommonTokenStream tokens(&lexer);
 
-  ifccParser parser(&tokens);
-  tree::ParseTree* tree = parser.axiom();
+    tokens.fill();
 
-  if(parser.getNumberOfSyntaxErrors() != 0)
-  {
-      cerr << "error: syntax error during parsing" << endl;
-      exit(1);
-  }
+    ifccParser parser(&tokens);
+    tree::ParseTree *tree = parser.axiom();
 
-  SymbolTable * symbolTable = new SymbolTable();
-  //CodeGenVisitor v;
-  Visitor v;
-  v.visit(tree);
+    if (parser.getNumberOfSyntaxErrors() != 0) {
+        cerr << "error: syntax error during parsing" << endl;
+        exit(1);
+    }
 
-  return 0;
+    SymbolTable *symbolTable = new SymbolTable();
+    ErrorManager *errorManager = new ErrorManager();
+    //CodeGenVisitor v;
+    Visitor *visitor = new Visitor(symbolTable, errorManager);
+    visitor->visit(tree);
+
+    return 0;
 }

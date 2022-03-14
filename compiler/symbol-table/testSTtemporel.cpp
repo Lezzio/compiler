@@ -1,6 +1,6 @@
 // compilation: g++ Symbol.cpp SymbolTable.cpp testSTtemporel.cpp -o test
 
-#include "SymbolTable.h"
+#include "symbol-table/SymbolTable.h"
 #include <iostream>
 
 int main(int argn, const char **argv){
