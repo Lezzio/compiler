@@ -7,6 +7,7 @@
 #include <initializer_list>
 
 // Declarations from the parser -- replace with your own
+//TODO: fix path
 #include "type.h"
 #include "symbole.h"
 
@@ -106,7 +107,9 @@ class BasicBlock
 {
 public:
     BasicBlock(CFG *cfg, string entry_label);
-    void gen_asm(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
+    virtual ~BasicBlock();
+
+    void gen_asm_86(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
     void add_IRInstr(IRInstr::Operation op, Type t, vector<string> params);
 
@@ -133,17 +136,18 @@ protected:
 class CFG
 {
 public:
-    CFG(DefFonction *ast);
+    CFG(SymbolTable * symbolTable, string name);
+    virtual ~CFG();
 
     DefFonction *ast; /**< The AST this CFG comes from */
 
     void add_bb(BasicBlock *bb);
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
-    void gen_asm(ostream &o);
+    void gen_asm_x86(ostream &o);
     string IR_reg_to_asm(string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
-    void gen_asm_prologue(ostream &o);
-    void gen_asm_epilogue(ostream &o);
+    void gen_asm_prologue_x86(ostream &o);
+    void gen_asm_epilogue_x86(ostream &o);
 
     // symbol table methods
     void add_to_symbol_table(string name, Type t);
@@ -156,9 +160,9 @@ public:
     BasicBlock *current_bb;
 
 protected:
-    map<string, Type> SymbolType; /**< part of the symbol table  */
-    map<string, int> SymbolIndex; /**< part of the symbol table  */
-    int nextFreeSymbolIndex;      /**< to allocate new symbols in the symbol table */
+    SymbolTable * symbolTable;
+    int nextTmpVarNumber;
+    //int nextFreeSymbolIndex;      /**< to allocate new symbols in the symbol table */
     int nextBBnumber;             /**< just for naming */
 
     vector<BasicBlock *> bbs; /**< all the basic blocks of this CFG*/
