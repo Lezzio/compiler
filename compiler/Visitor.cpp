@@ -3,7 +3,6 @@ using namespace std;
 
 Visitor::Visitor() : edx{"", false}, eax{"", false}
 {
-
 }
 
 Visitor::~Visitor() {}
@@ -73,6 +72,8 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     // declaration + affectation
     string newVariableName = context->VAR()[0]->getText();
     string existingVariableName = context->VAR()[1]->getText();
+
+
 
     // TODO:: getInfo first variable; save second and get address
     int addressCopy = 0;

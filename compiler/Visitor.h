@@ -1,8 +1,8 @@
 #pragma once
 
-
 #include "antlr4-runtime.h"
 #include "generated/ifccBaseVisitor.h"
+#include "symbolTable/SymbolTable.h"
 
 #include <string>
 #include <queue> 

@@ -4,7 +4,7 @@ ANTLRINC=../antlr/include
 ANTLRLIB=../antlr/lib/libantlr4-runtime.a
 
 CC=g++
-CCFLAGS=-g -c -std=c++17 -I$(ANTLRINC) -Wno-attributes # -Wno-defaulted-function-deleted -Wno-unknown-warning-option
+CCFLAGS=-g -c -std=c++11 -I$(ANTLRINC) -Wno-attributes # -Wno-defaulted-function-deleted -Wno-unknown-warning-option
 LDFLAGS=-g
 
 default: all
@@ -12,15 +12,23 @@ all: ifcc
 
 ##########################################
 # link together all pieces of our compiler 
-OBJECTS=build/main.o build/Visitor.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o 
+OBJECTS=build/main.o build/Visitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o 
 
-ifcc: $(OBJECTS)
+ifcc: $(OBJECTS) 
 	@mkdir -p build
 	$(CC) $(LDFLAGS) build/*.o $(ANTLRLIB) -o ifcc
 
 ##########################################
 # compile our hand-writen C++ code: main(), Visitor, etc.
 build/%.o: %.cpp generated/ifccParser.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $< 
+
+build/SymbolTable.o: symbolTable/SymbolTable.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $< 
+
+build/Symbol.o: symbolTable/Symbol.cpp
 	@mkdir -p build
 	$(CC) $(CCFLAGS) -MMD -o $@ $< 
 
