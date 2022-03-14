@@ -10,6 +10,8 @@ Symbol::Symbol(int index, string name, int type, int address, int additionnal){
     this->additional = additionnal;
 }
 
+Symbol::~Symbol(){ }
+
 
 void Symbol::setName(string name){
     this->name = name;

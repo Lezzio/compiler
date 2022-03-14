@@ -22,6 +22,7 @@ bool SymbolTable::addSymbol(string symbolName, int levelSymbol, int type, int ad
         this->table.emplace(nameSymbol, symbolToAdd);
         return true;
     }
+    delete symbolToAdd;
     return false;
 }
 
@@ -67,4 +68,10 @@ Symbol * SymbolTable::returnSymbol(string name){
     if(table.find(name) != table.end())
         return table.find(name)->second;
     return nullptr;
+}
+
+SymbolTable::~SymbolTable(){
+    for (const auto myPair : table) {
+        delete myPair.second;
+    }
 }

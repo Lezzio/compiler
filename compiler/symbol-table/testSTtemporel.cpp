@@ -35,6 +35,8 @@ int main(int argn, const char **argv){
     }else{
         cout << "error" <<endl;
     }
+
+    delete ST;
 }
 
 
