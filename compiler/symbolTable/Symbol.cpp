@@ -1,13 +1,14 @@
 #include "Symbol.h"
 
-const string Type[] = { "INTEGER", "ARGUMENT", "FONCTION", "VARIABLE", "TABLEAU" };
+Symbol::Symbol(int index, string name, TypeSymbol typeSymbol, int address, int additionnal, StateSymbol stateSymbol, bool isConst){
 
-Symbol::Symbol(int index, string name, int type, int address, int additionnal){
     this->index = index;
     this->name = name;
-    this->type = Type[type];
+    this->typeSymbol = typeSymbol;
     this->address = address;
     this->additional = additionnal;
+    this->stateSymbol = stateSymbol;
+    this->isConst = isConst;
 }
 
 Symbol::~Symbol(){ }
@@ -17,8 +18,8 @@ void Symbol::setName(string name){
     this->name = name;
 }
 
-void Symbol::setType(int type){
-    this->type = Type[type];
+void Symbol::setTypeSymbol(TypeSymbol typeSymbol){
+    this->typeSymbol = typeSymbol;
 }
 
 void Symbol::setAddress(int address){
@@ -29,6 +30,10 @@ void Symbol::setAdditional(int additional){
     this->additional = additional;
 }
 
+void Symbol::setStateSymbol(StateSymbol stateSymbol){
+    this->stateSymbol = stateSymbol;
+}
+
 string Symbol::getName(){
     return this->name;
 }
@@ -37,8 +42,8 @@ string Symbol::getScope(){
     return this->scope;
 }
 
-string Symbol::getType(){
-    return this->type;
+TypeSymbol Symbol::getTypeSymbol(){
+    return this->typeSymbol;
 }
 
 int Symbol::getAddress(){
@@ -53,3 +58,10 @@ int Symbol::getIndex(){
     return this->index;
 }
 
+StateSymbol Symbol::getStateSymbol(){
+    return this->stateSymbol;
+}
+
+bool Symbol::getIsConst(){
+    return this->isConst;
+}

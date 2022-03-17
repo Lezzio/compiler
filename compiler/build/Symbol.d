@@ -1,1 +1,2 @@
-build/Symbol.o: symbolTable/Symbol.cpp symbolTable/Symbol.h
+build/Symbol.o: symbolTable/Symbol.cpp symbolTable/Symbol.h \
+ symbolTable/typeSymbol.h symbolTable/stateSymbol.h

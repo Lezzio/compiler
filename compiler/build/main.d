@@ -156,4 +156,4 @@ build/main.o: main.cpp /usr/include/antlr4-runtime/antlr4-runtime.h \
  /usr/include/antlr4-runtime/tree/xpath/XPathWildcardElement.h \
  generated/ifccLexer.h generated/ifccParser.h generated/ifccBaseVisitor.h \
  generated/ifccVisitor.h Visitor.h symbolTable/SymbolTable.h \
- symbolTable/Symbol.h
+ symbolTable/Symbol.h symbolTable/typeSymbol.h symbolTable/stateSymbol.h

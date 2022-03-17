@@ -3,61 +3,9 @@
 #include "SymbolTable.h"
 #include <iostream>
 
-int main(int argn, const char **argv){
-    SymbolTable * ST = new SymbolTable();
-    ST->addSymbol("a", -1, 0, -1);
-    ST->addSymbol("b", -1, 4, 3);
-    ST->addSymbol("a", 1, 0, -1);
-    cout << "Doit retourner false : ";
-    cout << ST->addSymbol("a", 1, 0, -1) << endl;
-    ST->print_dictionary();
-
-
-    newTest("SymboleTable", "returnSymbol", "nameExisting");
-    if(ST->returnSymbol("a") != nullptr){
-        Iassert("a", ST->returnSymbol("a")->getName())
-    }else{
-        cout << "error" <<endl;
-    }
-    
-    newtest("SymboleTable", "retrunSymbol", "renamed");
-    if(ST->returnSymbol("a_1") != nullptr){
-        Iassert("a_1", ST->returnSymbol("a_1")->getName());
-    }else{
-        cout << "error" <<endl;
-    }
-
-
-
-    cout << "TEST SymbolTable.returnSymbol() :" << endl;
-    // Name existing
-    cout << "  Expected value \"a\" - ";
-    if(ST->returnSymbol("a") != nullptr){
-        cout << ST->returnSymbol("a")->getName() << endl;
-    }else{
-        cout << "error" <<endl;
-    }
-    // Name renamed
-    cout << "  Expected value \"a_1\" - ";
-    if(ST->returnSymbol("a_1") != nullptr){
-        cout << ST->returnSymbol("a_1")->getName() << endl;
-    }else{
-        cout << "error" <<endl;
-    }
-    // Name non existing
-    cout << "  Expected value \"error\" - ";
-    if(ST->returnSymbol("babar") != nullptr){
-        cout << ST->returnSymbol("babar")->getName() << endl;
-    }else{
-        cout << "error" <<endl;
-    }
-
-    delete ST;
-}
-
-
 string newTest(string classname, string methode, string testName){
-    return cout << "TEST -- " << classname << "::" << methode << "() -- " << testName << " : " << endl;
+    string ret = "TEST -- " + classname + "::" + methode + "() -- " + testName + " : ";
+    return ret;
 }
 
 bool Iassert(string expected, string returned){
@@ -70,4 +18,41 @@ bool Iassert(string expected, string returned){
     }
 }
 
+int main(int argn, const char **argv){
+    SymbolTable * ST = new SymbolTable();
+    //addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, int state)
+    ST->addSymbol("a", -1, INT, -1, ASSIGNED, 0);
+    ST->addSymbol("b", -1, INT, 3, DECLARED, 1);
+    ST->addSymbol("a", 1, INT8_T, -1, ASSIGNED, 0);
+    cout << "Doit retourner false : ";
+    cout << ST->addSymbol("a", 1, INT, -1, ASSIGNED, 1) << endl;
+    ST->print_dictionary();
 
+
+    
+    string test1 = newTest("SymboleTable", "returnSymbol", "nameExisting");
+    cout << test1;
+    if(ST->returnSymbol("a") != nullptr){
+        Iassert("a", ST->returnSymbol("a")->getName());
+    }else{
+        cout << "Error" <<endl;
+    }
+    
+    string test2 = newTest("SymboleTable", "returnSymbol", "renamed");
+    cout << test2;
+    if(ST->returnSymbol("a_1") != nullptr){
+        Iassert("a_1", ST->returnSymbol("a_1")->getName());
+    }else{
+        cout << "Error" <<endl;
+    }
+
+    string test3 = newTest("SymboleTable", "returnSymbol", "non existing");
+    cout << test3;
+    if(ST->returnSymbol("babar") != nullptr){
+        Iassert("error", ST->returnSymbol("babar")->getName());
+    }else{
+        cout << "PASSED" <<endl;
+    }
+
+    delete ST;
+}

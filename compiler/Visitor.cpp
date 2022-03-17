@@ -70,9 +70,15 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
 {
     // TODO:: affect in symbole table
     // declaration + affectation
+
+    //type newVariableName = existingVariableName;
     string newVariableName = context->VAR()[0]->getText();
     string existingVariableName = context->VAR()[1]->getText();
 
+    //Verify that existingVariableName exists in the symbol table and is ASSIGNED
+    
+
+    //Verify that newVariable does not exists in the symbol table and is not const
 
 
     // TODO:: getInfo first variable; save second and get address

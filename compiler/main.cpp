@@ -48,7 +48,7 @@ int main(int argn, const char **argv)
 
   SymbolTable * symbolTable = new SymbolTable();
   //CodeGenVisitor v;
-  Visitor v;
+  Visitor v ();
   v.visit(tree);
   delete symbolTable;
   return 0;

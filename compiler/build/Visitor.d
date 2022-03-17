@@ -156,4 +156,5 @@ build/Visitor.o: Visitor.cpp Visitor.h \
  /usr/include/antlr4-runtime/tree/xpath/XPathWildcardAnywhereElement.h \
  /usr/include/antlr4-runtime/tree/xpath/XPathWildcardElement.h \
  generated/ifccBaseVisitor.h generated/ifccVisitor.h \
- generated/ifccParser.h symbolTable/SymbolTable.h symbolTable/Symbol.h
+ generated/ifccParser.h symbolTable/SymbolTable.h symbolTable/Symbol.h \
+ symbolTable/typeSymbol.h symbolTable/stateSymbol.h
