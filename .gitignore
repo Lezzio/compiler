@@ -7,3 +7,8 @@
 ./cmake-build-debug/**
 .vscode
 ./compiler/Makefile
+*Makefile
+Makefile
+./compiler/build
+./compiler/build/*.o
+./compiler/build/*.d
