@@ -15,7 +15,7 @@ typedef struct Register {
 class  Visitor : public ifccBaseVisitor {
     
 	public:
-        Visitor();
+        Visitor(SymbolTable * symbolTable);
         ~Visitor();
 
         virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *context) override;
@@ -83,7 +83,7 @@ class  Visitor : public ifccBaseVisitor {
     private:
         Register edx;
         Register eax;
-        
+        SymbolTable * symbolTable;
        
 
 };

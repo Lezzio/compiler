@@ -23,7 +23,7 @@ int main(int argn, const char **argv){
     //addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, int state)
     ST->addSymbol("a", -1, INT, -1, ASSIGNED, 0);
     ST->addSymbol("b", -1, INT, 3, DECLARED, 1);
-    ST->addSymbol("a", 1, INT8_T, -1, ASSIGNED, 0);
+    ST->addSymbol("a", 1, INT, -1, ASSIGNED, 0);
     cout << "Doit retourner false : ";
     cout << ST->addSymbol("a", 1, INT, -1, ASSIGNED, 1) << endl;
     ST->print_dictionary();

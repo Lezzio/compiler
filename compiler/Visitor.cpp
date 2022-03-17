@@ -1,8 +1,10 @@
 #include "Visitor.h"
+#include <iostream>
 using namespace std;
 
-Visitor::Visitor() : edx{"", false}, eax{"", false}
+Visitor::Visitor(SymbolTable * symbolTable) : edx{"", false}, eax{"", false}
 {
+    this->symbolTable = symbolTable;
 }
 
 Visitor::~Visitor() {}
@@ -74,22 +76,55 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     //type newVariableName = existingVariableName;
     string newVariableName = context->VAR()[0]->getText();
     string existingVariableName = context->VAR()[1]->getText();
+    int levelNewVariable = -1;
 
     //Verify that existingVariableName exists in the symbol table and is ASSIGNED
-    
+    Symbol * symbolReturned = this->symbolTable->returnSymbol(existingVariableName);
+    if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
 
-    //Verify that newVariable does not exists in the symbol table and is not const
+        //Verify that newVariable does not exists in the symbol table and is not const
+        //TODO:: missing is const context
+        if(!this->symbolTable->doesSymbolExist(newVariableName)){
+
+            //Affect newVariable in the symbol table
+            levelNewVariable = 0;
+            this->symbolTable->addSymbol(newVariableName, levelNewVariable, INT, 0, ASSIGNED, 0);
+
+            int address = this->symbolTable->returnSymbol(newVariableName + "_" + to_string(levelNewVariable))->getAddress();
+            //TODO what is addressCopy ??
+            int addressCopy = address;
+            //SymbolTable.
+
+            cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
+                                                    "   movl     %eax, "
+                << address << "(%rbp)\n";
+
+        }
+        else{
+            //TODO:: gestion des erreurs
+            cout << "affect 1: new variable already exist " << endl; 
+        }
+    }
+    else{
+        //TODO:: gestion des erreurs
+        cout << "affect 1: existing variable does not exist or is not assigned !" << endl; 
+    }
 
 
     // TODO:: getInfo first variable; save second and get address
-    int addressCopy = 0;
+    /*int addressCopy = 0;
+    Symbol * symbolNewVariable = this->symbolTable->returnSymbol(newVariableName + "_" + levelNewVariable);
+    if(symbolNewVariable != nullptr){
+        addressCopy = symbolNewVariable->getAddress();
+    }
+   
     int address = 0;
     
     //SymbolTable.
 
     cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
                                             "   movl     %eax, "
-         << address << "(%rbp)\n";
+         << address << "(%rbp)\n";*/
 
     return visitChildren(context);
 }
@@ -102,9 +137,18 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
     string newVariableName = context->VAR()->getText();
     int variableValue = stoi(context->CONST()->getText());
 
-    // TODO:: recup l'address
-    int address = 0;
-    cout << "   movl	$" << variableValue << ", " << address << "(%rbp) \n";
+    if(!this->symbolTable->doesSymbolExist(newVariableName)){
+        //Affect newVariable in the symbol table
+        int level = 0;
+        this->symbolTable->addSymbol(newVariableName, level, INT, 0, ASSIGNED, 0);
+        
+        int address = this->symbolTable->returnSymbol(newVariableName+"_"+to_string(level))->getAddress();
+        cout << "   movl	$" << variableValue << ", " << address << "(%rbp) \n";
+    }
+    else{
+        //TODO:: gestion des erreurs
+        cout << "affect 2: new variable already exist " << endl; 
+    }
 
     return visitChildren(context);
 }
