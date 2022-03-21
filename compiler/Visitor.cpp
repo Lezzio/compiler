@@ -276,6 +276,7 @@ antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context)
     int level = 0;
     int address = 0;
     //TODO: Test existence
+<<<<<<< HEAD
 
     Symbol * symbolReturned = this->symbolTable->returnSymbol(variableName, level);
     if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
@@ -285,6 +286,10 @@ antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context)
         cout << "ret 2 : variableName does not exist " << endl;
     }
 
+=======
+    //this->symbolTable->returnSymbol(variableName, 0);
+    int address =this->symbolTable->getAddressSymbol(variableName,0);
+>>>>>>> d0d878ad6c97ad8ac41e7f393586935835c471b7
     cout << "   movl	" << address << "(%rbp), %eax\n"
                                         "   popq %rbp\n"
                                         "   ret\n";
@@ -302,9 +307,9 @@ antlrcpp::Any Visitor::visitMultvariables(ifccParser::MultvariablesContext *cont
 
 antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
 {
-     //TODO : symbol table 
+     //TODO : deal with exeption
     string newVariableName = context->VAR()->getText();
-
+    int address = this->symbolTable->declareSymbol(newVariableName, 0, INT, 0, DECLARED, 0);
     return 0;
 }
 
