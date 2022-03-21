@@ -4,6 +4,6 @@
 
 #include "ErrorManager.h"
 
-void ErrorManager::throwSemanticError(antlr4::Token* symbol, std::string message) {
-    cout << "Syntax error at " + symbol->getLine() + " " + message;
+void ErrorManager::throwSemanticError(Token* symbol, string message) {
+    cout << "Syntax error at " << symbol->getLine() << " " << message;
 }

@@ -8,6 +8,9 @@
 #include <string>
 #include "antlr4-runtime.h"
 
+using namespace std;
+using namespace antlr4;
+
 class ErrorManager {
 
 public:
