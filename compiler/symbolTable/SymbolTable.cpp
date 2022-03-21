@@ -57,6 +57,16 @@ bool SymbolTable::doesSymbolExist(string ident, int level){
     }
 }
 
+int SymbolTable::getAddressSymbol(string ident, int level){
+    ident = ident+"_"+to_string(level);
+    if(table.find(ident) != table.end()){
+        return table.find(ident)->second->getAddress();
+    }else{
+        return 0;
+    }
+}
+
+
 /**
  * @brief 
  *  Finds the symbol from the identificator name if existing.
@@ -66,9 +76,10 @@ bool SymbolTable::doesSymbolExist(string ident, int level){
  * @return SYMBOL 
  */
 Symbol * SymbolTable::returnSymbol(string name,int level){
-    string ident = ident+"_"+to_string(level);
-    if(table.find(name) != table.end())
-        return table.find(name)->second;
+    string ident = name+"_"+to_string(level);
+
+    if(table.find(ident) != table.end())
+        return table.find(ident)->second;
     return nullptr;
 }
 

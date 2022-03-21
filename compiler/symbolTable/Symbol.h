@@ -25,6 +25,7 @@ class Symbol{
         int getAdditional();
         StateSymbol getStateSymbol();
         bool getIsConst();
+        int getAddress();
     
     protected:
         int index;
