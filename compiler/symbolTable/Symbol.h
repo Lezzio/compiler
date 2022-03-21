@@ -12,6 +12,7 @@ class Symbol{
         Symbol(int index, string name, TypeSymbol typeSymbol, int additionnal, StateSymbol stateSymbol, bool isConst);
         ~Symbol();
         
+        void setIndex(int index);
         void setName(string name);
         void setScope(string scope);
         void setTypeSymbol(TypeSymbol typeSymbol);
@@ -25,6 +26,7 @@ class Symbol{
         int getAdditional();
         StateSymbol getStateSymbol();
         bool getIsConst();
+        int getAddress();
     
     protected:
         int index;

@@ -12,6 +12,9 @@ Symbol::Symbol(int index, string name, TypeSymbol typeSymbol, int additionnal, S
 
 Symbol::~Symbol(){ }
 
+void Symbol::setIndex(int index) { 
+    this->index = index;
+}
 
 void Symbol::setName(string name){
     this->name = name;
@@ -55,4 +58,8 @@ StateSymbol Symbol::getStateSymbol(){
 
 bool Symbol::getIsConst(){
     return this->isConst;
+}
+
+int Symbol::getAddress(){
+    return -this->index;
 }
