@@ -229,16 +229,18 @@ antlrcpp::Any Visitor::visitAffectation5(ifccParser::Affectation5Context *contex
     int level = 0;
     int address = 0;
     int last_tmp = visitChildren(context);
-    cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
-        // TODO:: get address variable
     if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
             address = this->symbolTable->addSymbol(newVariableName, level, INT, 0, ASSIGNED, 0);
     }else {
         //TODO:: gestion des erreurs
         cout << "affect 5: newVariableName already exist " << endl;
     }
+    cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
+        // TODO:: get address variable
+
 
     cout << "   movl	%eax," << address << "(%rbp) \n";
+
 
     return 0;
 }
@@ -457,7 +459,10 @@ antlrcpp::Any Visitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *contex
     //opti : check if one expr is equal to 0
 
     //TODO create temp var 
-    int address = 0;
+    int level = 0;
+    string name = "!temp" + to_string(SymbolTable::staticTempIndex++);
+    int address = this->symbolTable->addSymbol(name, level, INT, 0, ASSIGNED, 0);
+    SymbolTable::staticTempIndex++;
 
     if(context->op->getText() == "+"){
         cout << "   movl " << exprLeft << "(%rbp), %eax\n";
@@ -497,10 +502,10 @@ antlrcpp::Any Visitor::visitBitsexpr(ifccParser::BitsexprContext *context){
 
 antlrcpp::Any Visitor::visitConstexpr(ifccParser::ConstexprContext *context)
 {
-    int value = stoi(context->CONST()->getText());
-    //TODO create temp var 
-    int address = 0;
-
+    int value = stoi(context->CONST()->getText()); 
+    int level = 0;
+    string name = "!temp" + to_string(SymbolTable::staticTempIndex++);
+    int address = this->symbolTable->addSymbol(name, level, INT, 0, ASSIGNED, 0);
     cout << "   movl	$" << value << ", " << address << "(%rbp) \n";
 
     return address;

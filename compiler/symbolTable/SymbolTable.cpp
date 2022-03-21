@@ -5,8 +5,9 @@
 using namespace std;
 
 int SymbolTable::staticIndex;
+int SymbolTable::staticTempIndex= 0;
 
-SymbolTable::SymbolTable(){ staticIndex = 4;}
+SymbolTable::SymbolTable(){ staticIndex = 4; }
 
 int SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
 {

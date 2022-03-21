@@ -10,5 +10,6 @@ e = b;
 int j;
 j = 9;
 int z,y,w;
-return j;
+int r = 2+3;
+return r;
 }
