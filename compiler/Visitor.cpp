@@ -205,15 +205,11 @@ antlrcpp::Any Visitor::visitAffectation4(ifccParser::Affectation4Context *contex
 
     Symbol * symbolReturned = this->symbolTable->returnSymbol(variableName, level);
     if(symbolReturned != nullptr){
-<<<<<<< HEAD
-        address = symbolReturned->getAddress();
-=======
         if(symbolReturned->getStateSymbol() == ASSIGNED){
                 address = symbolReturned->getAddress();
             } else {
                 address = this->symbolTable->assignSymbol(symbolReturned);
             }
->>>>>>> dbfd049a4654ee71645caee2a4d573a518d82339
     }else {
         //TODO:: gestion des erreurs
         cout << "affect 4: variableName does not exist " << endl; 
@@ -315,7 +311,7 @@ antlrcpp::Any Visitor::visitMultvariables(ifccParser::MultvariablesContext *cont
     int level = 0;
 
     if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
-            this->symbolTable->addSymbol(newVariableName, level, INT, 0, DECLARED, 0);
+            this->symbolTable->declareSymbol(newVariableName, level, INT, 0, DECLARED, 0);
     }else {
         //TODO:: gestion des erreurs
         cout << "multivariables : newVariableName ( " << newVariableName << " ) already exist " << endl;
@@ -331,7 +327,11 @@ antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
     int level = 0;
 
     if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
+<<<<<<< HEAD
             this->symbolTable->addSymbol(newVariableName, level, INT, 0, DECLARED, 0);
+=======
+            this->symbolTable->declareSymbol(newVariableName, level, INT, 0, DECLARED, 0);
+>>>>>>> af5cf362362cc411ec96c22e9fb81302571e8070
     }else {
         //TODO:: gestion des erreurs
         cout << "variables : newVariableName already exist " << endl;
