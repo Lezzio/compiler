@@ -5,38 +5,37 @@
 using namespace std;
 
 int SymbolTable::staticIndex;
-int SymbolTable::staticAddress;
 
-SymbolTable::SymbolTable(){ staticIndex = 4; staticAddress = 0;}
+SymbolTable::SymbolTable(){ staticIndex = 4;}
 
-bool SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
+int SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
 {
     string nameSymbol = symbolName;
     if(levelSymbol != -1){
         nameSymbol = symbolName + "_" + to_string(levelSymbol);
     }
     
-    Symbol * symbolToAdd = new Symbol(staticIndex, nameSymbol, typeSymbol, staticAddress, additional, stateSymbol, isConst);
-    staticIndex = staticIndex + 4;
-    staticAddress = staticAddress + 1;
+    Symbol * symbolToAdd = new Symbol(staticIndex, nameSymbol, typeSymbol, additional, stateSymbol, isConst);
 
-    if(!doesSymbolExist(nameSymbol)){
+    if(!doesSymbolExist(nameSymbol,levelSymbol)){
         this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
-        return true;
+        int returnadress = -staticIndex;
+        staticIndex = staticIndex + 4;
+        return returnadress;
     }
     delete symbolToAdd;
-    return false;
+    return -1;
 }
 
 
 void SymbolTable::print_dictionary(){
     cout << endl << "***   Actual Symbol Table   ***" << endl;
     cout << "-------------------------------------------------------------------------------------------------------------" << endl;
-    cout << "|   Index   ;    Name   ;   Scope   ;   Type   ;   Address   ;   Additionnal   ;    State    ;    IsConst   | " << endl;
+    cout << "|   Index   ;    Name   ;   Scope   ;   Type   ;   Additionnal   ;    State    ;    IsConst   | " << endl;
     cout << "-------------------------------------------------------------------------------------------------------------" << endl;
 
     for (const auto myPair : table) {
-        cout << "|  " << myPair.second->getIndex() << "  ;  " << myPair.second->getName() << "  ;  " << myPair.second->getScope() << "  ;  " << to_string(myPair.second->getTypeSymbol()) << "  ;  " << to_string(myPair.second->getAddress()) << "  ;  " << to_string(myPair.second->getAdditional()) << "  ;  " << to_string(myPair.second->getStateSymbol()) << "  ;  " << to_string(myPair.second->getIsConst()) << "  | " << endl;
+        cout << "|  " << myPair.second->getIndex() << "  ;  " << myPair.second->getName() << "  ;  " << myPair.second->getScope() << "  ;  " << to_string(myPair.second->getTypeSymbol()) << "  ;  "<< to_string(myPair.second->getAdditional()) << "  ;  " << to_string(myPair.second->getStateSymbol()) << "  ;  " << to_string(myPair.second->getIsConst()) << "  | " << endl;
     }
 
     cout << "------------------------------------------------------------------------------------------------------------" << endl;
@@ -50,8 +49,8 @@ void SymbolTable::print_dictionary(){
  * @return true if symbol exists in the table
  * @return false else
  */
-bool SymbolTable::doesSymbolExist(string ident){
-    if(table.find(ident) != table.end()){
+bool SymbolTable::doesSymbolExist(string ident, int level){
+    if(table.find(ident+"_"+to_string(level)) != table.end()){
         return true;
     }else{
         return false;
@@ -66,7 +65,8 @@ bool SymbolTable::doesSymbolExist(string ident){
  * @param name 
  * @return SYMBOL 
  */
-Symbol * SymbolTable::returnSymbol(string name){
+Symbol * SymbolTable::returnSymbol(string name,int level){
+    string ident = ident+"_"+to_string(level);
     if(table.find(name) != table.end())
         return table.find(name)->second;
     return nullptr;

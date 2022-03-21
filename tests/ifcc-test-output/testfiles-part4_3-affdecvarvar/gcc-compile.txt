@@ -1,6 +1,2 @@
-input.c:1:1: error: unknown type name ‘wint’; did you mean ‘int’?
-    1 | wint main() {
-      | ^~~~
-      | int
 
-return code: 1
+return code: 0

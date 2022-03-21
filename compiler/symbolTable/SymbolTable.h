@@ -14,13 +14,12 @@ public :
     
     SymbolTable();
     ~SymbolTable();
-    bool doesSymbolExist(string ident);
-    Symbol * returnSymbol(string name);
-    bool addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
+    bool doesSymbolExist(string identn, int level);
+    Symbol * returnSymbol(string name, int level);
+    int addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
     void print_dictionary();
 
     static int staticIndex;
-    static int staticAddress;
 
 protected :
     map<string, Symbol *> table;

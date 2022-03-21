@@ -1,9 +1,9 @@
 input.c: In function ‘main’:
 input.c:3:9: error: redefinition of ‘variable’
-    3 |     int variable = 10;
-      |         ^~~~~~~~
+     int variable = 10;
+         ^~~~~~~~
 input.c:2:9: note: previous definition of ‘variable’ was here
-    2 |     int variable = 42;
-      |         ^~~~~~~~
+     int variable = 42;
+         ^~~~~~~~
 
 return code: 1
