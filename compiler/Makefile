@@ -1,9 +1,9 @@
 # You can override these from the command-line, as illustrated by the various `runmake_*.sh` scripts
 ANTLRJAR=../antlr/jar/antlr-4.9.2-complete.jar
-ANTLRINC=/usr/include/antlr4-runtime
-ANTLRLIB=/usr/lib/x86_64-linux-gnu/libantlr4-runtime.a
-#ANTLRINC=../antlr/include
-#ANTLRLIB=../antlr/lib/libantlr4-runtime.a
+#ANTLRINC=/usr/include/antlr4-runtime
+#ANTLRLIB=/usr/lib/x86_64-linux-gnu/libantlr4-runtime.a
+ANTLRINC=../antlr/include
+ANTLRLIB=../antlr/lib/libantlr4-runtime.a
 
 CC=g++
 CCFLAGS=-g -c -std=c++11 -I$(ANTLRINC) -Wno-attributes # -Wno-defaulted-function-deleted -Wno-unknown-warning-option
@@ -47,9 +47,9 @@ build/%.o: generated/%.cpp
 # generate the C++ implementation of our Lexer/Parser/Visitor
 #
 # cf https://stackoverflow.com/a/3077254/117814 for the multiple-file trick
-#generated/ifcc%.cpp: ifcc.g4
-#	@mkdir -p generated
-#	java -cp $(ANTLRJAR) org.antlr.v4.Tool  -visitor -no-listener -Dlanguage=Cpp -o generated ifcc.g4
+generated/ifcc%.cpp: ifcc.g4
+	@mkdir -p generated
+	java -cp $(ANTLRJAR) org.antlr.v4.Tool  -visitor -no-listener -Dlanguage=Cpp -o generated ifcc.g4
 
 # prevent automatic cleanup of "intermediate" files like ifccLexer.cpp etc
 .PRECIOUS: generated/ifcc%.cpp   
