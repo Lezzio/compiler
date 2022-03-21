@@ -9,5 +9,6 @@ int e;
 e = b;
 int j;
 j = 9;
+int z,y,w;
 return j;
 }
