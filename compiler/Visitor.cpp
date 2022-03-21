@@ -121,7 +121,7 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
                                             "   movl     %eax, "
          << address << "(%rbp)\n";*/
 
-    return visitChildren(context);
+    return 0;
 }
 
 antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *context)
@@ -146,7 +146,7 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
         cout << "affect 2: new variable already exist " << endl; 
     }
 
-    return visitChildren(context);
+    return 0;
 }
 
 antlrcpp::Any Visitor::visitAffectation3(ifccParser::Affectation3Context *context)
@@ -183,7 +183,7 @@ antlrcpp::Any Visitor::visitAffectation3(ifccParser::Affectation3Context *contex
                                             "   movl     %eax, "
          << address << "(%rbp)\n";
 
-    return visitChildren(context);
+    return 0;
 }
 
 antlrcpp::Any Visitor::visitAffectation4(ifccParser::Affectation4Context *context)
@@ -199,7 +199,7 @@ antlrcpp::Any Visitor::visitAffectation4(ifccParser::Affectation4Context *contex
     int level = 0;
 
     Symbol * symbolReturned = this->symbolTable->returnSymbol(variableName, level);
-    if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
+    if(symbolReturned != nullptr){
         address = symbolReturned->getAddress();
     }else {
         //TODO:: gestion des erreurs
@@ -208,7 +208,7 @@ antlrcpp::Any Visitor::visitAffectation4(ifccParser::Affectation4Context *contex
 
     cout << "   movl	$" << newVariableValue << ", " << address << "(%rbp) \n";
 
-    return visitChildren(context);
+    return 0;
 }
 
 antlrcpp::Any Visitor::visitAffectation5(ifccParser::Affectation5Context *context)
@@ -232,7 +232,6 @@ antlrcpp::Any Visitor::visitAffectation5(ifccParser::Affectation5Context *contex
     cout << "   movl	%eax," << address << "(%rbp) \n";
 
     return 0;
-
 }
 
 antlrcpp::Any Visitor::visitAffectation6(ifccParser::Affectation6Context *context)
@@ -276,7 +275,6 @@ antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context)
     int level = 0;
     int address = 0;
     //TODO: Test existence
-<<<<<<< HEAD
 
     Symbol * symbolReturned = this->symbolTable->returnSymbol(variableName, level);
     if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
@@ -286,10 +284,6 @@ antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context)
         cout << "ret 2 : variableName does not exist " << endl;
     }
 
-=======
-    //this->symbolTable->returnSymbol(variableName, 0);
-    int address =this->symbolTable->getAddressSymbol(variableName,0);
->>>>>>> d0d878ad6c97ad8ac41e7f393586935835c471b7
     cout << "   movl	" << address << "(%rbp), %eax\n"
                                         "   popq %rbp\n"
                                         "   ret\n";
@@ -301,24 +295,40 @@ antlrcpp::Any Visitor::visitMultvariables(ifccParser::MultvariablesContext *cont
     //VAR ',' variables
     //TODO : symbol table 
     string newVariableName = context->VAR()->getText();
+    int level = 0;
+
+    if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
+            this->symbolTable->addSymbol(newVariableName, level, INT, 0, DECLARED, 0);
+    }else {
+        //TODO:: gestion des erreurs
+        cout << "multivariables : newVariableName ( " << newVariableName << " ) already exist " << endl;
+    }
 
     return visit(context->variables());
 }
 
 antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
 {
-     //TODO : deal with exeption
+     //TODO : symbol table 
     string newVariableName = context->VAR()->getText();
-    int address = this->symbolTable->declareSymbol(newVariableName, 0, INT, 0, DECLARED, 0);
+    int level = 0;
+
+    if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
+            this->symbolTable->addSymbol(newVariableName, level, INT, 0, ASSIGNED, 0);
+    }else {
+        //TODO:: gestion des erreurs
+        cout << "variables : newVariableName already exist " << endl;
+    }
+
     return 0;
 }
 
 antlrcpp::Any Visitor::visitUnaryexpr(ifccParser::UnaryexprContext *context)
 {
-    int expr =visit(context->expression());
+    int expr = visit(context->expression());
 
     //TODO create temp var 
-    int address = 0;
+    //TODO check if not necessary : int address = 0;
 
     cout << "   movl " << expr << "(%rbp), %eax\n";
     if(context->op->getText() == "-"){
@@ -327,9 +337,9 @@ antlrcpp::Any Visitor::visitUnaryexpr(ifccParser::UnaryexprContext *context)
        cout << "   notl %eax\n";
     }
 
-    cout << "   movl	%eax, " << address << "(%rbp) \n";
+    cout << "   movl	%eax, " << expr << "(%rbp) \n";
 
-    return address;
+    return expr;
 }
 
 antlrcpp::Any Visitor::visitCharexpr(ifccParser::CharexprContext *context)
@@ -340,6 +350,14 @@ antlrcpp::Any Visitor::visitCharexpr(ifccParser::CharexprContext *context)
     
     //TODO: get address
     int address = 0;
+    int level = 0;
+
+    if(!this->symbolTable->doesSymbolExist(variable, level)){
+            address = this->symbolTable->addSymbol(variable, level, INT, 0, DECLARED, 0);
+    }else {
+        //TODO:: gestion des erreurs
+        cout << "char expr : variable(character) already exist " << endl;
+    }
 
     cout << "   movl	$" << value << ", " << address << "(%rbp) \n";
 
