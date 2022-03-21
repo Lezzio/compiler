@@ -14,7 +14,7 @@ all: ifcc
 
 ##########################################
 # link together all pieces of our compiler
-OBJECTS=build/main.o build/Visitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o
+OBJECTS=build/main.o build/Visitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/ErrorManager.o
 
 ifcc: $(OBJECTS)
 	@mkdir -p build
@@ -22,6 +22,10 @@ ifcc: $(OBJECTS)
 
 ##########################################
 # compile our hand-writen C++ code: main(), Visitor, etc.
+build/%.o: %.cpp generated/ErrorManager.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
 build/%.o: %.cpp generated/ifccParser.cpp
 	@mkdir -p build
 	$(CC) $(CCFLAGS) -MMD -o $@ $<

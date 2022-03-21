@@ -1,6 +1,7 @@
 #include "Visitor.h"
 #include "symbolTable/SymbolTable.h"
 #include <iostream>
+#include "ErrorManager.h"
 using namespace std;
 
 Visitor::Visitor(SymbolTable * symbolTable, ErrorManager *errorManager) : edx{"", false}, eax{"", false}
@@ -80,8 +81,9 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     string existingVariableName = context->VAR()[1]->getText();
     int levelNewVariable = 0;
 
-    if (!this->symbolTable->doesSymbolExist(existingVariableName)) {
-        this->errorManager->throwSemanticError(context->VAR()[1]->getSymbol(), "awesome");
+    if (!this->symbolTable->doesSymbolExist(existingVariableName, levelNewVariable)) {
+        std::string message = "awesome";
+        this->errorManager->throwSemanticError(context->VAR()[1]->getSymbol(), message);
     }
 
     //Verify that existingVariableName exists in the symbol table and is ASSIGNED

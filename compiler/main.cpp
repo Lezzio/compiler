@@ -11,6 +11,7 @@
 //#include "CodeGenVisitor.h"
 #include "Visitor.h"
 #include "symbolTable/SymbolTable.h"
+#include "ErrorManager.h"
 
 using namespace antlr4;
 using namespace std;
@@ -41,13 +42,13 @@ int main(int argn, const char **argv) {
         exit(1);
     }
 
-  SymbolTable *symbolTable = new SymbolTable();
+    SymbolTable *symbolTable = new SymbolTable();
     ErrorManager *errorManager = new ErrorManager();
-  //CodeGenVisitor v;
+    //CodeGenVisitor v;
     Visitor *visitor = new Visitor(symbolTable, errorManager);
     visitor->visit(tree);
-  symbolTable->print_dictionary();
-  delete symbolTable;
+    symbolTable->print_dictionary();
+    delete symbolTable;
 
-  return 0;
+    return 0;
 }

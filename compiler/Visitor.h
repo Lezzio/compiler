@@ -4,6 +4,7 @@
 #include "generated/ifccBaseVisitor.h"
 #include "ErrorManager.h"
 #include "symbolTable/SymbolTable.h"
+#include <string>
 
 #include <string>
 #include <queue> 
@@ -16,7 +17,7 @@ typedef struct Register {
 class  Visitor : public ifccBaseVisitor {
     
 	public:
-        Visitor(SymbolTable * symbolTable);
+        Visitor(SymbolTable * symbolTable, ErrorManager * errorManager);
         ~Visitor();
 
         virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *context) override;
