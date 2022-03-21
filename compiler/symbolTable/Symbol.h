@@ -9,13 +9,12 @@ using namespace std;
 class Symbol{
     public:
         Symbol();
-        Symbol(int index, string name, TypeSymbol typeSymbol, int address, int additionnal, StateSymbol stateSymbol, bool isConst);
+        Symbol(int index, string name, TypeSymbol typeSymbol, int additionnal, StateSymbol stateSymbol, bool isConst);
         ~Symbol();
         
         void setName(string name);
         void setScope(string scope);
         void setTypeSymbol(TypeSymbol typeSymbol);
-        void setAddress(int address);
         void setAdditional(int additional);
         void setStateSymbol(StateSymbol stateSymbol);
 
@@ -23,7 +22,6 @@ class Symbol{
         string getName();
         string getScope();
         TypeSymbol getTypeSymbol();
-        int getAddress();
         int getAdditional();
         StateSymbol getStateSymbol();
         bool getIsConst();
@@ -33,7 +31,6 @@ class Symbol{
         string name;
         const string scope = "LOCAL";
         TypeSymbol typeSymbol;
-        int address;
         int additional;
         StateSymbol stateSymbol;
         bool isConst;

@@ -90,7 +90,7 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
             levelNewVariable = 0;
             this->symbolTable->addSymbol(newVariableName, levelNewVariable, INT, 0, ASSIGNED, 0);
 
-            int address = this->symbolTable->returnSymbol(newVariableName + "_" + to_string(levelNewVariable))->getAddress();
+            int address = this->symbolTable->returnSymbol(newVariableName + "_" + to_string(levelNewVariable))->getIndex();
             //TODO what is addressCopy ??
             int addressCopy = address;
             //SymbolTable.
@@ -142,7 +142,7 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
         int level = 0;
         this->symbolTable->addSymbol(newVariableName, level, INT, 0, ASSIGNED, 0);
         
-        int address = this->symbolTable->returnSymbol(newVariableName+"_"+to_string(level))->getAddress();
+        int address = this->symbolTable->returnSymbol(newVariableName+"_"+to_string(level))->getIndex();
         cout << "   movl	$" << variableValue << ", " << address << "(%rbp) \n";
     }
     else{

@@ -20,7 +20,6 @@ public :
     void print_dictionary();
 
     static int staticIndex;
-    static int staticAddress;
 
 protected :
     map<string, Symbol *> table;

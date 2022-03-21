@@ -5,9 +5,8 @@
 using namespace std;
 
 int SymbolTable::staticIndex;
-int SymbolTable::staticAddress;
 
-SymbolTable::SymbolTable(){ staticIndex = 4; staticAddress = 0;}
+SymbolTable::SymbolTable(){ staticIndex = 4;}
 
 bool SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
 {
@@ -16,9 +15,8 @@ bool SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeS
         nameSymbol = symbolName + "_" + to_string(levelSymbol);
     }
     
-    Symbol * symbolToAdd = new Symbol(staticIndex, nameSymbol, typeSymbol, staticAddress, additional, stateSymbol, isConst);
+    Symbol * symbolToAdd = new Symbol(staticIndex, nameSymbol, typeSymbol, additional, stateSymbol, isConst);
     staticIndex = staticIndex + 4;
-    staticAddress = staticAddress + 1;
 
     if(!doesSymbolExist(nameSymbol)){
         this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
@@ -32,11 +30,11 @@ bool SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeS
 void SymbolTable::print_dictionary(){
     cout << endl << "***   Actual Symbol Table   ***" << endl;
     cout << "-------------------------------------------------------------------------------------------------------------" << endl;
-    cout << "|   Index   ;    Name   ;   Scope   ;   Type   ;   Address   ;   Additionnal   ;    State    ;    IsConst   | " << endl;
+    cout << "|   Index   ;    Name   ;   Scope   ;   Type   ;   Additionnal   ;    State    ;    IsConst   | " << endl;
     cout << "-------------------------------------------------------------------------------------------------------------" << endl;
 
     for (const auto myPair : table) {
-        cout << "|  " << myPair.second->getIndex() << "  ;  " << myPair.second->getName() << "  ;  " << myPair.second->getScope() << "  ;  " << to_string(myPair.second->getTypeSymbol()) << "  ;  " << to_string(myPair.second->getAddress()) << "  ;  " << to_string(myPair.second->getAdditional()) << "  ;  " << to_string(myPair.second->getStateSymbol()) << "  ;  " << to_string(myPair.second->getIsConst()) << "  | " << endl;
+        cout << "|  " << myPair.second->getIndex() << "  ;  " << myPair.second->getName() << "  ;  " << myPair.second->getScope() << "  ;  " << to_string(myPair.second->getTypeSymbol()) << "  ;  " <<  "  ;  " << to_string(myPair.second->getAdditional()) << "  ;  " << to_string(myPair.second->getStateSymbol()) << "  ;  " << to_string(myPair.second->getIsConst()) << "  | " << endl;
     }
 
     cout << "------------------------------------------------------------------------------------------------------------" << endl;
