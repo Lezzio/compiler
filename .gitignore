@@ -8,6 +8,6 @@
 .vscode
 *.o
 *.d
-/compiler/Makefile
 *Makefile
 Makefile
+/antlr
