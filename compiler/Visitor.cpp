@@ -2,6 +2,8 @@
 #include <iostream>
 using namespace std;
 
+
+
 Visitor::Visitor(SymbolTable * symbolTable) : edx{"", false}, eax{"", false}
 {
     this->symbolTable = symbolTable;
@@ -327,11 +329,7 @@ antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
     int level = 0;
 
     if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
-<<<<<<< HEAD
-            this->symbolTable->addSymbol(newVariableName, level, INT, 0, DECLARED, 0);
-=======
             this->symbolTable->declareSymbol(newVariableName, level, INT, 0, DECLARED, 0);
->>>>>>> af5cf362362cc411ec96c22e9fb81302571e8070
     }else {
         //TODO:: gestion des erreurs
         cout << "variables : newVariableName already exist " << endl;
@@ -343,9 +341,12 @@ antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
 antlrcpp::Any Visitor::visitUnaryexpr(ifccParser::UnaryexprContext *context)
 {
     int expr = visit(context->expression());
+    int level = 0;
 
     //TODO create temp var 
     //TODO check if not necessary : int address = 0;
+    int address = 0;
+    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
 
     cout << "   movl " << expr << "(%rbp), %eax\n";
     if(context->op->getText() == "-"){
@@ -354,9 +355,9 @@ antlrcpp::Any Visitor::visitUnaryexpr(ifccParser::UnaryexprContext *context)
        cout << "   notl %eax\n";
     }
 
-    cout << "   movl	%eax, " << expr << "(%rbp) \n";
+    cout << "   movl	%eax, " << address << "(%rbp) \n";
 
-    return expr;
+    return address;
 }
 
 antlrcpp::Any Visitor::visitCharexpr(ifccParser::CharexprContext *context)
@@ -388,6 +389,8 @@ antlrcpp::Any Visitor::visitRelationalexpr(ifccParser::RelationalexprContext *co
     
     //opti : check if one expr is equal to 1
     int address = 0;
+    int level = 0;
+    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
 
     cout << "   movl " << exprLeft << "(%rbp), %eax\n";
     cout << "   cmpl " << exprRight << "(%rbp), %eax\n";
@@ -420,8 +423,17 @@ antlrcpp::Any Visitor::visitVarexpr(ifccParser::VarexprContext *context)
 {
     string variable = context->VAR()->getText();
     //TODO: check existence and get adress
-
     int address = 0;
+    int level = 0;
+
+    Symbol * symbolReturned = this->symbolTable->returnSymbol(variable, level);
+    if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
+        address = symbolReturned->getAddress();
+    }else {
+        //TODO:: gestion des erreurs
+        cout << "ret 2 : variableName does not exist " << endl;
+    }
+
     return address;
 }
 
@@ -433,6 +445,8 @@ antlrcpp::Any Visitor::visitMultplicationexpr(ifccParser::MultplicationexprConte
     
     //opti : check if one expr is equal to 1
     int address = 0;
+    int level = 0;
+    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
     
     cout << "   movl " << exprLeft << "(%rbp), %eax\n";
     if(context->op->getText() == "*"){
@@ -482,7 +496,9 @@ antlrcpp::Any Visitor::visitBitsexpr(ifccParser::BitsexprContext *context){
 
     //TODO: new tmp
     int address = 0;
-
+    int level = 0;
+    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
+    
     if(context->op->getText() == "|"){
         cout << "   movl " << exprLeft << "(%rbp), %eax\n";
         cout << "   orl " << exprRight << "(%rbp), %eax\n";
@@ -504,6 +520,8 @@ antlrcpp::Any Visitor::visitConstexpr(ifccParser::ConstexprContext *context)
     int value = stoi(context->CONST()->getText());
     //TODO create temp var 
     int address = 0;
+    int level = 0;
+    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
 
     cout << "   movl	$" << value << ", " << address << "(%rbp) \n";
 
@@ -517,6 +535,8 @@ antlrcpp::Any Visitor::visitEqualityexpr(ifccParser::EqualityexprContext *contex
 
      //TODO: new tmp
     int address = 0;
+    int level = 0;
+    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
 
     cout << "   movl " << exprLeft << "(%rbp), %eax\n";
     cout << "   cmpl " << exprRight << "(%rbp), %eax\n";

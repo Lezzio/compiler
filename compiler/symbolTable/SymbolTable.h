@@ -23,6 +23,7 @@ public :
     void print_dictionary();
 
     static int staticIndex;
+    static int staticTempIndex;
 
 protected :
     map<string, Symbol *> table;
