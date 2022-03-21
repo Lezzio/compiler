@@ -50,7 +50,7 @@ int main(int argn, const char **argv)
   //CodeGenVisitor v;
   Visitor v (symbolTable);
   v.visit(tree);
-  symbolTable->print_dictionary();
+  //symbolTable->print_dictionary();
   delete symbolTable;
   return 0;
 }
