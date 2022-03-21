@@ -44,6 +44,15 @@ int SymbolTable::declareSymbol(string symbolName, int levelSymbol, TypeSymbol ty
     return -1;
 }
 
+int SymbolTable::assignSymbol(Symbol * symbol)
+{
+    symbol->setStateSymbol(ASSIGNED);
+    symbol->setIndex(staticIndex);
+    staticIndex+=4;
+
+    return symbol->getAddress();
+}
+
 
 void SymbolTable::print_dictionary(){
     cout << endl << "***   Actual Symbol Table   ***" << endl;
