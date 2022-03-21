@@ -81,18 +81,13 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     string existingVariableName = context->VAR()[1]->getText();
     int levelNewVariable = 0;
 
-    if (!this->symbolTable->doesSymbolExist(existingVariableName, levelNewVariable)) {
-        std::string message = "awesome";
-        this->errorManager->throwSemanticError(context->VAR()[1]->getSymbol(), message);
-    }
-
     //Verify that existingVariableName exists in the symbol table and is ASSIGNED
     Symbol * symbolReturned = this->symbolTable->returnSymbol(existingVariableName, 0);
-    if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
+    if (symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED) {
 
         //Verify that newVariable does not exists in the symbol table and is not const
         //TODO:: missing is const context
-        if(!this->symbolTable->doesSymbolExist(newVariableName, levelNewVariable)){
+        if (!this->symbolTable->doesSymbolExist(newVariableName, levelNewVariable)) {
 
             //Affect newVariable in the symbol table
             int address = this->symbolTable->addSymbol(newVariableName, levelNewVariable, INT, 0, ASSIGNED, 0);
@@ -101,17 +96,17 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
 
             cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
                                                     "   movl     %eax, "
-                << address << "(%rbp)\n";
+                 << address << "(%rbp)\n";
 
-        }
-        else{
+        } else {
             //TODO:: gestion des erreurs
+            this->errorManager->throwSemanticError(context->VAR()[1]->getSymbol(), newVariableName + " is already declared");
             cout << "affect 1: new variable already exist " << endl;
         }
-    }
-    else{
+    } else {
         //TODO:: gestion des erreurs
-        cout << "affect 1: existing variable does not exist or is not assigned !" << endl;
+        this->errorManager->throwSemanticError(context->VAR()[1]->getSymbol(), existingVariableName + " is not declared or defined");
+        //cout << "affect 1: existing variable does not exist or is not assigned !" << endl;
     }
 
 
