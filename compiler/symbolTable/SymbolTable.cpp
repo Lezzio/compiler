@@ -27,6 +27,23 @@ int SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSy
     return -1;
 }
 
+int SymbolTable::declareSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
+{
+    string nameSymbol = symbolName;
+    if(levelSymbol != -1){
+        nameSymbol = symbolName + "_" + to_string(levelSymbol);
+    }
+    
+    Symbol * symbolToAdd = new Symbol(-1, nameSymbol, typeSymbol, additional, stateSymbol, isConst);
+
+    if(!doesSymbolExist(nameSymbol,levelSymbol)){
+        this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
+        return 0;
+    }
+    delete symbolToAdd;
+    return -1;
+}
+
 
 void SymbolTable::print_dictionary(){
     cout << endl << "***   Actual Symbol Table   ***" << endl;
