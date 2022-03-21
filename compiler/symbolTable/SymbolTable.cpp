@@ -5,7 +5,11 @@
 using namespace std;
 
 int SymbolTable::staticIndex;
+<<<<<<< HEAD
 int SymbolTable::staticTempIndex= 0;
+=======
+int SymbolTable::staticTempIndex;
+>>>>>>> a316bc88c06c1b9ce4999385d801760acde592a5
 
 SymbolTable::SymbolTable(){ staticIndex = 4; }
 

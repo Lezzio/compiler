@@ -13,32 +13,36 @@ default: all
 all: ifcc
 
 ##########################################
-# link together all pieces of our compiler 
-OBJECTS=build/main.o build/Visitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o 
+# link together all pieces of our compiler
+OBJECTS=build/main.o build/Visitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/ErrorManager.o
 
-ifcc: $(OBJECTS) 
+ifcc: $(OBJECTS)
 	@mkdir -p build
 	$(CC) $(LDFLAGS) build/*.o $(ANTLRLIB) -o ifcc
 
 ##########################################
 # compile our hand-writen C++ code: main(), Visitor, etc.
+build/%.o: %.cpp generated/ErrorManager.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
 build/%.o: %.cpp generated/ifccParser.cpp
 	@mkdir -p build
-	$(CC) $(CCFLAGS) -MMD -o $@ $< 
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
 build/SymbolTable.o: symbolTable/SymbolTable.cpp
 	@mkdir -p build
-	$(CC) $(CCFLAGS) -MMD -o $@ $< 
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
 build/Symbol.o: symbolTable/Symbol.cpp
 	@mkdir -p build
-	$(CC) $(CCFLAGS) -MMD -o $@ $< 
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
 ##########################################
 # compile all the antlr-generated C++
 build/%.o: generated/%.cpp
 	@mkdir -p build
-	$(CC) $(CCFLAGS) -MMD -o $@ $< 
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
 # automagic dependency management: `gcc -MMD` generates all the .d files for us
 -include build/*.d
@@ -52,7 +56,7 @@ generated/ifcc%.cpp: ifcc.g4
 	java -cp $(ANTLRJAR) org.antlr.v4.Tool  -visitor -no-listener -Dlanguage=Cpp -o generated ifcc.g4
 
 # prevent automatic cleanup of "intermediate" files like ifccLexer.cpp etc
-.PRECIOUS: generated/ifcc%.cpp   
+.PRECIOUS: generated/ifcc%.cpp
 
 ##########################################
 # view the parse tree in a graphical window
