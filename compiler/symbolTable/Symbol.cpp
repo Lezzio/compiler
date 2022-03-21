@@ -56,3 +56,7 @@ StateSymbol Symbol::getStateSymbol(){
 bool Symbol::getIsConst(){
     return this->isConst;
 }
+
+int Symbol::getAddress(){
+    return -this->index;
+}
