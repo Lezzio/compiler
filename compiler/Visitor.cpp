@@ -166,16 +166,15 @@ antlrcpp::Any Visitor::visitAffectation3(ifccParser::Affectation3Context *contex
         addressCopy = symbolReturned->getIndex();
         
         Symbol * symbolReturnedNewValue = this->symbolTable->returnSymbol(variableName, level);
-        if(symbolReturnedNewValue != nullptr && symbolReturnedNewValue->getStateSymbol() == ASSIGNED){
+        if(symbolReturnedNewValue != nullptr){
             address = symbolReturnedNewValue->getIndex();
         }else {
             //TODO:: gestion des erreurs
             cout << "affect 3: variableName does not exist " << endl; 
         }
-
     }else {
         //TODO:: gestion des erreurs
-        cout << "affect 3: copyVariableName does not exist " << endl; 
+        cout << "affect 3: copyVariableName does not exist or is not assigned " << endl; 
     }
 
     // TODO:: getInfo first variable; save second and get address    
@@ -274,9 +273,18 @@ antlrcpp::Any Visitor::visitRet1(ifccParser::Ret1Context *context)
 antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context)
 {
     string variableName = context->VAR()->getText();
+    int level = 0;
+    int address = 0;
     //TODO: Test existence
-    //this->symbolTable->returnSymbol(variableName, 0);
-    int address =0;
+
+    Symbol * symbolReturned = this->symbolTable->returnSymbol(variableName, level);
+    if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
+        address = symbolReturned->getIndex();
+    }else {
+        //TODO:: gestion des erreurs
+        cout << "ret 2 : variableName does not exist " << endl;
+    }
+
     cout << "   movl	" << address << "(%rbp), %eax\n"
                                         "   popq %rbp\n"
                                         "   ret\n";
@@ -285,6 +293,7 @@ antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context)
 
 antlrcpp::Any Visitor::visitMultvariables(ifccParser::MultvariablesContext *context)
 {
+    //VAR ',' variables
     //TODO : symbol table 
     string newVariableName = context->VAR()->getText();
 
