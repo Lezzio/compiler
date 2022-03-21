@@ -8,7 +8,7 @@ int SymbolTable::staticIndex;
 
 SymbolTable::SymbolTable(){ staticIndex = 4;}
 
-bool SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
+int SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
 {
     string nameSymbol = symbolName;
     if(levelSymbol != -1){
@@ -16,14 +16,14 @@ bool SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeS
     }
     
     Symbol * symbolToAdd = new Symbol(staticIndex, nameSymbol, typeSymbol, additional, stateSymbol, isConst);
-    staticIndex = staticIndex + 4;
 
     if(!doesSymbolExist(nameSymbol)){
         this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
-        return true;
+        staticIndex = staticIndex + 4;
+        return staticIndex - 4;
     }
     delete symbolToAdd;
-    return false;
+    return -1;
 }
 
 

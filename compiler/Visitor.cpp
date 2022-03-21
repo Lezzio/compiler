@@ -88,12 +88,9 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
 
             //Affect newVariable in the symbol table
             levelNewVariable = 0;
-            this->symbolTable->addSymbol(newVariableName, levelNewVariable, INT, 0, ASSIGNED, 0);
+            int address = this->symbolTable->addSymbol(newVariableName, levelNewVariable, INT, 0, ASSIGNED, 0);
 
-            int address = this->symbolTable->returnSymbol(newVariableName + "_" + to_string(levelNewVariable))->getIndex();
-            //TODO what is addressCopy ??
-            int addressCopy = address;
-            //SymbolTable.
+            int addressCopy = this->symbolTable->returnSymbol(newVariableName + "_" + to_string(levelNewVariable))->getIndex();
 
             cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
                                                     "   movl     %eax, "
@@ -140,9 +137,9 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
     if(!this->symbolTable->doesSymbolExist(newVariableName)){
         //Affect newVariable in the symbol table
         int level = 0;
-        this->symbolTable->addSymbol(newVariableName, level, INT, 0, ASSIGNED, 0);
+        int address = this->symbolTable->addSymbol(newVariableName, level, INT, 0, ASSIGNED, 0);
         
-        int address = this->symbolTable->returnSymbol(newVariableName+"_"+to_string(level))->getIndex();
+        //int address = this->symbolTable->returnSymbol(newVariableName+"_"+to_string(level))->getIndex();
         cout << "   movl	$" << variableValue << ", " << address << "(%rbp) \n";
     }
     else{
