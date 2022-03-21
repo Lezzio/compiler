@@ -93,10 +93,6 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
 
             addressCopy = symbolReturned->getAddress();
 
-            cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
-                                                    "   movl     %eax, "
-                 << address << "(%rbp)\n";
-
         } else {
             //TODO:: gestion des erreurs
             this->errorManager->throwSemanticError(context->VAR()[1]->getSymbol(), newVariableName + " is already declared");
