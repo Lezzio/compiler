@@ -166,13 +166,8 @@ antlrcpp::Any Visitor::visitAffectation3(ifccParser::Affectation3Context *contex
         addressCopy = symbolReturned->getAddress();
         
         Symbol * symbolReturnedNewValue = this->symbolTable->returnSymbol(variableName, level);
-<<<<<<< HEAD
-        if(symbolReturnedNewValue != nullptr){
-            address = symbolReturnedNewValue->getIndex();
-=======
         if(symbolReturnedNewValue != nullptr && symbolReturnedNewValue->getStateSymbol() == ASSIGNED){
             address = symbolReturnedNewValue->getAddress();
->>>>>>> f851004d02b4b43d2afc617d968b5e76955b076c
         }else {
             //TODO:: gestion des erreurs
             cout << "affect 3: variableName does not exist " << endl; 
@@ -253,7 +248,7 @@ antlrcpp::Any Visitor::visitAffectation6(ifccParser::Affectation6Context *contex
 
     Symbol * symbolReturned = this->symbolTable->returnSymbol(newVariableName, level);
     if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
-        address = symbolReturned->getIndex();
+        address = symbolReturned->getAddress();
     }else {
         //TODO:: gestion des erreurs
         cout << "affect 6: newVariableName does not exist " << endl;
@@ -284,7 +279,7 @@ antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context)
 
     Symbol * symbolReturned = this->symbolTable->returnSymbol(variableName, level);
     if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
-        address = symbolReturned->getIndex();
+        address = symbolReturned->getAddress();
     }else {
         //TODO:: gestion des erreurs
         cout << "ret 2 : variableName does not exist " << endl;
