@@ -1,5 +1,6 @@
 #include "Visitor.h"
 #include "symbol-table/SymbolTable.h"
+#include <iostream>
 using namespace std;
 
 Visitor::Visitor(SymbolTable * symbolTable, ErrorManager *errorManager) : edx{"", false}, eax{"", false}
@@ -66,27 +67,67 @@ antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *context)
     return visitChildren(context);
 }
 
-/**
- * Visit affectation with the following pattern : type VAR '=' VAR
- */
 antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *context)
 {
     // TODO:: affect in symbole table
     // declaration + affectation
+
+    //type newVariableName = existingVariableName;
     string newVariableName = context->VAR()[0]->getText();
     string existingVariableName = context->VAR()[1]->getText();
-
-    // TODO:: getInfo first variable; save second and get address
-    int addressCopy = 0;
-    int address = 0;
+    int levelNewVariable = -1;
 
     if (!this->symbolTable->doesSymbolExist(existingVariableName)) {
         this->errorManager->throwSemanticError(context->VAR()[1]->getSymbol(), "awesome");
     }
 
+    //Verify that existingVariableName exists in the symbol table and is ASSIGNED
+    Symbol * symbolReturned = this->symbolTable->returnSymbol(existingVariableName);
+    if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
+
+        //Verify that newVariable does not exists in the symbol table and is not const
+        //TODO:: missing is const context
+        if(!this->symbolTable->doesSymbolExist(newVariableName)){
+
+            //Affect newVariable in the symbol table
+            levelNewVariable = 0;
+            this->symbolTable->addSymbol(newVariableName, levelNewVariable, INT, 0, ASSIGNED, 0);
+
+            int address = this->symbolTable->returnSymbol(newVariableName + "_" + to_string(levelNewVariable))->getAddress();
+            //TODO what is addressCopy ??
+            int addressCopy = address;
+            //SymbolTable.
+
+            cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
+                                                    "   movl     %eax, "
+                << address << "(%rbp)\n";
+
+        }
+        else{
+            //TODO:: gestion des erreurs
+            cout << "affect 1: new variable already exist " << endl;
+        }
+    }
+    else{
+        //TODO:: gestion des erreurs
+        cout << "affect 1: existing variable does not exist or is not assigned !" << endl;
+    }
+
+
+    // TODO:: getInfo first variable; save second and get address
+    /*int addressCopy = 0;
+    Symbol * symbolNewVariable = this->symbolTable->returnSymbol(newVariableName + "_" + levelNewVariable);
+    if(symbolNewVariable != nullptr){
+        addressCopy = symbolNewVariable->getAddress();
+    }
+
+    int address = 0;
+
+    //SymbolTable.
+
     cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
                                             "   movl     %eax, "
-         << address << "(%rbp)\n";
+         << address << "(%rbp)\n";*/
 
     return visitChildren(context);
 }
@@ -99,9 +140,18 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
     string newVariableName = context->VAR()->getText();
     int variableValue = stoi(context->CONST()->getText());
 
-    // TODO:: recup l'address
-    int address = 0;
-    cout << "   movl	$" << variableValue << ", " << address << "(%rbp) \n";
+    if(!this->symbolTable->doesSymbolExist(newVariableName)){
+        //Affect newVariable in the symbol table
+        int level = 0;
+        this->symbolTable->addSymbol(newVariableName, level, INT, 0, ASSIGNED, 0);
+
+        int address = this->symbolTable->returnSymbol(newVariableName+"_"+to_string(level))->getAddress();
+        cout << "   movl	$" << variableValue << ", " << address << "(%rbp) \n";
+    }
+    else{
+        //TODO:: gestion des erreurs
+        cout << "affect 2: new variable already exist " << endl;
+    }
 
     return visitChildren(context);
 }
@@ -146,8 +196,7 @@ antlrcpp::Any Visitor::visitAffectation5(ifccParser::Affectation5Context *contex
     // TODO:: affect in symbole table
     // declaration + affectation
     string newVariableName = context->VAR()->getText();
-    string last_tmp = visitChildren(context).as<string>();
-    
+    int last_tmp = visitChildren(context);
     cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
         // TODO:: get address variable
     
@@ -164,7 +213,7 @@ antlrcpp::Any Visitor::visitAffectation6(ifccParser::Affectation6Context *contex
     // affectation
     string newVariableName = context->VAR()->getText();
 
-    string last_tmp = visitChildren(context).as<string>();
+    int last_tmp = visitChildren(context);
     cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
         // TODO:: get address variable
     int address = 0;
@@ -210,14 +259,65 @@ antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
 
 antlrcpp::Any Visitor::visitUnaryexpr(ifccParser::UnaryexprContext *context)
 {
+    int expr =visit(context->expression());
+
+    //TODO create temp var
+    int address = 0;
+
+    cout << "   movl " << expr << "(%rbp), %eax\n";
+    if(context->op->getText() == "-"){
+       cout << "   negl %eax\n";
+    } else {
+       cout << "   notl %eax\n";
+    }
+
+    cout << "   movl	%eax, " << address << "(%rbp) \n";
+
+    return address;
 }
 
 antlrcpp::Any Visitor::visitCharexpr(ifccParser::CharexprContext *context)
 {
+    string variable = context->CHARACTER()->getText();
+    char character = variable.substr(1,2)[0];
+    int value = (int) character;
+
+    //TODO: get address
+    int address = 0;
+
+    cout << "   movl	$" << value << ", " << address << "(%rbp) \n";
+
+    return address;
 }
 
 antlrcpp::Any Visitor::visitRelationalexpr(ifccParser::RelationalexprContext *context)
 {
+    int exprLeft = visit(context->expression(0));
+    int exprRight = visit(context->expression(1));
+
+    //opti : check if one expr is equal to 1
+    int address = 0;
+
+    cout << "   movl " << exprLeft << "(%rbp), %eax\n";
+    cout << "   cmpl " << exprRight << "(%rbp), %eax\n";
+
+    if (context->op->getText() == ">"){
+        cout << "   setg    %al\n";
+
+    } else if(context->op->getText() == ">="){
+        cout << "   setge   %al\n";
+
+    }else if(context->op->getText() == "<"){
+        cout << "   setl    %al\n";
+
+    }else {     //if(context->op->getText() == "<=")
+        cout << "   setle   %al\n";
+
+    }
+    cout << "   movzbl  %al, %eax\n";
+    cout << "   movl    %eax, " << address << "(%rbp) \n";
+
+    return address;
 }
 
 antlrcpp::Any Visitor::visitBracketexpr(ifccParser::BracketexprContext *context)
@@ -229,67 +329,90 @@ antlrcpp::Any Visitor::visitVarexpr(ifccParser::VarexprContext *context)
 {
     string variable = context->VAR()->getText();
     //TODO: check existence and get adress
+
     int address = 0;
-    if(eax.used){
-        edx.used = true;
-        edx.name = address;
-        cout << "   movl	" << address << "(%rbp), %edx\n";
-        return string("%edx");
-
-    } else {
-        eax.used = true;
-        eax.name = address;
-        cout << "   movl	" << address << "(%rbp), %eax\n";
-        return string("%eax");
-
-    }
+    return address;
 }
 
 antlrcpp::Any Visitor::visitMultplicationexpr(ifccParser::MultplicationexprContext *context)
 {
+
+    int exprLeft = visit(context->expression()[0]);
+    int exprRight = visit(context->expression()[1]);
+
+    //opti : check if one expr is equal to 1
+    int address = 0;
+
+    cout << "   movl " << exprLeft << "(%rbp), %eax\n";
+    if(context->op->getText() == "*"){
+        cout << "   imul " << exprRight << "(%rbp), %eax\n";
+        cout << "   movl    %eax, " << address << "(%rbp) \n";
+        //result = leftExpr * rightExpr;
+    }else {
+        cout << "   idivl " << exprRight << "(%rbp), %eax\n";
+        if (context->op->getText() == "/"){
+            //result = leftExpr / rightExpr;
+            cout << "   movl    %eax, " << address << "(%rbp) \n";
+        }else{
+            cout << "   movl    %edx, " << address << "(%rbp) \n";
+            //result = leftExpr % rightExpr;
+        }
+    }
+
+     return address;
 }
 
 antlrcpp::Any Visitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *context)
 {
+    int exprLeft =visit(context->expression()[0]);
+    int exprRight =visit(context->expression()[1]);
 
-    string exprLeft =visit(context->expression()[0]).as<string>();
-    string exprRight =visit(context->expression()[1]).as<string>();
-
-    if(!eax.used){
-        //TODO: à voir avec le prof
-    }
+    //opti : check if one expr is equal to 0
 
     //TODO create temp var 
-    string address = "0";
+    int address = 0;
 
     if(context->op->getText() == "+"){
-        if(edx.used){
-            cout << "   addl   $edx, $eax";
-        } else {
-            cout << "   addl   " << address << "(%rbp), %eax\n";
-        }
+        cout << "   movl " << exprLeft << "(%rbp), %eax\n";
+        cout << "   addl " << exprRight << "(%rbp), %eax\n";
     } else {
-        if(edx.used){
-            cout << "   addl   $edx, $eax";
-        } else {
-            cout << "   subl   " << address << "(%rbp), %eax\n";
-        }
+       cout << "   movl " << exprLeft << "(%rbp), %eax\n";
+       cout << "   subl " << exprRight << "(%rbp), %eax\n";
     }
 
-    cout << "   movl	$eax, " << address << "(%rbp) \n";
+    cout << "   movl	%eax, " << address << "(%rbp) \n";
 
     return address;
 }
 
-antlrcpp::Any Visitor::visitBitsexpr(ifccParser::BitsexprContext *context)
-{
+antlrcpp::Any Visitor::visitBitsexpr(ifccParser::BitsexprContext *context){
+    int exprLeft = visit(context->expression(0));
+    int exprRight = visit(context->expression(1));
+
+    //TODO: new tmp
+    int address = 0;
+
+    if(context->op->getText() == "|"){
+        cout << "   movl " << exprLeft << "(%rbp), %eax\n";
+        cout << "   orl " << exprRight << "(%rbp), %eax\n";
+    }else if (context->op->getText() == "&"){
+        cout << "   movl " << exprLeft << "(%rbp), %eax\n";
+        cout << "   andl " << exprRight << "(%rbp), %eax\n";
+    }else{
+        cout << "   movl " << exprLeft << "(%rbp), %eax\n";
+        cout << "   xorl " << exprRight << "(%rbp), %eax\n";
+    }
+
+    cout << "   movl	%eax, " << address << "(%rbp) \n";
+
+    return address;
 }
 
 antlrcpp::Any Visitor::visitConstexpr(ifccParser::ConstexprContext *context)
 {
     int value = stoi(context->CONST()->getText());
     //TODO create temp var 
-    string address = "0";
+    int address = 0;
 
     cout << "   movl	$" << value << ", " << address << "(%rbp) \n";
 
@@ -298,7 +421,24 @@ antlrcpp::Any Visitor::visitConstexpr(ifccParser::ConstexprContext *context)
 
 antlrcpp::Any Visitor::visitEqualityexpr(ifccParser::EqualityexprContext *context)
 {
+    int exprLeft = visit(context->expression(0));
+    int exprRight = visit(context->expression(1));
 
+     //TODO: new tmp
+    int address = 0;
+
+    cout << "   movl " << exprLeft << "(%rbp), %eax\n";
+    cout << "   cmpl " << exprRight << "(%rbp), %eax\n";
+    if(context->op->getText() == "=="){
+       cout << "   sete %al\n";
+    } else {
+       cout << "   setne %al\n";
+    }
+
+    cout << "   movzbl  %al, %eax\n";
+    cout << "   movl	%eax, " << address << "(%rbp) \n";
+
+    return address;
 }
 
 antlrcpp::Any Visitor::visitType(ifccParser::TypeContext *context)

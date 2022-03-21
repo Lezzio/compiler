@@ -3,8 +3,8 @@
 
 #include "antlr4-runtime.h"
 #include "generated/ifccBaseVisitor.h"
-#include "symbol-table/SymbolTable.h"
 #include "ErrorManager.h"
+#include "symbolTable/SymbolTable.h"
 
 #include <string>
 #include <queue> 
@@ -17,8 +17,7 @@ typedef struct Register {
 class  Visitor : public ifccBaseVisitor {
     
 	public:
-
-        Visitor(SymbolTable * symbolTable, ErrorManager *errorManager);
+        Visitor(SymbolTable * symbolTable);
         ~Visitor();
 
         virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *context) override;
@@ -81,10 +80,12 @@ class  Visitor : public ifccBaseVisitor {
 
         virtual antlrcpp::Any visitType(ifccParser::TypeContext *context) override;
 
+
+
     private:
         Register edx;
         Register eax;
-        SymbolTable * symbolTable;
+        SymbolTable *symbolTable;
         ErrorManager *errorManager;
 
 };

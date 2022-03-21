@@ -1,7 +1,0 @@
-antlr
-./compiler/Makefile
-./compiler/generated/**
-./compiler/build/**
-./compiler/*.o
-./compiler/*.out
-antlr/**
