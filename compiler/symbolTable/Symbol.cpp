@@ -1,11 +1,10 @@
 #include "Symbol.h"
 
-Symbol::Symbol(int index, string name, TypeSymbol typeSymbol, int address, int additionnal, StateSymbol stateSymbol, bool isConst){
+Symbol::Symbol(int index, string name, TypeSymbol typeSymbol, int additionnal, StateSymbol stateSymbol, bool isConst){
 
     this->index = index;
     this->name = name;
     this->typeSymbol = typeSymbol;
-    this->address = address;
     this->additional = additionnal;
     this->stateSymbol = stateSymbol;
     this->isConst = isConst;
@@ -20,10 +19,6 @@ void Symbol::setName(string name){
 
 void Symbol::setTypeSymbol(TypeSymbol typeSymbol){
     this->typeSymbol = typeSymbol;
-}
-
-void Symbol::setAddress(int address){
-    this->address = address;
 }
 
 void Symbol::setAdditional(int additional){
@@ -44,10 +39,6 @@ string Symbol::getScope(){
 
 TypeSymbol Symbol::getTypeSymbol(){
     return this->typeSymbol;
-}
-
-int Symbol::getAddress(){
-    return this->address;
 }
 
 int Symbol::getAdditional(){

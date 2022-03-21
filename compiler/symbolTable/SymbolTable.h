@@ -16,11 +16,10 @@ public :
     ~SymbolTable();
     bool doesSymbolExist(string ident);
     Symbol * returnSymbol(string name);
-    bool addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
+    int addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
     void print_dictionary();
 
     static int staticIndex;
-    static int staticAddress;
 
 protected :
     map<string, Symbol *> table;

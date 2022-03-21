@@ -1,6 +1,6 @@
 input.c: In function ‘main’:
 input.c:2:5: error: unknown type name ‘INTEGER’
-    2 |     INTEGER variable;
-      |     ^~~~~~~
+     INTEGER variable;
+     ^~~~~~~
 
 return code: 1
