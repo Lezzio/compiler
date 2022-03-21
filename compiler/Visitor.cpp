@@ -331,7 +331,7 @@ antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
     int level = 0;
 
     if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
-            this->symbolTable->addSymbol(newVariableName, level, INT, 0, ASSIGNED, 0);
+            this->symbolTable->addSymbol(newVariableName, level, INT, 0, DECLARED, 0);
     }else {
         //TODO:: gestion des erreurs
         cout << "variables : newVariableName already exist " << endl;
