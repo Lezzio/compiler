@@ -3,13 +3,7 @@
 #include "ErrorManager.h"
 using namespace std;
 
-<<<<<<< HEAD
-
-
-Visitor::Visitor(SymbolTable * symbolTable) : edx{"", false}, eax{"", false}
-=======
 Visitor::Visitor(SymbolTable * symbolTable, ErrorManager *errorManager) : edx{"", false}, eax{"", false}
->>>>>>> 8d0de1208c158ade62b4252b4a2b4c1271d97fed
 {
     this->symbolTable = symbolTable;
     this->errorManager = errorManager;
@@ -85,6 +79,7 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     string newVariableName = context->VAR()[0]->getText();
     string existingVariableName = context->VAR()[1]->getText();
     int levelNewVariable = 0, levelExistingVariable = 0;
+    int address = 0, addressCopy = 0;
 
     //Verify that existingVariableName exists in the symbol table and is ASSIGNED
     Symbol * symbolReturned = this->symbolTable->returnSymbol(existingVariableName, levelExistingVariable);
@@ -94,9 +89,9 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
         if(!this->symbolTable->doesSymbolExist(newVariableName, levelNewVariable)){
 
             //Affect newVariable in the symbol table
-            int address = this->symbolTable->addSymbol(newVariableName, levelNewVariable, INT, 0, ASSIGNED, 0);
+            address = this->symbolTable->addSymbol(newVariableName, levelNewVariable, INT, 0, ASSIGNED, 0);
 
-            int addressCopy = symbolReturned->getAddress();
+            addressCopy = symbolReturned->getAddress();
 
             cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
                                                     "   movl     %eax, "
@@ -115,19 +110,9 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
 
 
     // TODO:: getInfo first variable; save second and get address
-    /*int addressCopy = 0;
-    Symbol * symbolNewVariable = this->symbolTable->returnSymbol(newVariableName + "_" + levelNewVariable);
-    if(symbolNewVariable != nullptr){
-        addressCopy = symbolNewVariable->getAddress();
-    }
-   
-    int address = 0;
-    
-    //SymbolTable.
-
     cout << "   movl	" << addressCopy << "(%rbp), %eax \n"
                                             "   movl     %eax, "
-         << address << "(%rbp)\n";*/
+         << address << "(%rbp)\n";
 
     return 0;
 }
