@@ -7,7 +7,7 @@ using namespace std;
 int SymbolTable::staticIndex;
 int SymbolTable::staticAddress;
 
-SymbolTable::SymbolTable(){ staticIndex = 4; staticAddress = 0;}
+SymbolTable::SymbolTable(){ staticIndex = 0; staticAddress = -4;}
 
 bool SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
 {
@@ -17,8 +17,8 @@ bool SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeS
     }
     
     Symbol * symbolToAdd = new Symbol(staticIndex, nameSymbol, typeSymbol, staticAddress, additional, stateSymbol, isConst);
-    staticIndex = staticIndex + 4;
-    staticAddress = staticAddress + 1;
+    staticIndex = staticIndex + 1;
+    staticAddress = staticAddress - 4;
 
     if(!doesSymbolExist(nameSymbol)){
         this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));

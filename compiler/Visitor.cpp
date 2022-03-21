@@ -80,6 +80,7 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
 
     //Verify that existingVariableName exists in the symbol table and is ASSIGNED
     Symbol * symbolReturned = this->symbolTable->returnSymbol(existingVariableName);
+
     if(symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED){
 
         //Verify that newVariable does not exists in the symbol table and is not const
@@ -142,7 +143,10 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
         int level = 0;
         this->symbolTable->addSymbol(newVariableName, level, INT, 0, ASSIGNED, 0);
         
-        int address = this->symbolTable->returnSymbol(newVariableName+"_"+to_string(level))->getAddress();
+        int address = this->symbolTable->returnSymbol(newVariableName,level)->getAddress();
+
+        cout << newVariableName << " " << level <<" " <<address << endl; 
+
         cout << "   movl	$" << variableValue << ", " << address << "(%rbp) \n";
     }
     else{
