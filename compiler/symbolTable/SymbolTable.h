@@ -18,6 +18,7 @@ public :
     Symbol * returnSymbol(string name, int level);
     int addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
     int declareSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
+    int assignSymbol(Symbol * symbol);
     int getAddressSymbol(string name, int level);
     void print_dictionary();
 

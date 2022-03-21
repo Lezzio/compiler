@@ -12,6 +12,9 @@ Symbol::Symbol(int index, string name, TypeSymbol typeSymbol, int additionnal, S
 
 Symbol::~Symbol(){ }
 
+void Symbol::setIndex(int index) { 
+    this->index = index;
+}
 
 void Symbol::setName(string name){
     this->name = name;

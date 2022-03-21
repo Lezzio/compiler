@@ -5,5 +5,9 @@ int a = b;
 int c = 3;
 c = b;
 int d;
-return c;
+int e;
+e = b;
+int j;
+j = 9;
+return j;
 }
