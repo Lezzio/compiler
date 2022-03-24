@@ -330,12 +330,12 @@ antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
 antlrcpp::Any Visitor::visitUnaryexpr(ifccParser::UnaryexprContext *context)
 {
     int expr = visit(context->expression());
-    int level = 0;
 
     //TODO create temp var 
     //TODO check if not necessary : int address = 0;
-    int address = 0;
-    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
+    int level = 0;
+    string name = "!temp" + to_string(SymbolTable::staticTempIndex++);
+    int address = this->symbolTable->addSymbol(name, level, INT, 0, ASSIGNED, 0);
 
     cout << "   movl " << expr << "(%rbp), %eax\n";
     if(context->op->getText() == "-"){
@@ -355,16 +355,9 @@ antlrcpp::Any Visitor::visitCharexpr(ifccParser::CharexprContext *context)
     char character = variable.substr(1,2)[0];
     int value = (int) character;
     
-    //TODO: get address
-    int address = 0;
     int level = 0;
-
-    if(!this->symbolTable->doesSymbolExist(variable, level)){
-            address = this->symbolTable->addSymbol(variable, level, INT, 0, DECLARED, 0);
-    }else {
-        //TODO:: gestion des erreurs
-        cout << "char expr : variable(character) already exist " << endl;
-    }
+    string name = "!temp" + to_string(SymbolTable::staticTempIndex++);
+    int address = this->symbolTable->addSymbol(name, level, INT, 0, ASSIGNED, 0);
 
     cout << "   movl	$" << value << ", " << address << "(%rbp) \n";
 
@@ -377,9 +370,9 @@ antlrcpp::Any Visitor::visitRelationalexpr(ifccParser::RelationalexprContext *co
     int exprRight = visit(context->expression(1));
     
     //opti : check if one expr is equal to 1
-    int address = 0;
     int level = 0;
-    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
+    string name = "!temp" + to_string(SymbolTable::staticTempIndex++);
+    int address = this->symbolTable->addSymbol(name, level, INT, 0, ASSIGNED, 0);
 
     cout << "   movl " << exprLeft << "(%rbp), %eax\n";
     cout << "   cmpl " << exprRight << "(%rbp), %eax\n";
@@ -405,7 +398,7 @@ antlrcpp::Any Visitor::visitRelationalexpr(ifccParser::RelationalexprContext *co
 
 antlrcpp::Any Visitor::visitBracketexpr(ifccParser::BracketexprContext *context)
 {
-    return visitChildren(context);
+    return visit(context->expression());
 }
 
 antlrcpp::Any Visitor::visitVarexpr(ifccParser::VarexprContext *context)
@@ -433,9 +426,9 @@ antlrcpp::Any Visitor::visitMultplicationexpr(ifccParser::MultplicationexprConte
     int exprRight = visit(context->expression()[1]);
     
     //opti : check if one expr is equal to 1
-    int address = 0;
     int level = 0;
-    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
+    string name = "!temp" + to_string(SymbolTable::staticTempIndex++);
+    int address = this->symbolTable->addSymbol(name, level, INT, 0, ASSIGNED, 0);
     
     cout << "   movl " << exprLeft << "(%rbp), %eax\n";
     if(context->op->getText() == "*"){
@@ -467,7 +460,6 @@ antlrcpp::Any Visitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *contex
     int level = 0;
     string name = "!temp" + to_string(SymbolTable::staticTempIndex++);
     int address = this->symbolTable->addSymbol(name, level, INT, 0, ASSIGNED, 0);
-    SymbolTable::staticTempIndex++;
 
     if(context->op->getText() == "+"){
         cout << "   movl " << exprLeft << "(%rbp), %eax\n";
@@ -487,9 +479,9 @@ antlrcpp::Any Visitor::visitBitsexpr(ifccParser::BitsexprContext *context){
     int exprRight = visit(context->expression(1));
 
     //TODO: new tmp
-    int address = 0;
     int level = 0;
-    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
+    string name = "!temp" + to_string(SymbolTable::staticTempIndex++);
+    int address = this->symbolTable->addSymbol(name, level, INT, 0, ASSIGNED, 0);
     
     if(context->op->getText() == "|"){
         cout << "   movl " << exprLeft << "(%rbp), %eax\n";
@@ -524,9 +516,9 @@ antlrcpp::Any Visitor::visitEqualityexpr(ifccParser::EqualityexprContext *contex
     int exprRight = visit(context->expression(1));
 
      //TODO: new tmp
-    int address = 0;
     int level = 0;
-    address = this->symbolTable->addSymbol("!temp"+SymbolTable::staticTempIndex, level, INT, 0, ASSIGNED, 0);
+    string name = "!temp" + to_string(SymbolTable::staticTempIndex++);
+    int address = this->symbolTable->addSymbol(name, level, INT, 0, ASSIGNED, 0);
 
     cout << "   movl " << exprLeft << "(%rbp), %eax\n";
     cout << "   cmpl " << exprRight << "(%rbp), %eax\n";

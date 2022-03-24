@@ -47,7 +47,7 @@ int main(int argn, const char **argv) {
     //CodeGenVisitor v;
     Visitor *visitor = new Visitor(symbolTable, errorManager);
     visitor->visit(tree);
-    symbolTable->print_dictionary();
+    //symbolTable->print_dictionary();
     delete symbolTable;
 
     return 0;
