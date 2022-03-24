@@ -142,6 +142,7 @@ public:
     DefFonction *ast; /**< The AST this CFG comes from */
 
     void add_bb(BasicBlock *bb);
+    void addInstruction(IRInstr::Operation op, Type t, vector<string> params); 
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream &o);

@@ -23,6 +23,11 @@ void CFG::add_bb(BasicBlock *bb)
     bbs.push_back(newbb);
 }
 
+void CFG::addInstruction(IRInstr::Operation op, Type t, vector<string> params)
+{
+    current_bb->addInstruction(op, t, params);
+}
+
 void gen_asm_x86(ostream &o)
 {
     //TODO: adapt with name of block and multiple blocks? 
@@ -43,7 +48,14 @@ void gen_asm_x86(ostream &o)
 
 string IR_reg_to_asm(string reg)
 {
-    return "-"+reg+"(%rbp)";
+    int level = 0;
+    Symbol * symbolReturned = this->symbolTable->returnSymbol(newVariableName, level);
+    if( s== nullptr )
+    {
+        cerr <<"Error in IR_reg_to_asm" << endl;
+        exit(1);
+    }
+    return "-"+symbolReturned->getIndex()+"(%rbp)";
 }
 
 void CFG::gen_asm_prologue_x86(ostream &o)
@@ -71,7 +83,7 @@ string CFG::create_new_tempvar(Type t)
     string name = "!tmp" + to_string(nextTmpVarNumber);
     nextTmpVarNumber++;
 
-    symbolTable->addSymbol(name, -1, t, 0);
+    symbolTable->addSymbol(name, 0, t, 0,ASSIGNED, 0);
     return name;
 }
 
