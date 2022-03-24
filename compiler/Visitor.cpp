@@ -37,16 +37,6 @@ antlrcpp::Any Visitor::visitBlock(ifccParser::BlockContext *context)
     return visitChildren(context);
 }
 
-antlrcpp::Any Visitor::visitStatements1(ifccParser::Statements1Context *context)
-{
-    return visitChildren(context);
-}
-
-antlrcpp::Any Visitor::visitStatements2(ifccParser::Statements2Context *context)
-{
-    return visitChildren(context);
-}
-
 antlrcpp::Any Visitor::visitStatement1(ifccParser::Statement1Context *context)
 {
     return visitChildren(context);

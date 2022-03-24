@@ -149,7 +149,7 @@ class ExprUnary : public Expr
 class Prog : public ASTNode
 {
     public:
-        virtual void linearize();
+        CFG* linearize();
         Prog(Block * block): ASTNode(), block(block)
             {};
         virtual ~Prog();
@@ -190,4 +190,28 @@ class Affectation : public Statement
         ExprVar *lExpr;
         Expr *rExpr;
 };
+
+class Declaration : public ASTNode
+{
+    public :
+        virtual string linearize(CFG * cfg);
+        Declaration(string name) :
+            name(name){};
+        virtual ~Declaration();
+    protected :
+        string name;
+};
+
+class Declarations : public Statement
+{
+    public :
+        void addDeclaration(Declaration *);
+        virtual string linearize(CFG * cfg);
+        Declarations() :
+                Statement(){};
+            virtual ~Declarations();
+    protected :
+        vector<Declaration *> declarations;
+}
+
 #endif

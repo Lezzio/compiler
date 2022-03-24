@@ -2,22 +2,11 @@
 
 #include "antlr4-runtime.h"
 #include "generated/ifccBaseVisitor.h"
-#include "ErrorManager.h"
-#include "symbolTable/SymbolTable.h"
-
-#include <string>
-#include <queue> 
-typedef struct Register {
-    std::string name;
-    bool used;
-} Register;
 
 
-class  Visitor : public ifccBaseVisitor {
+class  AstVisitor : public ifccBaseVisitor {
     
 	public:
-        Visitor(SymbolTable * symbolTable, ErrorManager * errorManager);
-        ~Visitor();
 
         virtual antlrcpp::Any visitAxiom(ifccParser::AxiomContext *context) override;
 
@@ -74,13 +63,5 @@ class  Visitor : public ifccBaseVisitor {
         virtual antlrcpp::Any visitEqualityexpr(ifccParser::EqualityexprContext *context) override;
 
         virtual antlrcpp::Any visitType(ifccParser::TypeContext *context) override;
-
-
-
-    private:
-        Register edx;
-        Register eax;
-        SymbolTable *symbolTable;
-        ErrorManager *errorManager;
 
 };

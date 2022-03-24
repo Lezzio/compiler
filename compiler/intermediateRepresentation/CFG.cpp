@@ -18,7 +18,7 @@ CFG::~CFG() {
 void CFG::add_bb(BasicBlock *bb)
 {
     string name = new_BB_name();
-    BasicBlock * newbb = new BasicBlock(this, name);
+    BasicBlock * newbb = new BasicBl     ock(this, name);
     current_bb = newbb;
     bbs.push_back(newbb);
 }
@@ -73,9 +73,9 @@ void CFG::gen_asm_epilogue_x86(ostream &o)
 }
 
 // symbol table methods
-void CFG::add_to_symbol_table(string name, Type t)
+void CFG::add_to_symbol_table(string name, Type t, StateSymbol stateSymbol)
 {
-    symbolTable->addSymbol(name, -1, t, 0);
+    symbolTable->addSymbol(name, 0, t, 0,stateSymbol,0);
 }
 
 string CFG::create_new_tempvar(Type t)

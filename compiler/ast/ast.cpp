@@ -119,7 +119,11 @@ string ExprUnary::linearize(CFG * cfg)
 }
 
 void Prog::linearize(){
-    block->linearize();
+    CFG *cfg = new CFG(new SymbolTable(), "main");
+    BasicBlock *bb = new BasicBlock(cfg, "main");
+    cfg->add_bb(bb);
+    block->linearize(cfg);
+    return cfg;
 }
 
 void Block::addStatement(Statement * statement)
@@ -139,4 +143,20 @@ void Affectation::linearize(CFG * cfg){
 
     cfg->addInstruction(IRInstr::copy, INT, {var1, var2});
     return var1;
+}
+
+string Declaration::linearize(CFG * cfg){
+    cfg->add_to_symbol_table(name, INT, DECLARED);
+    return name;
+}
+
+void Declarations::addDeclaration(Declaration *declaration){
+    declarations->push_back(declaration);
+}
+
+string Declaration::linearize(CFG * cfg){
+    for(Declaration *d: declarations){
+        d->linearize(cfg);
+    }
+    return "";
 }

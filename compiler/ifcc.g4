@@ -4,10 +4,7 @@ axiom : prog ;
 
 prog : INT 'main' '(' ')' block ;
 
-block : '{' statements '}' ; 
-
-statements : statement #statements1
-           | statement statements #statements2;
+block : '{' statement* '}' ; 
 
 statement : declaration ';' #statement1
           | affectation ';' #statement2
