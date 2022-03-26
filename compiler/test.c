@@ -1,9 +1,7 @@
 #include <inttypes.h>
 int main()
 {
-int a,b,c;
-a=17;
-b=42;
-c = a*a + b*b +1;
-return c;
+char d;
+d =1080;
+return d;
 }

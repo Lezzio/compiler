@@ -196,11 +196,12 @@ class Declaration : public ASTNode
 {
     public :
         virtual string linearize(CFG * cfg);
-        Declaration(string name) :
-            name(name){};
+        Declaration(string name, TypeSymbol type) :
+            name(name),type(type){};
         virtual ~Declaration()= default;
     protected :
         string name;
+        TypeSymbol type;
 };
 
 class DecAffectation : public Statement
@@ -213,6 +214,7 @@ class DecAffectation : public Statement
     protected :
         Declaration *declaration;
         Expr *rExpr;
+        TypeSymbol type;
 
 };
 

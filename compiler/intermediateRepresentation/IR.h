@@ -159,6 +159,7 @@ public:
     int get_var_index(string name);
     TypeSymbol get_var_type(string name);
     void assignSymbol(string name);
+    
 
     // basic block management
     string new_BB_name();

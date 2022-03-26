@@ -44,9 +44,16 @@ antlrcpp::Any AstVisitor::visitStatement3(ifccParser::Statement3Context *context
 antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *context)
 {
     Declarations * declarations = new Declarations();
+    string res = (string) visit(context->type()).as<string>();
+    
+    TypeSymbol t = INT;
+    if(res=="char"){
+        t = CHAR;
+    }
+
     for(const auto var : context->VAR())
     {
-        declarations->addDeclaration(new Declaration(var->getText()));
+        declarations->addDeclaration(new Declaration(var->getText(), t));
     }
     return (Statement *)declarations;
 }
@@ -67,7 +74,14 @@ antlrcpp::Any AstVisitor::visitRet2(ifccParser::Ret2Context *context)
 
 antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *context)
 {
-    Declaration *declaration = new Declaration(context->VAR()->getText());
+    string res = (string) visit(context->type()).as<string>();
+    
+    TypeSymbol t = INT;
+    if(res=="char"){
+        t = CHAR;
+    }
+
+    Declaration *declaration = new Declaration(context->VAR()->getText(), t);
     Expr *expr = (Expr *)visit(context->expression());
     DecAffectation * decAffectation = new DecAffectation(declaration, expr);
     return (Statement *)decAffectation;
@@ -211,5 +225,6 @@ antlrcpp::Any AstVisitor::visitEqualityexpr(ifccParser::EqualityexprContext *con
 
 antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context)
 {
-    return visitChildren(context);
+    string type = context->getText();
+    return type;
 }

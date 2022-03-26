@@ -30,7 +30,7 @@ expression : VAR #varexpr
            | op=('-' | '!') expression #unaryexpr
            | '(' expression ')' #bracketexpr;
 
-type : INT ;
+type : INT | CHAR ;
 
 RETURN : 'return' ;
 CONST : [0-9]+ ;
@@ -38,6 +38,7 @@ COMMENT : '/*' .*? '*/' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
 INT : 'int' ;
+CHAR : 'char' ;
 VAR : IDENT ;
 IDENT : [a-zA-Z_][a-zA-Z1-9_]* ;
 CHARACTER : '\'' .? '\'';
