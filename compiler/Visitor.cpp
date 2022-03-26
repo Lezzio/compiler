@@ -54,7 +54,19 @@ antlrcpp::Any Visitor::visitStatement3(ifccParser::Statement3Context *context)
 
 antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *context)
 {
-    return visitChildren(context);
+    for(const auto var : context->VAR())
+    {
+        string newVariableName = var->getText();
+        int level = 0;
+
+        if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
+            this->symbolTable->declareSymbol(newVariableName, level, INT, 0, DECLARED, 0);
+        }else {
+            //TODO:: gestion des erreurs
+            cout << "variables : newVariableName already exist " << endl;
+        }
+    }
+    return 0;
 }
 
 /**
@@ -281,39 +293,6 @@ antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context)
     cout << "   movl	" << address << "(%rbp), %eax\n"
                                         "   popq %rbp\n"
                                         "   ret\n";
-    return 0;
-}
-
-antlrcpp::Any Visitor::visitMultvariables(ifccParser::MultvariablesContext *context)
-{
-    //VAR ',' variables
-    //TODO : symbol table
-    string newVariableName = context->VAR()->getText();
-    int level = 0;
-
-    if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
-            this->symbolTable->declareSymbol(newVariableName, level, INT, 0, DECLARED, 0);
-    }else {
-        //TODO:: gestion des erreurs
-        cout << "multivariables : newVariableName ( " << newVariableName << " ) already exist " << endl;
-    }
-
-    return visit(context->variables());
-}
-
-antlrcpp::Any Visitor::visitVariable(ifccParser::VariableContext *context)
-{
-     //TODO : symbol table 
-    string newVariableName = context->VAR()->getText();
-    int level = 0;
-
-    if(!this->symbolTable->doesSymbolExist(newVariableName, level)){
-            this->symbolTable->declareSymbol(newVariableName, level, INT, 0, DECLARED, 0);
-    }else {
-        //TODO:: gestion des erreurs
-        cout << "variables : newVariableName already exist " << endl;
-    }
-
     return 0;
 }
 

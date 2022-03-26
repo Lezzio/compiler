@@ -49,10 +49,6 @@ class  Visitor : public ifccBaseVisitor {
 
         virtual antlrcpp::Any visitRet2(ifccParser::Ret2Context *context) override;
 
-        virtual antlrcpp::Any visitMultvariables(ifccParser::MultvariablesContext *context) override;
-
-        virtual antlrcpp::Any visitVariable(ifccParser::VariableContext *context) override;
-
         virtual antlrcpp::Any visitUnaryexpr(ifccParser::UnaryexprContext *context) override;
 
         virtual antlrcpp::Any visitCharexpr(ifccParser::CharexprContext *context) override;

@@ -205,7 +205,7 @@ class Declaration : public ASTNode
 class Declarations : public Statement
 {
     public :
-        void addDeclaration(Declaration *);
+        void addDeclaration(Declaration *declaration);
         virtual string linearize(CFG * cfg);
         Declarations() :
                 Statement(){};

@@ -28,23 +28,39 @@ antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context)
 
 antlrcpp::Any AstVisitor::visitStatement1(ifccParser::Statement1Context *context)
 {
-    return (Statement *) visit(context->statement());
+    return (Statement *) visit(context->declaration());
 }
 
 antlrcpp::Any AstVisitor::visitStatement2(ifccParser::Statement2Context *context)
 {
+    //TODO:
     return (Statement *)visit(context->affectation());
 }
 
 antlrcpp::Any AstVisitor::visitStatement3(ifccParser::Statement3Context *context)
 {
     //TODO:
-    return visitChildren(context);
+    return (Statement *)visit(context->retcode());
 }
 
 antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *context)
 {
-    //TODO:
-    return visitChildren(context);
+    Declarations * declarations = new Declarations();
+    for(const auto var : constext->VAR())
+    {
+        declarations->addDeclaration(new Declaration(var->getText()));
+    }
+    return (Statement *)declarations;
 }
+
+antlrcpp::Any AstVisitor::visitRet1(ifccParser::Ret1Context *context)
+{
+    
+}
+
+antlrcpp::Any AstVisitor::visitRet2(ifccParser::Ret2Context *context)
+{
+    
+}
+
 

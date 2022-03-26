@@ -10,7 +10,7 @@ statement : declaration ';' #statement1
           | affectation ';' #statement2
           | retcode ';' #statement3 ;
 
-declaration : type variables ;
+declaration : type VAR (',' VAR)* ;
 
 affectation : type VAR '=' VAR #affectation1
             | type VAR '=' CONST #affectation2
@@ -22,8 +22,6 @@ affectation : type VAR '=' VAR #affectation1
 retcode : RETURN CONST #ret1
         | RETURN VAR #ret2 ;
 
-variables : VAR ',' variables #multvariables
-          | VAR #variable;
   
 expression : VAR #varexpr
            | CONST #constexpr

@@ -1,6 +1,9 @@
 #include <inttypes.h>
 int main()
 {
-int c = ((((2))))*3 + (6 - 9);
+int a,b,c;
+a=17;
+b=42;
+c = a*a + b*b +1;
 return c;
 }
