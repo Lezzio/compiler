@@ -19,9 +19,9 @@ enum Operator {
 class ASTNode 
 {
     public :
-        Node() 
+        ASTNode() 
            {};
-        virtual ~ASTNode();
+        virtual ~ASTNode() = default;
 
 };
 
@@ -30,8 +30,8 @@ class Expr : public ASTNode
     public : 
         virtual string linearize(CFG * cfg) = 0;
         Expr(string varName) :
-            Node(), varName(varName){};
-        virtual ~Expr();
+            ASTNode(), varName(varName){};
+        virtual ~Expr()= default;
     protected :
         string varName;
 
@@ -43,7 +43,7 @@ class ExprVar : public Expr
         virtual string linearize(CFG * cfg);
         ExprVar(string varName) :
             Expr(varName){};
-        virtual ~ExprVar();
+        virtual ~ExprVar()= default;
 
 };
 
@@ -51,9 +51,9 @@ class ExprConst : public Expr
 {
     public :
         virtual string linearize(CFG * cfg);
-        ExprConst(string varName="", int value) :
+        ExprConst(string varName="", int value = 0) :
             Expr(varName), value(value){};
-        virtual ~ExprConst();
+        virtual ~ExprConst()= default;
     protected : 
         int value;
 };
@@ -64,7 +64,7 @@ class ExprChar : public Expr
         virtual string linearize(CFG * cfg);
         ExprChar(string varName, int value) :
             Expr(varName), value(value){};
-        virtual ~ExprChar();
+        virtual ~ExprChar()= default;
     protected : 
         int value;
 };
@@ -146,16 +146,13 @@ class ExprUnary : public Expr
         Expr *rExpr;
 };
 
-class Prog : public ASTNode
+class Statement : public ASTNode 
 {
-    public:
-        CFG* linearize();
-        Prog(Block * block): ASTNode(), block(block)
+    public :
+        virtual string linearize(CFG * cfg) = 0;
+        Statement(): ASTNode()
             {};
-        virtual ~Prog();
-    protected:
-        Block * block;
-        
+        virtual ~Statement()= default;
 };
 
 class Block : public ASTNode 
@@ -170,21 +167,25 @@ class Block : public ASTNode
         vector<Statement *> statements;
 };
 
-class Statement : public ASTNode 
+class Prog : public ASTNode
 {
-    public :
-        virtual string linearize(CFG * cfg) = 0;
-        Statement(): ASTNode()
+    public:
+        CFG* linearize();
+        Prog(Block * block): ASTNode(), block(block)
             {};
-        virtual ~Statement();
+        virtual ~Prog();
+    protected:
+        Block * block;
+        
 };
+
 
 class Affectation : public Statement
 {
     public :
         virtual string linearize(CFG * cfg);
         Affectation(ExprVar * lExpr, Expr * rExpr) :
-            Statement(){};
+            Statement(), lExpr(lExpr), rExpr(rExpr) {};
         virtual ~Affectation();
     protected :
         ExprVar *lExpr;
@@ -197,10 +198,24 @@ class Declaration : public ASTNode
         virtual string linearize(CFG * cfg);
         Declaration(string name) :
             name(name){};
-        virtual ~Declaration();
+        virtual ~Declaration()= default;
     protected :
         string name;
 };
+
+class DecAffectation : public Statement
+{
+    public :
+        virtual string linearize(CFG * cfg);
+        DecAffectation(Declaration *declaration, Expr * rExpr) :
+            Statement(), declaration(declaration), rExpr(rExpr){};
+        virtual ~DecAffectation();
+    protected :
+        Declaration *declaration;
+        Expr *rExpr;
+
+};
+
 
 class Declarations : public Statement
 {
@@ -212,6 +227,17 @@ class Declarations : public Statement
             virtual ~Declarations();
     protected :
         vector<Declaration *> declarations;
-}
+};
+
+class Return : public Statement
+{
+    public :
+        Return(Expr * returnExpr) : Statement(), expr(returnExpr){};
+        virtual ~Return();
+        virtual string linearize(CFG * cfg);
+    protected :
+        Expr * expr;
+
+};
 
 #endif

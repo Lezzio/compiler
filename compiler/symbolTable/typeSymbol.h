@@ -4,6 +4,7 @@
 
 enum TypeSymbol {
   INT,
+  INT8_T,
 };
 
 #endif // TYPE_H

@@ -8,8 +8,9 @@
 
 // Declarations from the parser -- replace with your own
 //TODO: fix path
-#include "type.h"
-#include "symbole.h"
+#include "../symbolTable/typeSymbol.h"
+#include "../symbolTable/Symbol.h"
+#include "../symbolTable/SymbolTable.h"
 
 class BasicBlock;
 class CFG;
@@ -24,6 +25,7 @@ public:
     typedef enum
     {
         ldconst,
+        ret,
         copy,
         add,
         sub,
@@ -34,7 +36,7 @@ public:
         andbit,
         xorbit,
         neg, 
-        not,
+        note,
         rmem,
         wmem,
         call,
@@ -47,7 +49,7 @@ public:
     } Operation;
 
     /**  constructor */
-    IRInstr(BasicBlock *bb_, Operation op, Type t, vector<string> params);
+    IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> params);
 
     /** Actual code generation */
     void gen_asm_x86(ostream &o); /**< x86 assembly code generation for this IR instruction */
@@ -55,11 +57,11 @@ public:
 private:
     BasicBlock *bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
     Operation op;
-    Type t;
+    TypeSymbol t;
     vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
                         // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design.
 
-    string getMovInstr(string origine, string destination, Type type = INT);
+    string getMovInstr(string origine, string destination, TypeSymbol type = INT);
     string getAddInstr(string arg1, string arg2);
     string getSubInstr(string arg1, string arg2);
     string getMulInstr(string arg1, string arg2);
@@ -67,6 +69,7 @@ private:
     string getOrInstr(string arg1, string arg2);
     string getAndInstr(string arg1, string arg2);
     string getXorInstr(string arg1, string arg2);
+    string getCompInstr(string arg1, string arg2);
     string getNegInstr(string arg1);
     string getNotInstr(string arg1);
     string getEqInstr(string arg1);
@@ -111,7 +114,7 @@ public:
 
     void gen_asm_86(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
-    void add_IRInstr(IRInstr::Operation op, Type t, vector<string> params);
+    void add_IRInstr(IRInstr::Operation op, TypeSymbol t, vector<string> params);
 
     // No encapsulation whatsoever here. Feel free to do better.
     BasicBlock *exit_true;    /**< pointer to the next basic block, true branch. If nullptr, return from procedure */
@@ -142,7 +145,7 @@ public:
     DefFonction *ast; /**< The AST this CFG comes from */
 
     void add_bb(BasicBlock *bb);
-    void addInstruction(IRInstr::Operation op, Type t, vector<string> params); 
+    void addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> params); 
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream &o);
@@ -151,16 +154,18 @@ public:
     void gen_asm_epilogue_x86(ostream &o);
 
     // symbol table methods
-    void add_to_symbol_table(string name, Type t, StateSymbol stateSymbol);
-    string create_new_tempvar(Type t);
+    void add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol);
+    string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
-    Type get_var_type(string name);
+    TypeSymbol get_var_type(string name);
+    void assignSymbol(string name);
 
     // basic block management
     string new_BB_name();
     BasicBlock *current_bb;
 
 protected:
+    string name;
     SymbolTable * symbolTable;
     int nextTmpVarNumber;
     //int nextFreeSymbolIndex;      /**< to allocate new symbols in the symbol table */

@@ -12,12 +12,8 @@ statement : declaration ';' #statement1
 
 declaration : type VAR (',' VAR)* ;
 
-affectation : type VAR '=' VAR #affectation1
-            | type VAR '=' CONST #affectation2
-            | VAR '=' VAR #affectation3
-            | VAR '=' CONST #affectation4 
-            | type VAR '=' expression #affectation5
-            | VAR '=' expression #affectation6;
+affectation : type VAR '=' expression #affectation1
+            | VAR '=' expression #affectation2;
 
 retcode : RETURN CONST #ret1
         | RETURN VAR #ret2 ;

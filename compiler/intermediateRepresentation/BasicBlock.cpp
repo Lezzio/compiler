@@ -14,7 +14,7 @@ BasicBlock::~BasicBlock()
     }
 }
 
-void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> params)
+void BasicBlock::add_IRInstr(IRInstr::Operation op, TypeSymbol t, vector<string> params)
 {
     instrs.push_back(new IRInstr(this, op, t, params));
 }
@@ -32,7 +32,7 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, Type t, vector<string> param
                     followed by an unconditional branch to the exit_true branch
      The attribute test_var_name itself is defined when converting
   the if, while, etc of the AST  to IR. */
-void BasicBlock::gen_asm_x86(ostream &o)
+void BasicBlock::gen_asm_86(ostream &o)
 {
     for(vector<IRInstr*>::iterator it = instrs.begin(); it != instrs.end(); it++)
     {
@@ -41,7 +41,7 @@ void BasicBlock::gen_asm_x86(ostream &o)
 
     if(exit_true == nullptr)
     {
-        this->cfg->gen_asm_x86_prologue(o);
+       // this->cfg->gen_asm_prologue_x86(o);
     } else if(exit_false == nullptr)
     {
         o << "jmp   " << exit_true->label << "\n";

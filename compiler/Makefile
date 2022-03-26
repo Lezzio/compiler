@@ -14,7 +14,7 @@ all: ifcc
 
 ##########################################
 # link together all pieces of our compiler
-OBJECTS=build/main.o build/Visitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/ErrorManager.o
+OBJECTS=build/main.o build/Visitor.o build/AstVisitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/ErrorManager.o build/IRinstr.o build/CFG.o build/BasicBlock.o build/ast.o
 
 ifcc: $(OBJECTS)
 	@mkdir -p build
@@ -35,6 +35,22 @@ build/SymbolTable.o: symbolTable/SymbolTable.cpp
 	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
 build/Symbol.o: symbolTable/Symbol.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
+build/ast.o: ast/ast.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
+build/IRinstr.o: intermediateRepresentation/IRinstr.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
+build/CFG.o: intermediateRepresentation/CFG.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
+build/BasicBlock.o: intermediateRepresentation/BasicBlock.cpp
 	@mkdir -p build
 	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
