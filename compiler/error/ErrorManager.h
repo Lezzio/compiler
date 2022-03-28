@@ -5,11 +5,15 @@
 #ifndef COMPILER_ERRORMANAGER_H
 #define COMPILER_ERRORMANAGER_H
 
+#include "Error.h"
+#include <vector>
+
+using namespace std;
 
 class ErrorManager {
 
 public:
-    ErrorManager()
+    ErrorManager();
 
 private:
     vector<Error> errors;

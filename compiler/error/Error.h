@@ -5,6 +5,9 @@
 #ifndef COMPILER_ERROR_H
 #define COMPILER_ERROR_H
 
+#include <string>
+
+using namespace std;
 
 class Error {
 
