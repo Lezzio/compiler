@@ -242,4 +242,40 @@ class Return : public Statement
 
 };
 
+class InstructionIF : public Statement
+{
+    public:
+        virtual string linearize(CFG * cfg);
+        InstructionIF(Expr* test, Block * then, Block * elseb) : Statement(), test(test), falseCodeBlock(elseb), trueCodeBlock(then){};
+        virtual ~InstructionIF();
+    protected :
+        Expr * test;
+        Block * trueCodeBlock;
+        Block * falseCodeBlock;
+};
+
+class InstructionWhile : public Statement
+{
+    public:
+        virtual string linearize(CFG * cfg);
+        InstructionWhile(Expr* test, Block * block) : Statement(), test(test), block(block) {};
+        virtual ~InstructionWhile();
+    protected:
+        Expr * test;
+        Block * block;
+};
+
+class InstructionFor : public Statement
+{
+    public:
+        virtual string linearize(CFG * cfg);
+        InstructionFor(Statement* init, Expr* test, Statement* update, Block * block) : Statement(), test(test), block(block), init(init), update(update) {};
+        virtual ~InstructionFor();
+    protected:
+        Statement * init;
+        Expr * test;
+        Statement * update;
+        Block * block;
+};
+
 #endif

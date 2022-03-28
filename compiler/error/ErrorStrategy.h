@@ -11,8 +11,8 @@ using namespace antlr4;
 
 class ErrorStrategy : public DefaultErrorStrategy {
 
-    void reportError(Parser recognizer,
-                     RecognitionException e);
+    void reportError(Parser *recognizer,
+                     const RecognitionException &e);
 
 };
 

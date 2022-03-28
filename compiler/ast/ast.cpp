@@ -133,15 +133,15 @@ string ExprRelational::linearize(CFG * cfg)
     string tempVar = cfg->create_new_tempvar(typeTmp);
     if(op == GR)
     {
-        cfg->addInstruction(IRInstr::cmp_lt, typeTmp, {tempVar, var1, var2});
+        cfg->addInstruction(IRInstr::cmp_gt, typeTmp, {tempVar, var1, var2});
     } else if(op == GRE)
     {
-        cfg->addInstruction(IRInstr::cmp_le, typeTmp, {tempVar, var1, var2});
+        cfg->addInstruction(IRInstr::cmp_ge, typeTmp, {tempVar, var1, var2});
     } else if(op == LE)
     {
-        cfg->addInstruction(IRInstr::cmp_gt, typeTmp, {tempVar, var1, var2});
+        cfg->addInstruction(IRInstr::cmp_lt, typeTmp, {tempVar, var1, var2});
     } else {
-         cfg->addInstruction(IRInstr::cmp_ge, typeTmp, {tempVar, var1, var2});
+         cfg->addInstruction(IRInstr::cmp_le, typeTmp, {tempVar, var1, var2});
     }
     return tempVar;
 }
@@ -204,8 +204,14 @@ ExprUnary::~ExprUnary(){
 
 CFG* Prog::linearize(){
     CFG *cfg = new CFG(new SymbolTable(), "main");
-    BasicBlock *bb = new BasicBlock(cfg, "main");
+    BasicBlock *bb = new BasicBlock(cfg, cfg->new_BB_name());
     cfg->add_bb(bb);
+
+    BasicBlock *returnBlock = new BasicBlock(cfg, cfg->new_BB_name());
+    returnBlock->add_IRInstr(IRInstr::finret, INT, {"!retvalue"});
+    cfg->return_bb = returnBlock;
+    //cfg->current_bb->exit_true = returnBlock;
+    
     block->linearize(cfg);
     return cfg;
 }
@@ -289,11 +295,132 @@ string Return::linearize(CFG * cfg){
     string var1 = expr->linearize(cfg);
 
     TypeSymbol typeTmp = cfg->get_var_type(var1);
+    cfg->setReturnSymbol("!retvalue");
 
-    cfg->addInstruction(IRInstr::ret, typeTmp, {var1});
+    cfg->addInstruction(IRInstr::ret, typeTmp, {"!retvalue", var1});
     return var1;
 }
 
 Return::~Return(){
     delete (expr);
+}
+
+InstructionIF::~InstructionIF(){
+    delete (test);
+    delete (trueCodeBlock);
+    delete (falseCodeBlock);
+}
+
+string InstructionIF::linearize(CFG * cfg){
+    string testVar = test->linearize(cfg);
+    BasicBlock * testBB = cfg->current_bb;
+    testBB->test_var_name = testVar;
+
+    BasicBlock * thenBB = new BasicBlock(cfg, cfg->new_BB_name());
+
+    BasicBlock * endIfBB = new BasicBlock(cfg,cfg->new_BB_name());
+    endIfBB->exit_true = testBB->exit_true;
+    endIfBB->exit_false = thenBB->exit_false;
+
+    BasicBlock *elseBB = endIfBB;
+    if(falseCodeBlock!=nullptr){
+        elseBB = new BasicBlock(cfg, cfg->new_BB_name());
+    }
+    testBB->exit_true = thenBB;
+    testBB->exit_false = elseBB;
+
+    cfg->add_bb(thenBB);
+    cfg->current_bb->exit_true = endIfBB;
+    trueCodeBlock->linearize(cfg);
+
+    if(falseCodeBlock!=nullptr){
+        cfg->add_bb(elseBB);
+        cfg->current_bb->exit_true = endIfBB;
+        falseCodeBlock->linearize(cfg);
+    }
+
+    cfg->add_bb(endIfBB);
+    return "";
+}
+
+InstructionWhile::~InstructionWhile()
+{
+    delete (test);
+    delete (block);
+}
+
+string InstructionWhile::linearize(CFG * cfg)
+{
+    BasicBlock * beforeWhileBB = cfg->current_bb;
+    BasicBlock * bodyBB = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock * testBB = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock * afterWhileBB = new BasicBlock(cfg, cfg->new_BB_name());
+
+    beforeWhileBB->exit_true = testBB;
+    cfg->add_bb(testBB);
+    string testVar = test->linearize(cfg);
+    testBB->test_var_name = testVar;
+
+    testBB->exit_true = bodyBB;
+    testBB->exit_false = afterWhileBB;
+
+    cfg->add_bb(bodyBB);
+    block->linearize(cfg);
+    bodyBB->exit_true = testBB;
+    bodyBB->exit_false = nullptr;
+
+    cfg->add_bb(afterWhileBB);
+
+    return "";
+}
+
+InstructionFor::~InstructionFor()
+{
+    delete (block);
+    delete (init);
+    delete (test);
+    delete (update);
+}
+
+string InstructionFor::linearize(CFG * cfg)
+{
+    BasicBlock * beforeForBB = cfg->current_bb;
+
+    BasicBlock * initForBB = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock * testBB = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock * updateBB = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock * forBB = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock * endforBB = new BasicBlock(cfg, cfg->new_BB_name());
+
+    if(init != nullptr){
+        beforeForBB->exit_true = initForBB;
+        cfg->add_bb(initForBB);
+        init->linearize(cfg);
+        initForBB->exit_true = testBB;
+    } else {
+        beforeForBB->exit_true = testBB;
+    }
+
+    cfg->add_bb(testBB);
+    string testVar = test->linearize(cfg);
+    testBB->test_var_name = testVar;
+
+    testBB->exit_true = forBB;
+    testBB->exit_false = endforBB;
+
+    cfg->add_bb(forBB);
+    block->linearize(cfg);
+    if(update != nullptr) {
+         forBB->exit_true = updateBB;
+         cfg->add_bb(updateBB);
+         update->linearize(cfg);
+         updateBB->exit_true = testBB;
+    } else {
+        forBB->exit_true = testBB;
+    }
+    forBB->exit_false = nullptr;
+
+    cfg->add_bb(endforBB);
+
+    return "";
 }

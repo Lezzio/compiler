@@ -20,6 +20,12 @@ class AstVisitor : public ifccBaseVisitor {
 
         virtual antlrcpp::Any visitStatement3(ifccParser::Statement3Context *context) override;
 
+        virtual antlrcpp::Any visitStatement4(ifccParser::Statement4Context *context) override;
+
+        virtual antlrcpp::Any visitStatement5(ifccParser::Statement5Context *context) override;
+
+        virtual antlrcpp::Any visitStatement6(ifccParser::Statement6Context *context) override;
+
         virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *context) override;
 
         virtual antlrcpp::Any visitAffectation1(ifccParser::Affectation1Context *context) override;
@@ -51,5 +57,13 @@ class AstVisitor : public ifccBaseVisitor {
         virtual antlrcpp::Any visitEqualityexpr(ifccParser::EqualityexprContext *context) override;
 
         virtual antlrcpp::Any visitType(ifccParser::TypeContext *context) override;
+
+        virtual antlrcpp::Any visitIfBlock(ifccParser::IfBlockContext *context) override;
+
+        virtual antlrcpp::Any visitElseBlock(ifccParser::ElseBlockContext *context) override;
+
+        virtual antlrcpp::Any visitWhileBlock(ifccParser::WhileBlockContext *context) override;
+
+        virtual antlrcpp::Any visitForBlock(ifccParser::ForBlockContext *context) override;
 
 };

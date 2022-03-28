@@ -8,6 +8,6 @@
 using namespace std;
 using namespace antlr4;
 
-void ErrorStrategy::reportError(Parser recognizer, RecognitionException e) {
+void ErrorStrategy::reportError(Parser * recognizer,const RecognitionException &e) {
     cout << "CALLED ANTLR4 REPORT ERROR" << endl;
 }

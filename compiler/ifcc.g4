@@ -8,7 +8,7 @@ block : '{' statement* '}' ;
 
 statement : declaration ';' #statement1
           | affectation ';' #statement2
-          | retcode ';' #statement3
+          | retcode ';' #statement3 
           | ifBlock #statement4
           | whileBlock #statement5
           | forBlock #statement6;
@@ -17,7 +17,7 @@ declaration : type VAR (',' VAR)* ;
     //        | VAR '(' declaration? ')' #functionexpr;
 
 affectation : type VAR '=' expression #affectation1
-            | VAR '=' expression #affectation2;
+            | VAR '=' expression #affectation2; 
           //  | VAR '[' expression ']' '=' expression #affectation3;
 
 retcode : RETURN CONST #ret1
@@ -25,7 +25,7 @@ retcode : RETURN CONST #ret1
 
 ifBlock : 'if' '(' expression ')' (statement | block) elseBlock? ;
 
-elseBlock : 'else' (statement| block| ifBlock);
+elseBlock : 'else' (statement| block| ifBlock);      
 
 whileBlock : 'while' '(' expression ')' (statement | block) ;
 
@@ -43,8 +43,8 @@ expression : VAR #varexpr
           // | expression op=('&&' | '||') expression #logicalexpr
            | op=('-' | '!') expression #unaryexpr
            | '(' expression ')' #bracketexpr ;
-      // | VAR '[' expression ']' #arrayexpr;
-      // | ('-' | '!')? (CONST | CHAR | VAR)    #literalexpr;
+	  // | VAR '[' expression ']' #arrayexpr;
+	  // | ('-' | '!')? (CONST | CHAR | VAR)	#literalexpr;
 
 type : INT | CHAR ;
 
