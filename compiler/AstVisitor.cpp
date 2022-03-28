@@ -23,7 +23,7 @@ antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context)
         Statement *statement = (Statement *) visit(s);
         block->addStatement(statement);
     }
-    return block;
+    return (Block *) block;
 }
 
 antlrcpp::Any AstVisitor::visitStatement1(ifccParser::Statement1Context *context)
@@ -39,6 +39,21 @@ antlrcpp::Any AstVisitor::visitStatement2(ifccParser::Statement2Context *context
 antlrcpp::Any AstVisitor::visitStatement3(ifccParser::Statement3Context *context)
 {
     return (Statement *)visit(context->retcode());
+}
+
+antlrcpp::Any AstVisitor::visitStatement4(ifccParser::Statement4Context *context)
+{
+    return (Statement *)visit(context->ifBlock());
+}
+
+antlrcpp::Any AstVisitor::visitStatement5(ifccParser::Statement5Context *context)
+{
+    return (Statement *)visit(context->whileBlock());
+}
+
+antlrcpp::Any AstVisitor::visitStatement6(ifccParser::Statement6Context *context)
+{
+    return (Statement *)visit(context->forBlock());
 }
 
 antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *context)
@@ -227,4 +242,86 @@ antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context)
 {
     string type = context->getText();
     return type;
+}
+
+antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context) 
+{
+    Expr* test = (Expr*)visit(context->expression());
+
+    Block* ifBlock;
+    if(context->statement()){
+        ifBlock = new Block();
+        Statement *statement = (Statement *) visit(context->statement());
+        ifBlock->addStatement(statement);
+    } else {
+        ifBlock = (Block*)visit(context->block());
+    }
+
+    Block* elseBlock = nullptr;
+    if(context->elseBlock()){
+        elseBlock = (Block*)visit(context->elseBlock());
+    } 
+
+    InstructionIF * instrIF = new InstructionIF(test, ifBlock, elseBlock);
+    return (Statement *) instrIF;
+}
+
+antlrcpp::Any AstVisitor::visitElseBlock(ifccParser::ElseBlockContext *context) 
+{
+    Block* elseBlock = nullptr;
+    if(context->statement()){
+        Statement *statement = (Statement *) visit(context->statement());
+        elseBlock = new Block();
+        elseBlock->addStatement(statement);
+    } else if(context->block()){
+        elseBlock = (Block*)visit(context->block());
+    } else {
+        Statement *statement = (Statement *) visit(context->ifBlock());
+        elseBlock = new Block();
+        elseBlock->addStatement(statement);
+    }
+
+    return (Block *) elseBlock;
+}
+
+antlrcpp::Any AstVisitor::visitWhileBlock(ifccParser::WhileBlockContext *context){
+    Expr* test = (Expr*)visit(context->expression());
+
+    Block* whileBlock;
+    if(context->statement()){
+        whileBlock = new Block();
+        Statement *statement = (Statement *) visit(context->statement());
+        whileBlock->addStatement(statement);
+    } else {
+        whileBlock = (Block*)visit(context->block());
+    }
+
+    InstructionWhile * instrWhile = new InstructionWhile(test, whileBlock);
+    return (Statement *) instrWhile;
+} 
+
+
+antlrcpp::Any AstVisitor::visitForBlock(ifccParser::ForBlockContext *context) {
+    Statement * init = nullptr;
+    Statement * update = nullptr;
+    if(context->init!=nullptr){
+        init = (Statement *) visit(context->init);
+    }
+    if(context->update!=nullptr){
+        update = (Statement *) visit(context->update);
+    }
+
+    Expr * test = (Expr *) visit(context->test);
+
+    Block* forBlock;
+    if(context->statement(1)){
+        forBlock = new Block();
+        Statement *statement = (Statement *) visit(context->statement(1));
+        forBlock->addStatement(statement);
+    } else {
+        forBlock = (Block*)visit(context->block());
+    }
+
+    InstructionFor * instrFor = new InstructionFor(init, test, update, forBlock);
+    return (Statement *) instrFor;
 }

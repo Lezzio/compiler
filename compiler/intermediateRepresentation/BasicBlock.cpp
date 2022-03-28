@@ -34,6 +34,10 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, TypeSymbol t, vector<string>
   the if, while, etc of the AST  to IR. */
 void BasicBlock::gen_asm_86(ostream &o)
 {
+    o << label << ":" << "\n";
+    if(cfg->firstBB(this)){
+        this->cfg->gen_asm_prologue_x86(o);
+    }
     for(vector<IRInstr*>::iterator it = instrs.begin(); it != instrs.end(); it++)
     {
         (*it)->gen_asm_x86(o);
@@ -41,11 +45,19 @@ void BasicBlock::gen_asm_86(ostream &o)
 
     if(exit_true == nullptr)
     {
-       // this->cfg->gen_asm_prologue_x86(o);
+       //this->cfg->gen_asm_epilogue_x86(o);
     } else if(exit_false == nullptr)
     {
-        o << "jmp   " << exit_true->label << "\n";
+        o << "   jmp   " << exit_true->label << "\n";
     } else {
-        //TODO pas bien compris
+        string address = cfg->IR_reg_to_asm(test_var_name);
+        TypeSymbol t = cfg->get_var_type(test_var_name);
+
+        string action = "   cmpl";
+        if(t==CHAR){
+            action = "  cmpb";
+        }
+       o << action << "    $0, " << address << "\n";
+       o << "   je  " << exit_false->label << "\n"; 
     }
 }

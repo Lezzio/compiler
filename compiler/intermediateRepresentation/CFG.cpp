@@ -4,7 +4,7 @@ using namespace std;
 #include "IR.h"
 
 CFG::CFG(SymbolTable * symbolTable, string name)
-    : name(name), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr), nextTmpVarNumber(0)
+    : name(name), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr),return_bb(nullptr), nextTmpVarNumber(0)
 {
 
 }
@@ -17,10 +17,8 @@ CFG::~CFG() {
 
 void CFG::add_bb(BasicBlock *bb)
 {
-    string name = new_BB_name();
-    BasicBlock * newbb = new BasicBlock(this, name);
-    current_bb = newbb;
-    bbs.push_back(newbb);
+    current_bb = bb;
+    bbs.push_back(bb);
 }
 
 void CFG::addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> params)
@@ -39,13 +37,12 @@ void CFG::gen_asm_x86(ostream &o)
     cout << ".globl	main\n"
             " main: \n";
 #endif
-    gen_asm_prologue_x86(o);
     for(vector<BasicBlock*>::iterator it = bbs.begin(); it != bbs.end(); it++)
     {
         (*it)->gen_asm_86(o);
     }
+    return_bb->gen_asm_86(o);
     gen_asm_epilogue_x86(o);
-
     //o << "\n";
     //symbolTable->print_dictionary();
 
@@ -116,7 +113,7 @@ TypeSymbol CFG::get_var_type(string name)
 
 string CFG::new_BB_name()
 {
-    string name = this->name + "BB" + to_string(nextBBnumber);
+    string name = "."+this->name + "BB" + to_string(nextBBnumber);
     nextBBnumber++;
     return name;
 }
@@ -126,4 +123,20 @@ void CFG::assignSymbol(string name)
     Symbol * symbolReturned = this->symbolTable->returnSymbol(name, 0);
     this->symbolTable->assignSymbol(symbolReturned);
 
+}
+
+bool CFG::firstBB(BasicBlock * bb){
+    return (bb == bbs.front());
+}
+
+bool CFG::isAssigneSymbol(string name){
+    Symbol * symbolReturned = this->symbolTable->returnSymbol(name, 0);
+    return (symbolReturned->getStateSymbol()==ASSIGNED);
+}
+
+void CFG::setReturnSymbol(string name){
+    if(!symbolTable->doesSymbolExist(name,0))
+    {
+        symbolTable->addSymbol(name, 0, INT, 0,ASSIGNED, 0);
+    }
 }

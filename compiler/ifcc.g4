@@ -8,7 +8,10 @@ block : '{' statement* '}' ;
 
 statement : declaration ';' #statement1
           | affectation ';' #statement2
-          | retcode ';' #statement3 ;
+          | retcode ';' #statement3 
+          | ifBlock #statement4
+          | whileBlock #statement5
+          | forBlock #statement6;
 
 declaration : type VAR (',' VAR)* ;
 
@@ -18,7 +21,15 @@ affectation : type VAR '=' expression #affectation1
 retcode : RETURN CONST #ret1
         | RETURN VAR #ret2 ;
 
-  
+ifBlock : 'if' '(' expression ')' (statement | block) elseBlock? ;
+
+elseBlock : 'else' (statement| block| ifBlock);      
+
+whileBlock : 'while' '(' expression ')' (statement | block) ;
+
+forBlock : 'for' '(' (init=statement | ';') (test=expression) ';' (update=affectation)? ')' (statement | block) ;
+//deal with infinite loop ?
+
 expression : VAR #varexpr
            | CONST #constexpr
            | CHARACTER #charexpr

@@ -1,7 +1,9 @@
 #include <inttypes.h>
 int main()
 {
-char d;
-d =1080;
-return d;
+int a = 2;
+while(a!=8){
+    a = a +1;
+}
+return 5;
 }
