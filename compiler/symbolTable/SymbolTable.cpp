@@ -5,9 +5,9 @@
 using namespace std;
 
 int SymbolTable::staticIndex;
-int SymbolTable::staticTempIndex;
+int SymbolTable::staticTempIndex= 0;
 
-SymbolTable::SymbolTable(){ staticIndex = 4;}
+SymbolTable::SymbolTable(){ staticIndex = 0; }
 
 int SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
 {
@@ -16,12 +16,13 @@ int SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSy
         nameSymbol = symbolName + "_" + to_string(levelSymbol);
     }
     
-    Symbol * symbolToAdd = new Symbol(staticIndex, nameSymbol, typeSymbol, additional, stateSymbol, isConst);
+    int index = staticIndex + getOffsetType(typeSymbol);
+    Symbol * symbolToAdd = new Symbol(index, nameSymbol, typeSymbol, additional, stateSymbol, isConst);
 
     if(!doesSymbolExist(nameSymbol,levelSymbol)){
         this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
+        staticIndex = index;
         int returnadress = -staticIndex;
-        staticIndex = staticIndex + 4;
         return returnadress;
     }
     delete symbolToAdd;
@@ -48,8 +49,8 @@ int SymbolTable::declareSymbol(string symbolName, int levelSymbol, TypeSymbol ty
 int SymbolTable::assignSymbol(Symbol * symbol)
 {
     symbol->setStateSymbol(ASSIGNED);
+    staticIndex+=getOffsetType(symbol->getTypeSymbol());
     symbol->setIndex(staticIndex);
-    staticIndex+=4;
 
     return symbol->getAddress();
 }
@@ -90,6 +91,21 @@ int SymbolTable::getAddressSymbol(string ident, int level){
         return table.find(ident)->second->getAddress();
     }else{
         return 0;
+    }
+}
+
+int SymbolTable::getOffsetType(TypeSymbol typeSymbol)
+{
+    switch(typeSymbol)
+    {
+        case INT:
+            return 4;
+        case INT8_T:
+        case CHAR :
+            return 1;
+        default:
+            cerr << "Error" << endl;
+            exit(1);    
     }
 }
 

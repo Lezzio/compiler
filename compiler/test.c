@@ -1,14 +1,7 @@
 #include <inttypes.h>
-int main() {
-int b =2;
-int a = b;
-int c = 3;
-c = b;
-int d;
-int e;
-e = b;
-int j;
-j = 9;
-int z,y,w;
-return j;
+int main()
+{
+char d;
+d =1080;
+return d;
 }

@@ -4,29 +4,20 @@ axiom : prog ;
 
 prog : INT 'main' '(' ')' block ;
 
-block : '{' statements '}' ; 
-
-statements : statement #statements1
-           | statement statements #statements2;
+block : '{' statement* '}' ; 
 
 statement : declaration ';' #statement1
           | affectation ';' #statement2
           | retcode ';' #statement3 ;
 
-declaration : type variables ;
+declaration : type VAR (',' VAR)* ;
 
-affectation : type VAR '=' VAR #affectation1
-            | type VAR '=' CONST #affectation2
-            | VAR '=' VAR #affectation3
-            | VAR '=' CONST #affectation4 
-            | type VAR '=' expression #affectation5
-            | VAR '=' expression #affectation6;
+affectation : type VAR '=' expression #affectation1
+            | VAR '=' expression #affectation2;
 
 retcode : RETURN CONST #ret1
         | RETURN VAR #ret2 ;
 
-variables : VAR ',' variables #multvariables
-          | VAR #variable;
   
 expression : VAR #varexpr
            | CONST #constexpr
@@ -39,7 +30,7 @@ expression : VAR #varexpr
            | op=('-' | '!') expression #unaryexpr
            | '(' expression ')' #bracketexpr;
 
-type : INT ;
+type : INT | CHAR ;
 
 RETURN : 'return' ;
 CONST : [0-9]+ ;
@@ -47,6 +38,7 @@ COMMENT : '/*' .*? '*/' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
 INT : 'int' ;
+CHAR : 'char' ;
 VAR : IDENT ;
 IDENT : [a-zA-Z_][a-zA-Z1-9_]* ;
 CHARACTER : '\'' .? '\'';

@@ -20,6 +20,7 @@ public :
     int declareSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
     int assignSymbol(Symbol * symbol);
     int getAddressSymbol(string name, int level);
+    int getOffsetType(TypeSymbol typeSymbol);
     void print_dictionary();
 
     static int staticIndex;

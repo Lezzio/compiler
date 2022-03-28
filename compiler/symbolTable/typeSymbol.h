@@ -4,6 +4,8 @@
 
 enum TypeSymbol {
   INT,
+  INT8_T,
+  CHAR, //TODO: SHOULD WE CHECK OVERFLOW
 };
 
 #endif // TYPE_H
