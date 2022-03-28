@@ -5,6 +5,7 @@
 using namespace std;
 
 antlrcpp::Any AstVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
+    //throw antlr4::RecognitionException("okokok", recognizer, recognizer->getInputStream(), recognizer->getContext(), recognizer->getCurrentToken());
     return visit(ctx->prog());
 }
 
