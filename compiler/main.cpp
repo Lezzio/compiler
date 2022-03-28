@@ -15,6 +15,8 @@
 #include "intermediateRepresentation/IR.h"
 #include "ast/ast.h"
 #include "error/SyntaxErrorListener.h"
+#include "error/ErrorStrategy.h"
+#include "BailErrorStrategy.h"
 
 using namespace antlr4;
 using namespace std;
@@ -39,6 +41,8 @@ int main(int argn, const char **argv) {
 
     SyntaxErrorListener * syntaxErrorListener =  new SyntaxErrorListener();
     ifccParser parser(&tokens);
+    Ref<ANTLRErrorStrategy> errorStrategyRef = make_shared<ErrorStrategy>();
+    parser.setErrorHandler(errorStrategyRef);
     parser.addErrorListener(syntaxErrorListener);
     tree::ParseTree *tree = parser.axiom();
 
