@@ -1,6 +1,7 @@
 #include "SymbolTable.h"
 #include <iostream>
 #include <string>
+#include "../error/ErrorManager.h"
 
 using namespace std;
 
@@ -41,6 +42,10 @@ int SymbolTable::declareSymbol(string symbolName, int levelSymbol, TypeSymbol ty
     if(!doesSymbolExist(nameSymbol,levelSymbol)){
         this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
         return 0;
+    } else {
+        //Error, can't declare a symbol twice
+        ErrorManager::getInstance()->addError(new Error());
+        cout << "Error detected can't declare symbol twice" << endl;
     }
     delete symbolToAdd;
     return -1;

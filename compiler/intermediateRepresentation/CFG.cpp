@@ -78,14 +78,12 @@ void CFG::gen_asm_epilogue_x86(ostream &o)
 }
 
 // symbol table methods
-void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol)
-{
-    if(stateSymbol==DECLARED){
+void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol) {
+    if (stateSymbol == DECLARED) {
         this->symbolTable->declareSymbol(name, 0, t, 0, DECLARED, 0);
     } else {
-         symbolTable->addSymbol(name, 0, t, 0,stateSymbol,0);
+        symbolTable->addSymbol(name, 0, t, 0, stateSymbol, 0);
     }
-
 }
 
 string CFG::create_new_tempvar(TypeSymbol t)
