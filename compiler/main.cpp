@@ -14,7 +14,9 @@
 #include "symbolTable/SymbolTable.h"
 #include "intermediateRepresentation/IR.h"
 #include "ast/ast.h"
-#include "ErrorManager.h"
+#include "error/SyntaxErrorListener.h"
+#include "error/ErrorStrategy.h"
+#include "BailErrorStrategy.h"
 
 using namespace antlr4;
 using namespace std;
@@ -37,7 +39,11 @@ int main(int argn, const char **argv) {
 
     tokens.fill();
 
+    SyntaxErrorListener * syntaxErrorListener =  new SyntaxErrorListener();
     ifccParser parser(&tokens);
+    Ref<ANTLRErrorStrategy> errorStrategyRef = make_shared<ErrorStrategy>();
+    parser.setErrorHandler(errorStrategyRef);
+    parser.addErrorListener(syntaxErrorListener);
     tree::ParseTree *tree = parser.axiom();
 
     if (parser.getNumberOfSyntaxErrors() != 0) {
@@ -50,13 +56,14 @@ int main(int argn, const char **argv) {
     //CodeGenVisitor v;
     Visitor *visitor = new Visitor(symbolTable, errorManager);
     visitor->visit(tree);
-    symbolTable->print_dictionary();
+    //symbolTable->print_dictionary();
     delete symbolTable;
 
     cout << endl;
     cout << endl;*/
 
     AstVisitor v;
+
     Prog * prog = v.visit(tree);
     CFG * cfg = prog->linearize();
     cfg->gen_asm_x86(cout);

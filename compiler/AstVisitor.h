@@ -4,7 +4,7 @@
 #include "generated/ifccBaseVisitor.h"
 
 
-class  AstVisitor : public ifccBaseVisitor {
+class AstVisitor : public ifccBaseVisitor {
     
 	public:
 

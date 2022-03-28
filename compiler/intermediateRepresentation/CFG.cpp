@@ -48,16 +48,15 @@ void CFG::gen_asm_x86(ostream &o)
 
 }
 
-string CFG::IR_reg_to_asm(string reg)
-{
+string CFG::IR_reg_to_asm(string reg) {
     int level = 0;
-    Symbol * symbolReturned = this->symbolTable->returnSymbol(reg, level);
-    if( symbolReturned== nullptr )
-    {
-        cerr <<"Error in IR_reg_to_asm" << endl;
+    Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, level);
+    if (symbolReturned == nullptr) {
+        //ERROR
+        cerr << "Error in IR_reg_to_asm" << endl;
         exit(1);
     }
-    string returVal = "-"+to_string(symbolReturned->getIndex())+"(%rbp)";
+    string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
     return returVal;
 }
 

@@ -10,11 +10,11 @@ CCFLAGS=-g -c -std=c++11 -I$(ANTLRINC) -Wno-attributes # -Wno-defaulted-function
 LDFLAGS=-g
 
 default: all
-all: ifcc
+all: generated/ifcc%.cpp ifcc
 
 ##########################################
 # link together all pieces of our compiler
-OBJECTS=build/main.o build/Visitor.o build/AstVisitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/ErrorManager.o build/IRinstr.o build/CFG.o build/BasicBlock.o build/ast.o
+OBJECTS=build/main.o build/Visitor.o build/AstVisitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/IRinstr.o build/CFG.o build/BasicBlock.o build/ast.o build/SyntaxErrorListener.o build/Error.o build/ErrorManager.o build/ErrorStrategy.o
 
 ifcc: $(OBJECTS)
 	@mkdir -p build
@@ -22,7 +22,20 @@ ifcc: $(OBJECTS)
 
 ##########################################
 # compile our hand-writen C++ code: main(), Visitor, etc.
-build/%.o: %.cpp generated/ErrorManager.cpp
+
+build/ErrorStrategy.o: error/ErrorStrategy.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
+build/SyntaxErrorListener.o: error/SyntaxErrorListener.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
+build/Error.o: error/Error.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
+build/ErrorManager.o: error/ErrorManager.cpp
 	@mkdir -p build
 	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
