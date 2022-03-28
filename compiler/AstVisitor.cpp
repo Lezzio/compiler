@@ -77,11 +77,36 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
 }
 
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
-    ExprVar *exprVar = new ExprVar(context->VAR()->getText());
-    Expr *expr = (Expr *) visit(context->expression());
-    Affectation *affectation = new Affectation(exprVar, expr);
+    
+    if(true){ // test si expression different de var
+        //On récupère l'adresse tmp de expr
+        //movq $-16, -72(%rbp)
+
+        //Ensuite on cherche adresse de notre lvalue
+        //movq %rbp, %rax
+        //addq -72(%rbp), %rax
+        //movq %rax, -72(%rbp)
+        //
+        //movq -72(%rbp), %rax
+        //movq -64(%rbp), %r10
+        //movq %r10, (%rax)
+
+    }else{
+
+    }
+    
+    //ExprVar *exprVar = new ExprVar(context->expression(0)->getText());//VAR
+    Expr *lexpr = (Expr *) visit(context->expression(0));
+    Expr *rexpr = (Expr *) visit(context->expression(1)); //expression
+    Affectation *affectation = new Affectation(lexpr, rexpr);//(exprVar, expr)
     return (Statement *) affectation;
 }
+
+antlrcpp::Any visitLiteralexpr(ifccParser::LiteralexprContext *context) {}
+
+antlrcpp::Any visitLogicalexpr(ifccParser::LogicalexprContext *context) {}
+
+antlrcpp::Any visitArrayexpr(ifccParser::ArrayexprContext *context) {}
 
 antlrcpp::Any AstVisitor::visitUnaryexpr(ifccParser::UnaryexprContext *context) {
     Expr *expr = (Expr *) visit(context->expression());

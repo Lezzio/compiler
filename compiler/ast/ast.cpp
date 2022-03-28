@@ -238,6 +238,8 @@ string Affectation::linearize(CFG * cfg){
 
     TypeSymbol typeTmp = cfg->get_var_type(var1);
 
+    cout << "typeTmp " << typeTmp << endl;
+
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
     return var1;
 }

@@ -10,16 +10,13 @@ statement : declaration ';' #statement1
           | affectation ';' #statement2
           | retcode ';' #statement3 ;
 
-declaration : type VAR (',' VAR)* 
-            | VAR '(' declaration? ')' #functionexpr;
+declaration : type VAR (',' VAR)* ;
 
 affectation : type VAR '=' expression #affectation1
-            | VAR '=' expression #affectation2 
-            | VAR '[' expression ']' '=' expression #affectation3;
+            | expression '=' expression #affectation2;
 
 retcode : RETURN CONST #ret1
         | RETURN VAR #ret2 ;
-
   
 expression : VAR #varexpr
            | CONST #constexpr
@@ -44,7 +41,6 @@ DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
 INT : 'int' ;
 CHAR : 'char' ;
-LVALUE : VAR ;
 VAR : IDENT ;
 IDENT : [a-zA-Z_][a-zA-Z1-9_]* ;
 CHARACTER : '\'' .? '\'';

@@ -65,6 +65,7 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     // declaration + affectation
     //type VAR '=' expression
     string newVariableName = context->VAR()->getText();
+    cout << "VAR " <<  context->VAR()->getText() << endl;
     int level = 0;
     int address = 0;
     int last_tmp = visitChildren(context);
@@ -87,29 +88,35 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
 antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *context) {
     // TODO:: affect in symbole table
     // affectation
-    //VAR '=' expression
+    //expression '=' expression
+    
+    cout << "Affichage expr(0)" << context->expression(0) << endl;
 
-    string newVariableName = context->VAR()->getText();
-    int level = 0;
-    int address = 0;
-    int last_tmp = visitChildren(context);
-    cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
+    if(1){
+        cout << "Affichage expr(0)" << context->expression(0) << endl;
+    }else{
+        string newVariableName = context->expression(0)->getText();
+        int level = 0;
+        int address = 0;
+        int last_tmp = visitChildren(context);
+        cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
 
-    // si le symbole existe dans la symbolTable, on recupere son adresse
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(newVariableName, level);
-    if (symbolReturned != nullptr) {
-        if (symbolReturned->getStateSymbol() == ASSIGNED) {
-            address = symbolReturned->getAddress();
+        // si le symbole existe dans la symbolTable, on recupere son adresse
+        Symbol *symbolReturned = this->symbolTable->returnSymbol(newVariableName, level);
+        if (symbolReturned != nullptr) {
+            if (symbolReturned->getStateSymbol() == ASSIGNED) {
+                address = symbolReturned->getAddress();
+            } else {
+                address = this->symbolTable->assignSymbol(symbolReturned);
+            }
         } else {
-            address = this->symbolTable->assignSymbol(symbolReturned);
+            //TODO:: gestion des erreurs
+            cout << "affect 2: newVariableName does not exist " << endl;
         }
-    } else {
-        //TODO:: gestion des erreurs
-        cout << "affect 2: newVariableName does not exist " << endl;
-    }
 
-    // TODO:: get address variable
-    cout << "   movl	%eax," << address << "(%rbp) \n";
+        // TODO:: get address variable
+        cout << "   movl	%eax," << address << "(%rbp) \n";
+    }
 
     return 0;
 }
