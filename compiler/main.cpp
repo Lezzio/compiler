@@ -14,7 +14,7 @@
 #include "symbolTable/SymbolTable.h"
 #include "intermediateRepresentation/IR.h"
 #include "ast/ast.h"
-#include "ErrorManager.h"
+#include "error/SyntaxErrorListener.h"
 
 using namespace antlr4;
 using namespace std;
@@ -37,7 +37,9 @@ int main(int argn, const char **argv) {
 
     tokens.fill();
 
+    SyntaxErrorListener * syntaxErrorListener =  new SyntaxErrorListener();
     ifccParser parser(&tokens);
+    parser.addErrorListener(syntaxErrorListener);
     tree::ParseTree *tree = parser.axiom();
 
     if (parser.getNumberOfSyntaxErrors() != 0) {
@@ -57,6 +59,7 @@ int main(int argn, const char **argv) {
     cout << endl;*/
 
     AstVisitor v;
+
     Prog * prog = v.visit(tree);
     CFG * cfg = prog->linearize();
     cfg->gen_asm_x86(cout);
