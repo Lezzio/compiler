@@ -488,7 +488,7 @@ string IRInstr::getMovInstr(const string &origine, const string &destination, Ty
     }
 }
 
-string IRInstr::getAddInstr(string arg1, string arg2)
+string IRInstr::getAddInstr(const string& arg1, const string& arg2, Arch arch)
 {
     if (arch == x86){
         string action = "   addl ";
@@ -502,6 +502,7 @@ string IRInstr::getAddInstr(string arg1, string arg2)
         //return string(__FUNCTION__) + " not implemented for ARM\n";
     }
 }
+
 
 string IRInstr::getSubInstr(const string& arg1, const string& arg2, Arch arch)
 {
