@@ -1,6 +1,12 @@
-input.c: In function ‘main’:
-input.c:2:5: error: unknown type name ‘INTEGER’
-     INTEGER variable;
-     ^~~~~~~
+input.c:2:5: error: use of undeclared identifier 'INTEGER'
+    INTEGER variable;
+    ^
+input.c:3:5: error: use of undeclared identifier 'variable'
+    variable = 10;
+    ^
+input.c:4:12: error: use of undeclared identifier 'variable'
+    return variable;
+           ^
+3 errors generated.
 
 return code: 1

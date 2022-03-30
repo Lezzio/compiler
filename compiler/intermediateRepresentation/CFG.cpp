@@ -56,7 +56,7 @@ string CFG::IR_reg_to_asm(string reg) {
         cerr << "Error in IR_reg_to_asm" << endl;
         exit(1);
     }
-    string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
+    string returVal = "-" + to_string(symbolReturned->getLevel()) + "(%rbp)";
     return returVal;
 }
 

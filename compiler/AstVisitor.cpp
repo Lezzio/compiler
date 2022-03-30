@@ -3,6 +3,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace antlr4;
 
 antlrcpp::Any AstVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
     //throw antlr4::RecognitionException("okokok", recognizer, recognizer->getInputStream(), recognizer->getContext(), recognizer->getCurrentToken());
@@ -61,7 +62,10 @@ antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *conte
         t = CHAR;
     }
 
+    cout << "visit declaration" << endl;
     for (const auto var : context->VAR()) {
+        Token * token = var->getSymbol();
+        cout << token->getLine() << endl;
         declarations->addDeclaration(new Declaration(var->getText(), t));
     }
     return (Statement *) declarations;
@@ -214,7 +218,7 @@ antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context) {
     return type;
 }
 
-antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context) 
+antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context)
 {
     Expr* test = (Expr*)visit(context->expression());
 
@@ -268,7 +272,7 @@ antlrcpp::Any AstVisitor::visitWhileBlock(ifccParser::WhileBlockContext *context
 
     InstructionWhile * instrWhile = new InstructionWhile(test, whileBlock);
     return (Statement *) instrWhile;
-} 
+}
 
 
 antlrcpp::Any AstVisitor::visitForBlock(ifccParser::ForBlockContext *context) {

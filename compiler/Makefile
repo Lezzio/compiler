@@ -55,7 +55,7 @@ build/ast.o: ast/ast.cpp
 	@mkdir -p build
 	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
-build/IRinstr.o: intermediateRepresentation/IRinstr.cpp
+build/IRInstr.o: intermediateRepresentation/IRinstr.cpp
 	@mkdir -p build
 	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
