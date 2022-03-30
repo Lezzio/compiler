@@ -48,6 +48,7 @@ public:
         cmp_gt,
         cmp_ge,
         jmp,
+        offset,
     } Operation;
 
     /**  constructor */
@@ -81,6 +82,7 @@ private:
     string getGtInstr(string arg1);
     string getGeInstr(string arg1);
     string getJumpInstr(string arg1);
+    string getCallInstr(string arg1);
 };
 
 /**  The class for a basic block */
@@ -153,6 +155,7 @@ public:
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream &o);
     string IR_reg_to_asm(string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
+    string IR_reg_to_asm_param(int position);
     void gen_asm_prologue_x86(ostream &o);
     void gen_asm_epilogue_x86(ostream &o);
 
@@ -166,6 +169,8 @@ public:
     void setReturnSymbol(string name);
     void setCurrentFunction(string name) { symbolTable->current_function = name; }
     void setParametersPosition(string name, int position);
+    bool isSymbolExist(string name);
+    string getOffset();
     
 
     // basic block management

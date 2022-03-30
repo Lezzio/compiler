@@ -1,17 +1,13 @@
 #include <inttypes.h>
-int test(int d, int p){
-    int c = d;
-    int e = p;
-    return c;
+int test(int d){
+    int y = 4;
+    int j = 9;
+    return y;
 }
 
-int main (){
-    int  a = 42;
-    if(a == 42){
-        return a;
-    }
-    int b = a;
 
-
-    return b;
+int main() {
+    int a = 0;
+    int c = test(5);
+    return c;
 }

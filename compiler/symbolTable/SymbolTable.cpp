@@ -10,10 +10,7 @@ using namespace std;
 int SymbolTable::staticIndex;
 int SymbolTable::staticTempIndex = 0;
 
-SymbolTable::SymbolTable() {
-    staticIndex = 0;
-    current_function = "";
-}
+SymbolTable::SymbolTable(){ staticIndex = 0; current_function = ""; higherIndex =0; }
 
 int SymbolTable::addSymbol(const string &symbolName, int symbolLevel, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
     int index = staticIndex + getOffsetType(typeSymbol);
@@ -21,6 +18,7 @@ int SymbolTable::addSymbol(const string &symbolName, int symbolLevel, TypeSymbol
     if (!doesSymbolExist(newSymbol)) {
         this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
         staticIndex = index;
+        higherIndex = index;
         return newSymbol->getAddress();
     } else {
         cout << "Error detected can't declare symbol twice ADD_SYMBOL" << endl;
@@ -35,7 +33,7 @@ bool SymbolTable::declareSymbol(const string &symbolName, int symbolLevel, TypeS
 
     if (!doesSymbolExist(newSymbol)) {
         this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
-        print_dictionary();
+        //print_dictionary();
         return true;
     } else {
         //Error, can't declare a symbol twice
@@ -49,6 +47,7 @@ bool SymbolTable::declareSymbol(const string &symbolName, int symbolLevel, TypeS
 int SymbolTable::assignSymbol(Symbol *symbol) {
     symbol->setStateSymbol(ASSIGNED);
     staticIndex += getOffsetType(symbol->getTypeSymbol());
+    higherIndex = staticIndex;
     symbol->setLevel(staticIndex);
 
     return symbol->getAddress();
@@ -73,7 +72,7 @@ int SymbolTable::defFunction(string name, TypeSymbol typeSymbol) {
 
 bool SymbolTable::defParameter(string name, TypeSymbol typeSymbol) {
     int level = 0;
-    string symbolName = name;
+    string symbolName =  name + "_" + current_function ;
     if (level != -1) {
         //TODO Add scope implementation and handle it in the Symbol::getCode() instead
         //symbolName = name + "_" + current_function + "_" + to_string(level);
@@ -150,15 +149,6 @@ bool SymbolTable::doesSymbolExist(string code) {
     }
 }
 
-int SymbolTable::getAddressSymbol(string ident, int level) {
-    ident = ident + "_" + to_string(level);
-    if (table.find(ident) != table.end()) {
-        return table.find(ident)->second->getAddress();
-    } else {
-        return 0;
-    }
-}
-
 int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
     switch (typeSymbol) {
         case INT:
@@ -190,7 +180,6 @@ Symbol *SymbolTable::returnSymbol(string name, int level) {
 
 Symbol *SymbolTable::returnParameter(string name, int level) {
     string ident = name + "_" + current_function + "_" + to_string(level);
-
     if (table.find(ident) != table.end())
         return table.find(ident)->second;
     return nullptr;

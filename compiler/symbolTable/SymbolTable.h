@@ -38,6 +38,8 @@ public :
 
     string current_function;
     static int staticIndex;
+    //TODO: reset when change function
+    int higherIndex;
     static int staticTempIndex;
 
 protected :

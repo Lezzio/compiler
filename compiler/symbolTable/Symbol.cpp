@@ -1,4 +1,5 @@
 #include "Symbol.h"
+#include <iostream>
 
 #include <utility>
 
