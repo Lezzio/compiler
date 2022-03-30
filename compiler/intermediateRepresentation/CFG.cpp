@@ -73,12 +73,10 @@ string CFG::IR_reg_to_asm(string reg) {
     int level = 0;
     Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, level);
     if (symbolReturned != nullptr) {
-        //ERROR
-        cerr << "Error in IR_reg_to_asm" << endl;
         string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returVal;
     }
-    symbolReturned = this->symbolTable->returnParameter(reg, 0);
+    symbolReturned = this->symbolTable->returnParameter(reg, level);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
         return IR_reg_to_asm_param(position);
