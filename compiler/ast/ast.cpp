@@ -231,7 +231,7 @@ string Affectation::linearize(CFG * cfg){
     string right = rExpr->linearize(cfg);
     string leftName = lExpr->getVarName();
 
-    if(false){
+    if(true){
         string left = lExpr->linearize(cfg);
         //1. ldconst
         TypeSymbol typeTmp = cfg->get_var_type(left);

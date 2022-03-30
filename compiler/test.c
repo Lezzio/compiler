@@ -1,9 +1,5 @@
 #include <inttypes.h>
-int test(int d, int p){
-    int c = d;
-    int e = p;
-    return c;
-}
+
 
 int main (){
     int a = 3;
@@ -18,4 +14,10 @@ int main (){
     if(a == 42){
         return a;
     }
-    int b = a;*/
+    int b = a;
+    
+int test(int d, int p){
+    int c = d;
+    int e = p;
+    return c;
+}*/

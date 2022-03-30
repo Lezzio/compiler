@@ -1,4 +1,4 @@
-#include "Visitor.h"
+/*#include "Visitor.h"
 #include <iostream>
 #include "error/SyntaxErrorListener.h"
 
@@ -64,12 +64,7 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     // TODO:: affect in symbole table
     // declaration + affectation
     //type VAR '=' expression
-<<<<<<< HEAD
-    string newVariableName = context->VAR()->getText();
-    cout << "VAR " <<  context->VAR()->getText() << endl;
-=======
     string newVariableName = context->IDENT()->getText();
->>>>>>> 686346af0e45a63211255b48149f6bbdfbc2997a
     int level = 0;
     int address = 0;
     int last_tmp = visitChildren(context);
@@ -96,22 +91,11 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
     
     cout << "Affichage expr(0)" << context->expression(0) << endl;
 
-<<<<<<< HEAD
-    if(1){
-        cout << "Affichage expr(0)" << context->expression(0) << endl;
-    }else{
-        string newVariableName = context->expression(0)->getText();
-        int level = 0;
-        int address = 0;
-        int last_tmp = visitChildren(context);
-        cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
-=======
     string newVariableName = context->IDENT()->getText();
     int level = 0;
     int address = 0;
     int last_tmp = visitChildren(context);
     cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
->>>>>>> 686346af0e45a63211255b48149f6bbdfbc2997a
 
         // si le symbole existe dans la symbolTable, on recupere son adresse
         Symbol *symbolReturned = this->symbolTable->returnSymbol(newVariableName, level);
@@ -132,7 +116,7 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
 
     return 0;
 }
-
+*/
 /*
 antlrcpp::Any Visitor::visitAffectation3(ifccParser::Affectation2Context *context) {
     // TODO:: affect in symbole table
@@ -179,7 +163,7 @@ antlrcpp::Any Visitor::visitAffectation3(ifccParser::Affectation2Context *contex
     return 0;
 }
 */
-
+/*
 antlrcpp::Any Visitor::visitRet1(ifccParser::Ret1Context *context) {
     int retval = stoi(context->CONST()->getText());
     cout << " 	movl	$" << retval << ", %eax\n"
@@ -409,4 +393,4 @@ antlrcpp::Any Visitor::visitEqualityexpr(ifccParser::EqualityexprContext *contex
 
 antlrcpp::Any Visitor::visitType(ifccParser::TypeContext *context) {
     return visitChildren(context);
-}
+}*/

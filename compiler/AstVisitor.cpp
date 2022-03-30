@@ -142,24 +142,17 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
 }
 
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
-<<<<<<< HEAD
-    
     Expr *lexpr = (Expr *) visit(context->expression(0));
-    Expr *rexpr = (Expr *) visit(context->expression(1)); //expression
-    Affectation *affectation = new Affectation(lexpr, rexpr);//(exprVar, expr)
-=======
-    ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
-    Expr *expr = (Expr *) visit(context->expression());
-    Affectation *affectation = new Affectation(exprVar, expr);
->>>>>>> 686346af0e45a63211255b48149f6bbdfbc2997a
+    Expr *rexpr = (Expr *) visit(context->expression(1));
+    Affectation *affectation = new Affectation(lexpr, rexpr);
     return (Statement *) affectation;
 }
 
-antlrcpp::Any visitLiteralexpr(ifccParser::LiteralexprContext *context) {}
+//antlrcpp::Any visitLiteralexpr(ifccParser::LiteralexprContext *context) {}
 
-antlrcpp::Any visitLogicalexpr(ifccParser::LogicalexprContext *context) {}
+//antlrcpp::Any visitLogicalexpr(ifccParser::LogicalexprContext *context) {}
 
-antlrcpp::Any visitArrayexpr(ifccParser::ArrayexprContext *context) {}
+//antlrcpp::Any visitArrayexpr(ifccParser::ArrayexprContext *context) {}
 
 antlrcpp::Any AstVisitor::visitUnaryexpr(ifccParser::UnaryexprContext *context) {
     Expr *expr = (Expr *) visit(context->expression());
