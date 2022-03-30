@@ -3,6 +3,7 @@
 #include <iostream>
 
 using namespace std;
+using namespace antlr4;
 
 antlrcpp::Any AstVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
     //throw antlr4::RecognitionException("okokok", recognizer, recognizer->getInputStream(), recognizer->getContext(), recognizer->getCurrentToken());
@@ -22,17 +23,22 @@ antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
     string name = context->IDENT()->getText();
   // string name = "main";
   //  string name = (string) visit(context->nameFunction()).as<string>();
-    string res = (string) visit(context->type()).as<string>();
-
+    string res;
     TypeSymbol t = INT;
-    if (res == "char") {
-        t = CHAR;
+    if(context->type() != nullptr) {
+        res = (string) visit(context->type()).as<string>();   
+        if (res == "char") {
+            t = CHAR;
+        }
+    } else {
+        t = VOID;
     }
+
     Parameters * parameters = nullptr;
     if(context->parameters()!=nullptr) {
         parameters = (Parameters *) visit(context->parameters());
     }
-    
+
     Block * block = (Block *) visit(context->block());
     Function * function = new Function(name, t, parameters, block);
     return (Function * ) function;
@@ -72,6 +78,13 @@ antlrcpp::Any AstVisitor::visitStatement5(ifccParser::Statement5Context *context
 antlrcpp::Any AstVisitor::visitStatement6(ifccParser::Statement6Context *context)
 {
     return (Statement *)visit(context->forBlock());
+}
+
+antlrcpp::Any AstVisitor::visitStatement7(ifccParser::Statement7Context *context)
+{
+    Expr * expr = (Expr *)visit(context->expression());
+    InstructionExpr * inst = new InstructionExpr(expr);
+    return (Statement *) inst;
 }
 
 antlrcpp::Any AstVisitor::visitParameters(ifccParser::ParametersContext *context)
@@ -262,7 +275,7 @@ antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context) {
     return type;
 }
 
-antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context) 
+antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context)
 {
     Expr* test = (Expr*)visit(context->expression());
 
@@ -316,7 +329,7 @@ antlrcpp::Any AstVisitor::visitWhileBlock(ifccParser::WhileBlockContext *context
 
     InstructionWhile * instrWhile = new InstructionWhile(test, whileBlock);
     return (Statement *) instrWhile;
-} 
+}
 
 
 antlrcpp::Any AstVisitor::visitForBlock(ifccParser::ForBlockContext *context) {
@@ -342,5 +355,17 @@ antlrcpp::Any AstVisitor::visitForBlock(ifccParser::ForBlockContext *context) {
 
     InstructionFor * instrFor = new InstructionFor(init, test, update, forBlock);
     return (Statement *) instrFor;
+}
+
+
+antlrcpp::Any AstVisitor::visitFunctionexpr(ifccParser::FunctionexprContext *context){
+    string name = context->IDENT()->getText();
+    ExprFunction * function = new ExprFunction(name);
+
+    for(const auto expr : context->expression()){
+        function->addParameter((Expr * ) visit(expr));
+    }
+
+    return (Expr *) function;
 }
 

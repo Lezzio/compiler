@@ -1,65 +1,82 @@
 #include "Symbol.h"
+#include <iostream>
 
-Symbol::Symbol(int index, string name, TypeSymbol typeSymbol, int additionnal, StateSymbol stateSymbol, bool isConst){
+#include <utility>
 
+Symbol::Symbol() {}
+
+Symbol::Symbol(string name, int level, int index, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
+    this->name = std::move(name);
+    this->level = level;
     this->index = index;
-    this->name = name;
     this->typeSymbol = typeSymbol;
-    this->additional = additionnal;
+    this->additional = additional;
     this->stateSymbol = stateSymbol;
     this->isConst = isConst;
 }
 
-Symbol::~Symbol(){ }
+Symbol::~Symbol() {}
 
-void Symbol::setIndex(int index) { 
-    this->index = index;
+void Symbol::setLevel(int level) {
+    this->level = level;
 }
 
-void Symbol::setName(string name){
+void Symbol::setName(string name) {
     this->name = name;
 }
 
-void Symbol::setTypeSymbol(TypeSymbol typeSymbol){
+void Symbol::setTypeSymbol(TypeSymbol typeSymbol) {
     this->typeSymbol = typeSymbol;
 }
 
-void Symbol::setAdditional(int additional){
+void Symbol::setAdditional(int additional) {
     this->additional = additional;
 }
 
-void Symbol::setStateSymbol(StateSymbol stateSymbol){
+void Symbol::setStateSymbol(StateSymbol stateSymbol) {
     this->stateSymbol = stateSymbol;
 }
 
-string Symbol::getName(){
+string Symbol::getName() {
     return this->name;
 }
 
-string Symbol::getScope(){
+string Symbol::getScope() {
     return this->scope;
 }
 
-TypeSymbol Symbol::getTypeSymbol(){
+TypeSymbol Symbol::getTypeSymbol() {
     return this->typeSymbol;
 }
 
-int Symbol::getAdditional(){
+int Symbol::getAdditional() const {
     return this->additional;
 }
 
-int Symbol::getIndex(){
-    return this->index;
-}
-
-StateSymbol Symbol::getStateSymbol(){
+StateSymbol Symbol::getStateSymbol() {
     return this->stateSymbol;
 }
 
-bool Symbol::getIsConst(){
+bool Symbol::getIsConst() const {
     return this->isConst;
 }
 
-int Symbol::getAddress(){
-    return -this->index;
+int Symbol::getAddress() const {
+    return -getIndex();
+}
+
+string Symbol::getCode() {
+    return name + "_" + to_string(level);
+}
+
+int Symbol::getLevel() const {
+    return level;
+}
+
+int Symbol::getIndex() const {
+    return index;
+}
+
+void Symbol::setIndex(int index) {
+    this->index = index;
 }

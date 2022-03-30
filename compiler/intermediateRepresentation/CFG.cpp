@@ -1,5 +1,4 @@
 #include <iostream>
-
 using namespace std;
 
 #include "IR.h"
@@ -25,26 +24,28 @@ void CFG::addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> par
     current_bb->add_IRInstr(op, t, params);
 }
 
-void CFG::gen_asm_x86(ostream &o) {
-    //TODO: adapt with name of block and multiple blocks?
-    cout << ".text\n";
-    string currentFunction = name;
-    symbolTable->current_function = name;
+void CFG::gen_asm_x86(ostream &o)
+{
+    //TODO: adapt with name of block and multiple blocks? 
+        cout << ".text\n";
+        string currentFunction = name;
+        symbolTable->current_function = name;
+
 #ifdef __APPLE__
     cout << ".globl _"+currentFunction+"\n"
             " _"+currentFunction+": \n";
 #else
-    cout << ".globl	" + currentFunction + "\n"
-                                             " " + currentFunction + ": \n";
+    cout << ".globl	"+currentFunction+"\n"
+            " "+currentFunction+": \n";
 #endif
-    for (vector<BasicBlock *>::iterator it = bbs.begin(); it != bbs.end(); it++) {
+    for(auto it = bbs.begin(); it != bbs.end(); it++)
+    {
         (*it)->gen_asm_86(o);
     }
     return_bb->gen_asm_86(o);
     gen_asm_epilogue_x86(o);
     //o << "\n";
     //symbolTable->print_dictionary();
-
 }
 
 void CFG::gen_asm_ARM(ostream &o) {
@@ -72,14 +73,25 @@ string CFG::IR_reg_to_asm(string reg) {
     int level = 0;
     Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, level);
     if (symbolReturned != nullptr) {
+        //ERROR
+        cerr << "Error in IR_reg_to_asm" << endl;
         string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returVal;
     }
     symbolReturned = this->symbolTable->returnParameter(reg, 0);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
-        string returVal = "";
-        switch (position) {
+        return IR_reg_to_asm_param(position);
+    }
+    //ERROR
+    cerr << "Error in IR_reg_to_asm" << endl;
+    exit(1);
+}
+
+string CFG::IR_reg_to_asm_param(int position)
+{
+    string returVal;
+    switch (position) {
             case 1:
                 returVal = "%edi";
                 break;
@@ -98,19 +110,31 @@ string CFG::IR_reg_to_asm(string reg) {
             case 6:
                 returVal = "%r9d";
                 break;
+            default:
+                returVal = "unknown";
+                break;
         }
         return returVal;
-    }
-    //ERROR
-    cerr << "Error in IR_reg_to_asm" << endl;
-    exit(1);
 }
+
 
 void CFG::gen_asm_prologue_x86(ostream &o) {
     o << "   #prologue\n"
          "   pushq %rbp\n"
          "   movq %rsp, %rbp\n";
 }
+
+void CFG::gen_asm_epilogue_x86(ostream &o)
+{
+    cout << "   #epilogue\n";
+            if(get_var_type(name)== VOID){
+                cout << "   nop\n";
+            }
+       //     "   popq %rbp\n"
+    cout <<     "   leave\n"
+                "   ret\n";
+}
+
 
 void CFG::gen_asm_prologue_ARM(ostream &o) {
     o << "\tpush\t{r7, lr}" << endl;
@@ -132,20 +156,17 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
     o << "\tbx\tlr" << endl;
 }
 
-void CFG::gen_asm_epilogue_x86(ostream &o) {
-    o << "   #epilogue\n"
-         //     "   popq %rbp\n"
-         "   leave\n"
-         "   ret\n";
-}
 
 // symbol table methods
-void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol) {
-    if (stateSymbol == PARAMETER) {
-        this->symbolTable->defParameter(name, t);
-    } else if (stateSymbol == FUNCTION) {
-        this->symbolTable->defFunction(name, t);
-    } else if (stateSymbol == DECLARED) {
+void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol)
+{
+    if(stateSymbol == PARAMETER){
+        this->symbolTable->defParameter(name,  t);
+    }
+    else if(stateSymbol == FUNCTION){
+        this->symbolTable->defFunction(name,  t);
+    }
+    else if(stateSymbol==DECLARED){
         this->symbolTable->declareSymbol(name, 0, t, 0, DECLARED, 0);
     } else {
         symbolTable->addSymbol(name, 0, t, 0, stateSymbol, 0);
@@ -175,7 +196,6 @@ int CFG::get_var_index(string name) {
 TypeSymbol CFG::get_var_type(string name) {
     Symbol *symbol = symbolTable->returnSymbol(name, 0);
     //TODO: check error
-
     return symbol->getTypeSymbol();
 }
 
@@ -204,4 +224,12 @@ void CFG::setReturnSymbol(string name) {
     if (!symbolTable->doesSymbolExist(name, 0)) {
         symbolTable->addSymbol(name, 0, INT, 0, ASSIGNED, 0);
     }
+}
+
+bool CFG::isSymbolExist(string name){
+    return symbolTable->doesSymbolExist(name,0);
+}
+
+string CFG::getOffset(){
+    return to_string(symbolTable->higherIndex);
 }

@@ -37,6 +37,9 @@ void BasicBlock::gen_asm_86(ostream &o)
     o << label << ":" << "\n";
     if(cfg->firstBB(this)){
         this->cfg->gen_asm_prologue_x86(o);
+        IRInstr * ir = new IRInstr(this,IRInstr::offset, INT64_T, {cfg->getOffset()});
+        ir->gen_asm_x86(o);
+        delete ir;
     }
     for(auto & instr : instrs)
     {

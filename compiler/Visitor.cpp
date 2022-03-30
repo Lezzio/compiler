@@ -50,7 +50,7 @@ antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *context)
         string newVariableName = var->getText();
         int level = 0;
 
-        if (!this->symbolTable->doesSymbolExist(newVariableName, level)) {
+        if (!this->symbolTable->doesSymbolExist(newVariableName)) {
             this->symbolTable->declareSymbol(newVariableName, level, INT, 0, DECLARED, 0);
         } else {
             //TODO:: gestion des erreurs
@@ -79,7 +79,6 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
 
 
     cout << "   movl	%eax," << address << "(%rbp) \n";
-
 
     return 0;
 }

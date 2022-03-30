@@ -34,10 +34,15 @@ void IRInstr::gen_asm_x86(ostream &o)
             }
         case copy:
             {
-            if(!bb->cfg->isAssigneSymbol(this->params[0])){
-                this->bb->cfg->assignSymbol(this->params[0]);
+            string destination;
+            if(this->params[0].compare("param_reg") == 0){
+                destination = this->bb->cfg->IR_reg_to_asm_param(stoi(this->params[2]));
+            } else {
+                if(!bb->cfg->isAssigneSymbol(this->params[0])){
+                 this->bb->cfg->assignSymbol(this->params[0]);
+                }
+                destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             }
-            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             o << getMovInstr(origin, reg);
             o << getMovInstr(reg, destination);
@@ -137,7 +142,13 @@ void IRInstr::gen_asm_x86(ostream &o)
             o << getMovInstr("%r10", "("+reg+")");
             break;}
         case call:
-            {//TODO:
+            {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            string funcName = this->params[1];
+            o << getCallInstr(funcName);
+            if(t != VOID){
+                 o << getMovInstr(reg, destination);
+            }
             break;}
         case cmp_eq:
             {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
@@ -211,6 +222,15 @@ void IRInstr::gen_asm_x86(ostream &o)
             }
             o << getMovInstr(reg, destination);
             break;}
+        case offset:
+            {
+            int value = stoi(this->params[0]);
+            value = value / 16;
+            value = value *16 +16;
+            string offset = "$"+to_string(value);
+            o << getSubInstr(offset, "%rsp");
+            break;
+            }
         default:
             break;
     }
@@ -447,7 +467,6 @@ string IRInstr::getMovInstr(const string &origine, const string &destination, Ty
         if (type == CHAR || type == INT8_T){
             type_b = "b";
         }
-
         if  (destination[0] == 'r' && origine[0] != 'r'){   //from stack to reg
 
             if(cst){ //load cst to reg
@@ -469,7 +488,7 @@ string IRInstr::getMovInstr(const string &origine, const string &destination, Ty
     }
 }
 
-string IRInstr::getAddInstr(const string& arg1, const string& arg2, Arch arch)
+string IRInstr::getAddInstr(string arg1, string arg2)
 {
     if (arch == x86){
         string action = "   addl ";
@@ -490,6 +509,9 @@ string IRInstr::getSubInstr(const string& arg1, const string& arg2, Arch arch)
         string action = "   subl ";
         if(t == CHAR){
             action = "  subb ";
+        }
+        if(t == INT64_T){
+            action = "  subq ";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
@@ -617,7 +639,7 @@ string IRInstr::getCompInstr(const string& arg1, const string& arg2, Arch arch)
     } else {
         string action = "   cmp ";
         return action + arg1 + ", " + arg2 + "\n";
-        return string(__FUNCTION__) + " not implemented for ARM\n";
+        //return string(__FUNCTION__) + " not implemented for ARM\n";
     }
 }
 
@@ -803,6 +825,10 @@ string IRInstr::getGeInstr(const string& arg1, Arch arch)
 
 string IRInstr::getJumpInstr(const string& arg1, Arch arch){
     return "   jmp   " + arg1 + "\n";
+}
+
+string IRInstr::getCallInstr(const string& arg1){
+    return "   call " + arg1 + "\n";
 }
 
 
