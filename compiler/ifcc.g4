@@ -2,7 +2,10 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog : INT 'main' '(' ')' block ;
+prog :function* ;
+
+function : type IDENT '(' parameters? ')' block ;
+//TODO: add void
 
 block : '{' statement* '}' ; 
 
@@ -13,15 +16,21 @@ statement : declaration ';' #statement1
           | whileBlock #statement5
           | forBlock #statement6;
 
-declaration : type VAR (',' VAR)* ;
+nameFunction : IDENT ;
+
+parameters : parameter (',' parameter)* ;
+
+parameter : type IDENT ;
+
+declaration : type IDENT (',' IDENT)* ;
     //        | VAR '(' declaration? ')' #functionexpr;
 
-affectation : type VAR '=' expression #affectation1
-            | VAR '=' expression #affectation2; 
+affectation : type IDENT '=' expression #affectation1
+            | IDENT '=' expression #affectation2; 
           //  | VAR '[' expression ']' '=' expression #affectation3;
 
 retcode : RETURN CONST #ret1
-        | RETURN VAR #ret2 ;
+        | RETURN IDENT #ret2 ;
 
 ifBlock : 'if' '(' expression ')' (statement | block) elseBlock? ;
 
@@ -32,7 +41,7 @@ whileBlock : 'while' '(' expression ')' (statement | block) ;
 forBlock : 'for' '(' (init=statement | ';') (test=expression) ';' (update=affectation)? ')' (statement | block) ;
 //deal with infinite loop ?
 
-expression : VAR #varexpr
+expression : IDENT #varexpr
            | CONST #constexpr
            | CHARACTER #charexpr
            | expression op=('*' | '/' | '%') expression #multplicationexpr
@@ -55,7 +64,7 @@ DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
 INT : 'int' ;
 CHAR : 'char' ;
-LVALUE : VAR ;
-VAR : IDENT ;
+//LVALUE : VAR ;
+//VAR : [a-zA-Z_][a-zA-Z1-9_]* ;
 IDENT : [a-zA-Z_][a-zA-Z1-9_]* ;
 CHARACTER : '\'' .? '\'';

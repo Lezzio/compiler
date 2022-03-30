@@ -30,12 +30,14 @@ void CFG::gen_asm_x86(ostream &o)
 {
     //TODO: adapt with name of block and multiple blocks? 
         cout << ".text\n";
+        string currentFunction = name;
+        symbolTable->current_function = name;
 #ifdef __APPLE__
-    cout << ".globl _main\n"
-            " _main: \n";
+    cout << ".globl _"+currentFunction+"\n"
+            " _"+currentFunction+": \n";
 #else
-    cout << ".globl	main\n"
-            " main: \n";
+    cout << ".globl	"+currentFunction+"\n"
+            " "+currentFunction+": \n";
 #endif
     for(vector<BasicBlock*>::iterator it = bbs.begin(); it != bbs.end(); it++)
     {
@@ -51,13 +53,39 @@ void CFG::gen_asm_x86(ostream &o)
 string CFG::IR_reg_to_asm(string reg) {
     int level = 0;
     Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, level);
-    if (symbolReturned == nullptr) {
-        //ERROR
-        cerr << "Error in IR_reg_to_asm" << endl;
-        exit(1);
+    if (symbolReturned != nullptr) {
+        string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
+        return returVal;
     }
-    string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
-    return returVal;
+    symbolReturned = this->symbolTable->returnParameter(reg, 0);
+    if(symbolReturned != nullptr){
+        int position = symbolReturned->getIndex();
+        string returVal = "";
+        switch (position) {
+            case 1:
+                returVal = "%edi";
+                break;
+            case 2:
+                returVal = "%esi";
+                break;
+            case 3:
+                returVal = "%edx";
+                break;
+            case 4:
+                returVal = "%ecx";
+                break;
+            case 5:
+                returVal = "%r8d";
+                break;
+            case 6:
+                returVal = "%r9d";
+                break;
+        }
+        return returVal;
+    }
+    //ERROR
+    cerr << "Error in IR_reg_to_asm" << endl;
+    exit(1);    
 }
 
 void CFG::gen_asm_prologue_x86(ostream &o)
@@ -70,19 +98,31 @@ void CFG::gen_asm_prologue_x86(ostream &o)
 void CFG::gen_asm_epilogue_x86(ostream &o)
 {
     cout << "   #epilogue\n"
-            "   popq %rbp\n"
+       //     "   popq %rbp\n"
+            "   leave\n"
             "   ret\n";
 }
 
 // symbol table methods
 void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol)
-{
-    if(stateSymbol==DECLARED){
+{   
+    if(stateSymbol == PARAMETER){
+        this->symbolTable->defParameter(name,  t);
+    }
+    else if(stateSymbol == FUNCTION){
+        this->symbolTable->defFunction(name,  t);
+    }
+    else if(stateSymbol==DECLARED){
         this->symbolTable->declareSymbol(name, 0, t, 0, DECLARED, 0);
     } else {
          symbolTable->addSymbol(name, 0, t, 0,stateSymbol,0);
     }
 
+}
+
+void CFG::setParametersPosition(string name, int position) {
+    Symbol * symbol = symbolTable->returnParameter(name, 0);
+    symbol->setIndex(position);
 }
 
 string CFG::create_new_tempvar(TypeSymbol t)

@@ -5,6 +5,8 @@
 enum StateSymbol{
     DECLARED,
     ASSIGNED,
+    FUNCTION,
+    PARAMETER,
 };
 
 #endif // STATE_H

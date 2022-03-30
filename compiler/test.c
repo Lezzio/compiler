@@ -1,17 +1,17 @@
 #include <inttypes.h>
-<<<<<<< HEAD
-int main()
-{
-int a = 2;
-while(a!=8){
-    a = a +1;
+int test(int d, int p){
+    int c = d;
+    int e = p;
+    return c;
 }
-return 5;
-=======
 
-int main() {
-    char d;
-    d = 1080;
-    return d;
->>>>>>> 531c500119504141fe103d7ecaa46da795563923
+int main (){
+    int  a = 42;
+    if(a == 42){
+        return a;
+    }
+    int b = a;
+
+
+    return b;
 }

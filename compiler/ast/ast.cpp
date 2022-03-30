@@ -202,23 +202,7 @@ ExprUnary::~ExprUnary(){
     delete (rExpr);
 }
 
-CFG* Prog::linearize(){
-    CFG *cfg = new CFG(new SymbolTable(), "main");
-    BasicBlock *bb = new BasicBlock(cfg, cfg->new_BB_name());
-    cfg->add_bb(bb);
 
-    BasicBlock *returnBlock = new BasicBlock(cfg, cfg->new_BB_name());
-    returnBlock->add_IRInstr(IRInstr::finret, INT, {"!retvalue"});
-    cfg->return_bb = returnBlock;
-    //cfg->current_bb->exit_true = returnBlock;
-    
-    block->linearize(cfg);
-    return cfg;
-}
-
-Prog::~Prog(){
-    delete (block);
-}
 
 void Block::addStatement(Statement * statement)
 {
@@ -423,4 +407,84 @@ string InstructionFor::linearize(CFG * cfg)
     cfg->add_bb(endforBB);
 
     return "";
+}
+
+string Parameter::linearize(CFG * cfg){
+    cfg->add_to_symbol_table(name, type, PARAMETER);
+    return name;
+}
+
+void Parameters::addParameter(Parameter *parameter){
+    parameters.push_back(parameter);
+}
+
+string Parameters::linearize(CFG * cfg){
+    int position = 1;
+    for(Parameter *p: parameters){
+        string name = p->linearize(cfg);
+        cfg->setParametersPosition(name, position);
+        position ++;
+    }
+    return "";
+}
+
+Parameters::~Parameters(){
+    for(Parameter *p: parameters){
+        delete (p);
+    }
+    parameters.clear();
+}
+
+Function::~Function(){
+    delete (parameters);
+    delete (block);
+}
+
+string Function::linearize(CFG * cfg){
+    cfg->setCurrentFunction(name);
+    cfg->add_to_symbol_table(name, type, FUNCTION);
+
+    BasicBlock *bb = new BasicBlock(cfg, cfg->new_BB_name());
+    cfg->add_bb(bb);
+
+    BasicBlock *returnBlock = new BasicBlock(cfg, cfg->new_BB_name());
+    returnBlock->add_IRInstr(IRInstr::finret, INT, {"!retvalue"});
+    cfg->return_bb = returnBlock;
+
+    if(parameters != nullptr){
+        parameters->linearize(cfg);
+    }
+
+    block->linearize(cfg);
+
+    return "";
+}
+
+vector<CFG*> Prog::linearize(){
+    SymbolTable *symbolTable = new SymbolTable();
+
+    for(Function * f: functions){
+        CFG *cfg = new CFG(symbolTable, f->name);
+        f->linearize(cfg);
+        cfgs.push_back(cfg);
+    }
+
+    //symbolTable->print_dictionary();
+
+    return cfgs;
+}
+
+Prog::~Prog(){
+    for(Function *f : functions){
+        delete(f);
+    }
+    functions.clear();
+    for(CFG *cfg : cfgs){
+        delete(cfg);
+    }
+    cfgs.clear();
+}
+
+void Prog::addFunction(Function * function){
+    functions.push_back(function);
 }

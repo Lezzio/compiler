@@ -164,6 +164,8 @@ public:
     void assignSymbol(string name);
     bool isAssigneSymbol(string name);
     void setReturnSymbol(string name);
+    void setCurrentFunction(string name) { symbolTable->current_function = name; }
+    void setParametersPosition(string name, int position);
     
 
     // basic block management

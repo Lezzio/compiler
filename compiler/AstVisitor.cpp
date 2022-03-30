@@ -10,9 +10,32 @@ antlrcpp::Any AstVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
 }
 
 antlrcpp::Any AstVisitor::visitProg(ifccParser::ProgContext *context) {
-    Prog *prog = new Prog((Block *) visit(context->block()));
-
+    Prog *prog = new Prog();
+    for (const auto f : context->function()) {
+        Function *function = (Function *) visit(f);
+        prog->addFunction(function);
+    }
     return prog;
+}
+
+antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
+    string name = context->IDENT()->getText();
+  // string name = "main";
+  //  string name = (string) visit(context->nameFunction()).as<string>();
+    string res = (string) visit(context->type()).as<string>();
+
+    TypeSymbol t = INT;
+    if (res == "char") {
+        t = CHAR;
+    }
+    Parameters * parameters = nullptr;
+    if(context->parameters()!=nullptr) {
+        parameters = (Parameters *) visit(context->parameters());
+    }
+    
+    Block * block = (Block *) visit(context->block());
+    Function * function = new Function(name, t, parameters, block);
+    return (Function * ) function;
 }
 
 antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context) {
@@ -51,6 +74,31 @@ antlrcpp::Any AstVisitor::visitStatement6(ifccParser::Statement6Context *context
     return (Statement *)visit(context->forBlock());
 }
 
+antlrcpp::Any AstVisitor::visitParameters(ifccParser::ParametersContext *context)
+{
+    Parameters * parameters = new Parameters();
+
+    int index = 0;
+    for(const auto p : context->parameter()){
+        parameters->addParameter((Parameter *) visit(p));
+    }
+
+    return (Parameters *) parameters;
+}
+
+antlrcpp::Any AstVisitor::visitParameter(ifccParser::ParameterContext *context)
+{
+    string res = (string) visit(context->type()).as<string>();
+
+    TypeSymbol t = INT;
+    if (res == "char") {
+        t = CHAR;
+    }
+    Parameter * parameter = new Parameter(context->IDENT()->getText(), t);
+
+    return (Parameter *) parameter;
+}
+
 antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *context)
 {
     Declarations * declarations = new Declarations();
@@ -61,7 +109,7 @@ antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *conte
         t = CHAR;
     }
 
-    for (const auto var : context->VAR()) {
+    for (const auto var : context->IDENT()) {
         declarations->addDeclaration(new Declaration(var->getText(), t));
     }
     return (Statement *) declarations;
@@ -74,7 +122,7 @@ antlrcpp::Any AstVisitor::visitRet1(ifccParser::Ret1Context *context) {
 }
 
 antlrcpp::Any AstVisitor::visitRet2(ifccParser::Ret2Context *context) {
-    ExprVar *exprVar = new ExprVar(context->VAR()->getText());
+    ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
     Return *ret = new Return(exprVar);
     return (Statement *) ret;
 }
@@ -87,14 +135,14 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
         t = CHAR;
     }
 
-    Declaration *declaration = new Declaration(context->VAR()->getText(), t);
+    Declaration *declaration = new Declaration(context->IDENT()->getText(), t);
     Expr *expr = (Expr *) visit(context->expression());
     DecAffectation *decAffectation = new DecAffectation(declaration, expr);
     return (Statement *) decAffectation;
 }
 
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
-    ExprVar *exprVar = new ExprVar(context->VAR()->getText());
+    ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
     Expr *expr = (Expr *) visit(context->expression());
     Affectation *affectation = new Affectation(exprVar, expr);
     return (Statement *) affectation;
@@ -143,7 +191,7 @@ antlrcpp::Any AstVisitor::visitBracketexpr(ifccParser::BracketexprContext *conte
 }
 
 antlrcpp::Any AstVisitor::visitVarexpr(ifccParser::VarexprContext *context) {
-    ExprVar *exprVar = new ExprVar(context->VAR()->getText());
+    ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
     return (Expr *) exprVar;
 }
 
@@ -295,3 +343,4 @@ antlrcpp::Any AstVisitor::visitForBlock(ifccParser::ForBlockContext *context) {
     InstructionFor * instrFor = new InstructionFor(init, test, update, forBlock);
     return (Statement *) instrFor;
 }
+
