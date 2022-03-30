@@ -10,7 +10,7 @@ CCFLAGS=-g -c -std=c++11 -I$(ANTLRINC) -Wno-attributes # -Wno-defaulted-function
 LDFLAGS=-g
 
 default: all
-all: generated/ifcc%.cpp ifcc
+all: ifcc
 
 ##########################################
 # link together all pieces of our compiler

@@ -55,7 +55,6 @@ DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
 INT : 'int' ;
 CHAR : 'char' ;
-LVALUE : VAR ;
 VAR : IDENT ;
 IDENT : [a-zA-Z_][a-zA-Z1-9_]* ;
 CHARACTER : '\'' .? '\'';
