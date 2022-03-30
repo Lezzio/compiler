@@ -11,3 +11,7 @@
 *Makefile
 Makefile
 /antlr
+CMakeLists.txt
+/compiler/ifcc
+/compiler/ifcc.dSYM
+.idea

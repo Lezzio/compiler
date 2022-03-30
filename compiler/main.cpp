@@ -23,12 +23,23 @@ using namespace std;
 
 int main(int argn, const char **argv) {
     //TODO:: arg to disable warnings
+
+    bool arm = false;
+
     stringstream in;
     if (argn == 2) {
         ifstream lecture(argv[1]);
         in << lecture.rdbuf();
+    } else if (argn == 3) {
+        ifstream lecture(argv[1]);
+        in << lecture.rdbuf();
+        if (string(argv[2]) == "-ARM"){
+            arm = true;
+        } else {
+            cerr << "Option " << argv[2] << " unknown : try -ARM instead " << endl;
+        }
     } else {
-        cerr << "usage: ifcc path/to/file.c" << endl;
+        cerr << "usage: ifcc path/to/file.c [-ARM]" << endl;
         exit(1);
     }
 
@@ -39,7 +50,7 @@ int main(int argn, const char **argv) {
 
     tokens.fill();
 
-    SyntaxErrorListener * syntaxErrorListener =  new SyntaxErrorListener();
+    auto * syntaxErrorListener =  new SyntaxErrorListener();
     ifccParser parser(&tokens);
    // Ref<ANTLRErrorStrategy> errorStrategyRef = make_shared<ErrorStrategy>();
    // parser.setErrorHandler(errorStrategyRef);
@@ -67,8 +78,16 @@ int main(int argn, const char **argv) {
     Prog * prog = v.visit(tree);
     vector<CFG *> cfgs;
     cfgs = prog->linearize();
+
+
+    //TODO : get from ifcc options
     for(CFG * cfg : cfgs){
-        cfg->gen_asm_x86(cout);   
+        if (arm){   //ARM
+            cfg->gen_asm_ARM(cout);
+        } else {    //x86
+            cfg->gen_asm_x86(cout);
+        }
+
     }
     //delete (prog);
 

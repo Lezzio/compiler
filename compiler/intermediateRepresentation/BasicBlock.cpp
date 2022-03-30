@@ -41,9 +41,9 @@ void BasicBlock::gen_asm_86(ostream &o)
         ir->gen_asm_x86(o);
         delete ir;
     }
-    for(vector<IRInstr*>::iterator it = instrs.begin(); it != instrs.end(); it++)
+    for(auto & instr : instrs)
     {
-        (*it)->gen_asm_x86(o);
+        instr->gen_asm_x86(o);
     }
 
     if(exit_true == nullptr)
@@ -62,5 +62,36 @@ void BasicBlock::gen_asm_86(ostream &o)
         }
        o << action << "    $0, " << address << "\n";
        o << "   je  " << exit_false->label << "\n"; 
+    }
+}
+
+
+void BasicBlock::gen_asm_ARM(ostream &o)
+{
+    o << label << ":" << "\n";
+    if(cfg->firstBB(this)){
+        this->cfg->gen_asm_prologue_ARM(o);
+    }
+    for(auto & instr : instrs)
+    {
+        instr->gen_asm_ARM(o);
+    }
+
+    if(exit_true == nullptr)
+    {
+        //this->cfg->gen_asm_epilogue_x86(o);
+    } else if(exit_false == nullptr)
+    {
+        o << "   jmp   " << exit_true->label << "\n";
+    } else {
+        string address = cfg->IR_reg_to_asm(test_var_name);
+        TypeSymbol t = cfg->get_var_type(test_var_name);
+
+        string action = "   cmpl";
+        if(t==CHAR){
+            action = "  cmpb";
+        }
+        o << action << "    $0, " << address << "\n";
+        o << "   je  " << exit_false->label << "\n";
     }
 }
