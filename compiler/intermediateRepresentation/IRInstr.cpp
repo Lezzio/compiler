@@ -827,7 +827,7 @@ string IRInstr::getJumpInstr(const string& arg1, Arch arch){
     return "   jmp   " + arg1 + "\n";
 }
 
-string IRInstr::getCallInstr(const string& arg1){
+string IRInstr::getCallInstr(const string& arg1, Arch arch){
     return "   call " + arg1 + "\n";
 }
 

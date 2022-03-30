@@ -89,6 +89,7 @@ private:
     string getGtInstr(const string& arg1, Arch arch = x86);
     string getGeInstr(const string& arg1, Arch arch = x86);
     string getJumpInstr(const string& arg1, Arch arch = x86);
+    string getCallInstr(const string& arg1, Arch arch = x86);
 
 };
 
