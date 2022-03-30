@@ -241,48 +241,25 @@ string Affectation::linearize(CFG * cfg){
     string right = rExpr->linearize(cfg);
     string leftName = lExpr->getVarName();
 
-    if(true){
+    if(false){
         string left = lExpr->linearize(cfg);
-
-        //On récupère l'adresse tmp de expr rValue
-        //movq $-16, -72(%rbp)
-
-        //Ensuite on cherche adresse de notre lvalue
-        //movq %rbp, %rax
-        //addq -72(%rbp), %rax
-        //movq %rax, -72(%rbp)
-        //
-        //movq -72(%rbp), %rax
-        //movq -64(%rbp), %r10
-        //movq %r10, (%rax)
-
-        //Trouver adresse symbolTable de right
-        
-        /*
-        int regVal;
-        __asm {
-        mov [regVal], eax
-        }
-        */
-        //cfg->addInstruction(IRInstr::copy, typeTmp, {right, left});
-
         //1. ldconst
         TypeSymbol typeTmp = cfg->get_var_type(left);
         int indexLeft = cfg->get_var_index(left);
         string tmpRbp = cfg->create_new_tempvar(typeTmp);
-        cfg->addInstruction(IRInstr::ldconst, typeTmp, {tmpRbp, to_string(indexLeft)});
+        
+        cfg->addInstruction(IRInstr::ldconst, typeTmp, {tmpRbp, "$"+to_string(indexLeft)});
         //2. add
-        cfg->addInstruction(IRInstr::add, typeTmp, {tmpRbp, "!bp", tmpRbp});
+        cfg->addInstruction(IRInstr::add_lValue, typeTmp, {tmpRbp, "%rbp", tmpRbp});
         //3. wmem
         cfg->addInstruction(IRInstr::wmem, typeTmp, {tmpRbp, right});
-
         return left;
-    }else{
-        TypeSymbol typeTmp = cfg->get_var_type(leftName);
-        //cout << "typeTmp : " << typeTmp << endl;
-        cfg->addInstruction(IRInstr::copy, typeTmp, {leftName, right});
-        return leftName;
     }
+    //Else case with lValue = Variable
+    TypeSymbol typeTmp = cfg->get_var_type(leftName);
+    //cout << "typeTmp : " << typeTmp << endl;
+    cfg->addInstruction(IRInstr::copy, typeTmp, {leftName, right});
+    return leftName;
 
 }
 

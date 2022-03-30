@@ -37,6 +37,14 @@ void IRInstr::gen_asm_x86(ostream &o)
             o << getAddInstr(rvalue, reg);
             o << getMovInstr(reg, destination);}
             break;
+        case add_lValue:
+            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            string lvalue = this->params[1];
+            string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
+            o << getMovInstr(lvalue, reg);
+            o << getAddInstr(rvalue, reg);
+            o << getMovInstr(reg, destination);}
+            break;    
         case sub:
             {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
@@ -119,8 +127,8 @@ void IRInstr::gen_asm_x86(ostream &o)
         case wmem:
             {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1]);
-            o << getMovInstr(origin, reg);
-            o << getMovInstr(destination, "%r10");
+            o << getMovInstr(destination, reg);
+            o << getMovInstr(origin, "%r10");
             o << getMovInstr("%r10", "("+reg+")");
             break;}
         case call:
@@ -210,9 +218,9 @@ IRInstr::IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> par
 
 string IRInstr::getMovInstr(string origin, string destination, TypeSymbol type)
 {
-    if(origin.compare("!bp") == 0){
-        origin = "%rbp";
-    }
+    // if(origin.compare("!bp") == 0){
+    //     origin = "%rbp";
+    // }
     if(type == INT){
         string action = "   movl ";
         if(t == CHAR){

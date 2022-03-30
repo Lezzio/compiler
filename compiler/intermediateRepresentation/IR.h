@@ -28,6 +28,7 @@ public:
         ret,
         copy,
         add,
+        add_lValue,
         sub,
         mul,
         div,
@@ -78,7 +79,6 @@ private:
     string getLeInstr(string arg1);
     string getGtInstr(string arg1);
     string getGeInstr(string arg1);
-    int getRegVal(string destination);
 };
 
 /**  The class for a basic block */
@@ -160,7 +160,7 @@ public:
     int get_var_index(string name);
     TypeSymbol get_var_type(string name);
     void assignSymbol(string name);
-    
+    void printSymbolTable();
 
     // basic block management
     string new_BB_name();

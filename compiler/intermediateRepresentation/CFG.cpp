@@ -55,7 +55,7 @@ string CFG::IR_reg_to_asm(string reg)
 {
     int level = 0;
     Symbol * symbolReturned = this->symbolTable->returnSymbol(reg, level);
-    if( symbolReturned== nullptr )
+    if(symbolReturned == nullptr)
     {
         cerr <<"Error in IR_reg_to_asm" << endl;
         exit(1);
@@ -126,4 +126,9 @@ void CFG::assignSymbol(string name)
     Symbol * symbolReturned = this->symbolTable->returnSymbol(name, 0);
     this->symbolTable->assignSymbol(symbolReturned);
 
+}
+
+void CFG::printSymbolTable(){
+    cout << "Print Symbol Table ->" << endl;
+    symbolTable->print_dictionary();
 }
