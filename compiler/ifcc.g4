@@ -36,12 +36,12 @@ expression : VAR #varexpr
            | CONST #constexpr
            | CHARACTER #charexpr
            | expression op=('*' | '/' | '%') expression #multplicationexpr
+           | op=('-' | '!') expression #unaryexpr
            | expression op=('+' | '-') expression #additiveexpr
            | expression op=('|' | '&' | '^') expression #bitsexpr
            | expression op=('<' | '<=' | '>=' | '>') expression #relationalexpr
            | expression op=('==' | '!=') expression #equalityexpr
           // | expression op=('&&' | '||') expression #logicalexpr
-           | op=('-' | '!') expression #unaryexpr
            | '(' expression ')' #bracketexpr ;
 	  // | VAR '[' expression ']' #arrayexpr;
 	  // | ('-' | '!')? (CONST | CHAR | VAR)	#literalexpr;

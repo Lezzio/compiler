@@ -14,7 +14,7 @@ all: ifcc
 
 ##########################################
 # link together all pieces of our compiler
-OBJECTS=build/main.o build/Visitor.o build/AstVisitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/IRinstr.o build/CFG.o build/BasicBlock.o build/ast.o build/SyntaxErrorListener.o build/Error.o build/ErrorManager.o build/ErrorStrategy.o
+OBJECTS=build/main.o build/Visitor.o build/AstVisitor.o build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/IRInstr.o build/CFG.o build/BasicBlock.o build/ast.o build/SyntaxErrorListener.o build/Error.o build/ErrorManager.o build/ErrorStrategy.o
 
 ifcc: $(OBJECTS)
 	@mkdir -p build
