@@ -47,13 +47,14 @@ void CFG::gen_asm_x86(ostream &o)
     gen_asm_epilogue_x86(o);
     //o << "\n";
     //symbolTable->print_dictionary();
-
 }
 
 string CFG::IR_reg_to_asm(string reg) {
     int level = 0;
     Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, level);
     if (symbolReturned != nullptr) {
+        //ERROR
+        cerr << "Error in IR_reg_to_asm" << endl;
         string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returVal;
     }
@@ -85,7 +86,7 @@ string CFG::IR_reg_to_asm(string reg) {
     }
     //ERROR
     cerr << "Error in IR_reg_to_asm" << endl;
-    exit(1);    
+    exit(1);
 }
 
 void CFG::gen_asm_prologue_x86(ostream &o)
@@ -105,7 +106,7 @@ void CFG::gen_asm_epilogue_x86(ostream &o)
 
 // symbol table methods
 void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol)
-{   
+{
     if(stateSymbol == PARAMETER){
         this->symbolTable->defParameter(name,  t);
     }

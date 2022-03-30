@@ -1,10 +1,13 @@
-input.c: In function ‘main’:
-input.c:3:5: warning: statement with no effect [-Wunused-value]
-     variable 10;
-     ^~~~~~~~
-input.c:3:13: error: expected ‘;’ before numeric constant
-     variable 10;
-             ^~~
-             ;
+input.c:3:13: error: expected ';' after expression
+    variable 10;
+            ^
+            ;
+input.c:3:5: warning: expression result unused [-Wunused-value]
+    variable 10;
+    ^~~~~~~~
+input.c:3:14: warning: expression result unused [-Wunused-value]
+    variable 10;
+             ^~
+2 warnings and 1 error generated.
 
 return code: 1

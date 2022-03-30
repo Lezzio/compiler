@@ -80,7 +80,6 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
 
     cout << "   movl	%eax," << address << "(%rbp) \n";
 
-
     return 0;
 }
 

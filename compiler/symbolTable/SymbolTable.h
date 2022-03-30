@@ -14,20 +14,29 @@ public :
     
     SymbolTable();
     ~SymbolTable();
+    bool doesSymbolExist(Symbol * symbol);
+    bool doesSymbolExist(string code);
     bool doesSymbolExist(string identn, int level);
     Symbol * returnSymbol(string name, int level);
     Symbol * returnParameter(string name, int level);
-    int addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
-    int declareSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
+    /**
+     * Add a symbol to the table
+     * @return the address or -1 if the symbol couldn't be added (e.g already exists)
+     */
+    int addSymbol(const string& symbolName, int symbolLevel, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
+    /**
+     * Declare a new symbol in the table
+     * @return true or false whether the symbol already existed or not
+     */
+    bool declareSymbol(const string& symbolName, int symbolLevel, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst);
     int assignSymbol(Symbol * symbol);
     int getAddressSymbol(string name, int level);
     int getOffsetType(TypeSymbol typeSymbol);
+    void print_dictionary();
     int defFunction(string name, TypeSymbol typeSymbol);
     int defParameter(string name, TypeSymbol typeSymbol);
 
-    void print_dictionary();
-
-    string current_function; 
+    string current_function;
     static int staticIndex;
     static int staticTempIndex;
 
