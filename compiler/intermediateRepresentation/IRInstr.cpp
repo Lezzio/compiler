@@ -210,6 +210,9 @@ IRInstr::IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> par
 
 string IRInstr::getMovInstr(string origin, string destination, TypeSymbol type)
 {
+    if(origin.compare("!bp") == 0){
+        origin = "%rbp";
+    }
     if(type == INT){
         string action = "   movl ";
         if(t == CHAR){
@@ -342,6 +345,3 @@ string IRInstr::getGeInstr(string arg1)
 {
     return "    setge " + arg1 + "\n";
 }
-
-
-

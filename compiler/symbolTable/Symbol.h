@@ -27,6 +27,7 @@ class Symbol{
         StateSymbol getStateSymbol();
         bool getIsConst();
         int getAddress();
+        bool isTemp(string exprName);
     
     protected:
         int index;

@@ -63,3 +63,10 @@ bool Symbol::getIsConst(){
 int Symbol::getAddress(){
     return -this->index;
 }
+
+bool Symbol::isTemp(string exprName){
+    if(this->name.find("!tmp") != std::string::npos){
+        return true;
+    }
+    return false;
+}

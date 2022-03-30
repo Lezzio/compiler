@@ -78,6 +78,7 @@ private:
     string getLeInstr(string arg1);
     string getGtInstr(string arg1);
     string getGeInstr(string arg1);
+    int getRegVal(string destination);
 };
 
 /**  The class for a basic block */

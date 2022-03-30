@@ -32,9 +32,9 @@ class Expr : public ASTNode
         Expr(string varName) :
             ASTNode(), varName(varName){};
         virtual ~Expr()= default;
+        string getVarName();
     protected :
         string varName;
-
 };
 
 class ExprVar : public Expr
