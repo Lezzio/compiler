@@ -14,7 +14,9 @@ public :
     
     SymbolTable();
     ~SymbolTable();
-    bool doesSymbolExist(string identn, int level);
+    bool doesSymbolExist(Symbol *symbol);
+    bool doesSymbolExist(string code);
+     bool doesSymbolExist(string identn, int level);
     Symbol * returnSymbol(string name, int level);
     Symbol * returnParameter(string name, int level);
     int addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
@@ -29,6 +31,8 @@ public :
 
     string current_function; 
     static int staticIndex;
+    //TODO: reset when change function
+    int higherIndex;
     static int staticTempIndex;
 
 protected :

@@ -28,6 +28,8 @@ class AstVisitor : public ifccBaseVisitor {
 
         virtual antlrcpp::Any visitStatement6(ifccParser::Statement6Context *context) override;
 
+        virtual antlrcpp::Any visitStatement7(ifccParser::Statement7Context *context) override;
+
         virtual antlrcpp::Any visitParameters(ifccParser::ParametersContext *context) override;
 
         virtual antlrcpp::Any visitParameter(ifccParser::ParameterContext *context) override;
@@ -71,5 +73,7 @@ class AstVisitor : public ifccBaseVisitor {
         virtual antlrcpp::Any visitWhileBlock(ifccParser::WhileBlockContext *context) override;
 
         virtual antlrcpp::Any visitForBlock(ifccParser::ForBlockContext *context) override;
+
+        virtual antlrcpp::Any visitFunctionexpr(ifccParser::FunctionexprContext *context) override;
 
 };

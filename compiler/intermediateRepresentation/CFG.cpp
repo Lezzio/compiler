@@ -32,6 +32,7 @@ void CFG::gen_asm_x86(ostream &o)
         cout << ".text\n";
         string currentFunction = name;
         symbolTable->current_function = name;
+
 #ifdef __APPLE__
     cout << ".globl _"+currentFunction+"\n"
             " _"+currentFunction+": \n";
@@ -60,8 +61,17 @@ string CFG::IR_reg_to_asm(string reg) {
     symbolReturned = this->symbolTable->returnParameter(reg, 0);
     if(symbolReturned != nullptr){
         int position = symbolReturned->getIndex();
-        string returVal = "";
-        switch (position) {
+        return IR_reg_to_asm_param(position);
+    }
+    //ERROR
+    cerr << "Error in IR_reg_to_asm" << endl;
+    exit(1);    
+}
+
+string CFG::IR_reg_to_asm_param(int position)
+{   
+    string returVal;
+    switch (position) {
             case 1:
                 returVal = "%edi";
                 break;
@@ -80,12 +90,11 @@ string CFG::IR_reg_to_asm(string reg) {
             case 6:
                 returVal = "%r9d";
                 break;
+            default:
+                returVal = "unknown";
+                break;
         }
         return returVal;
-    }
-    //ERROR
-    cerr << "Error in IR_reg_to_asm" << endl;
-    exit(1);    
 }
 
 void CFG::gen_asm_prologue_x86(ostream &o)
@@ -97,10 +106,13 @@ void CFG::gen_asm_prologue_x86(ostream &o)
 
 void CFG::gen_asm_epilogue_x86(ostream &o)
 {
-    cout << "   #epilogue\n"
+    cout << "   #epilogue\n";
+            if(get_var_type(name)== VOID){
+                cout << "   nop\n";
+            }
        //     "   popq %rbp\n"
-            "   leave\n"
-            "   ret\n";
+    cout <<     "   leave\n"
+                "   ret\n";
 }
 
 // symbol table methods
@@ -145,7 +157,6 @@ TypeSymbol CFG::get_var_type(string name)
 {
     Symbol * symbol = symbolTable->returnSymbol(name, 0);
     //TODO: check error
-
     return symbol->getTypeSymbol();
 }
 
@@ -177,4 +188,12 @@ void CFG::setReturnSymbol(string name){
     {
         symbolTable->addSymbol(name, 0, INT, 0,ASSIGNED, 0);
     }
+}
+
+bool CFG::isSymbolExist(string name){
+    return symbolTable->doesSymbolExist(name,0);
+}
+
+string CFG::getOffset(){
+    return to_string(symbolTable->higherIndex);
 }

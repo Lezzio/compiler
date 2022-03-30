@@ -265,6 +265,16 @@ class InstructionFor : public Statement
         Block * block;
 };
 
+class InstructionExpr : public Statement
+{
+    public:
+        virtual string linearize(CFG * cfg);
+        InstructionExpr(Expr * expr): Statement(), expr(expr) {};
+        virtual ~InstructionExpr(){delete(expr);};
+    protected:
+        Expr * expr;
+};
+
 class Parameter : public ASTNode
 {
     public :
@@ -301,6 +311,18 @@ class Function : public ASTNode
         Parameters * parameters;
         Block * block;
         TypeSymbol type;
+};
+
+class ExprFunction : public Expr
+{
+    public :
+        virtual string linearize(CFG * cfg);
+        void addParameter(Expr * expr);
+        ExprFunction(string varName) :
+            Expr(varName){};
+        virtual ~ExprFunction();
+    protected : 
+        vector<Expr *> parameters;
 };
 
 

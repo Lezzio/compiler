@@ -409,6 +409,11 @@ string InstructionFor::linearize(CFG * cfg)
     return "";
 }
 
+string InstructionExpr::linearize(CFG * cfg){
+    string val = expr->linearize(cfg);
+    return val;
+}
+
 string Parameter::linearize(CFG * cfg){
     cfg->add_to_symbol_table(name, type, PARAMETER);
     return name;
@@ -460,8 +465,42 @@ string Function::linearize(CFG * cfg){
     return "";
 }
 
+ExprFunction::~ExprFunction(){
+    for(Expr *e : parameters){
+        delete(e);
+    }
+    parameters.clear();
+}
+
+void ExprFunction::addParameter(Expr *expr){
+    parameters.push_back(expr);
+}
+
+string ExprFunction::linearize(CFG * cfg){
+    int position = 1;
+    for(Expr *e : parameters){
+        string var = e->linearize(cfg);
+        TypeSymbol typeTmp = cfg->get_var_type(var);
+        cfg->addInstruction(IRInstr::copy, typeTmp, { "param_reg",var, to_string(position)});
+        position++;
+    }
+
+    if(!cfg->isSymbolExist(varName)){
+        varName = varName + "@PLT";
+    }
+
+    TypeSymbol typeFunc = cfg->get_var_type(varName);
+    string tempVar = cfg->create_new_tempvar(typeFunc);
+
+    cfg->addInstruction(IRInstr::call, typeFunc, {tempVar, varName});
+    return tempVar;
+}
+
 vector<CFG*> Prog::linearize(){
     SymbolTable *symbolTable = new SymbolTable();
+
+    symbolTable->defFunction("getchar@PLT", CHAR);
+    symbolTable->defFunction("putchar@PLT", VOID);
 
     for(Function * f: functions){
         CFG *cfg = new CFG(symbolTable, f->name);

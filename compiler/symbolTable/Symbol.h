@@ -9,7 +9,7 @@ using namespace std;
 class Symbol{
     public:
         Symbol();
-        Symbol(int index, string name, TypeSymbol typeSymbol, int additionnal, StateSymbol stateSymbol, bool isConst);
+        Symbol(int index,int level, string name, TypeSymbol typeSymbol, int additionnal, StateSymbol stateSymbol, bool isConst);
         ~Symbol();
         
         void setIndex(int index);
@@ -27,9 +27,11 @@ class Symbol{
         StateSymbol getStateSymbol();
         bool getIsConst();
         int getAddress();
+        string getCode();
     
     protected:
         int index;
+        int level;
         string name;
         const string scope = "LOCAL";
         TypeSymbol typeSymbol;

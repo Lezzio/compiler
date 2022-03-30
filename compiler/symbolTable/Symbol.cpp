@@ -1,7 +1,8 @@
 #include "Symbol.h"
+#include <iostream>
 
-Symbol::Symbol(int index, string name, TypeSymbol typeSymbol, int additionnal, StateSymbol stateSymbol, bool isConst){
-
+Symbol::Symbol(int index, int level, string name, TypeSymbol typeSymbol, int additionnal, StateSymbol stateSymbol, bool isConst){
+    this->level = level;
     this->index = index;
     this->name = name;
     this->typeSymbol = typeSymbol;
@@ -62,4 +63,8 @@ bool Symbol::getIsConst(){
 
 int Symbol::getAddress(){
     return -this->index;
+}
+
+string Symbol::getCode() {
+    return name + "_" + to_string(level);
 }

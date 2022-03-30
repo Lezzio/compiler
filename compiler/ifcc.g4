@@ -4,7 +4,7 @@ axiom : prog ;
 
 prog :function* ;
 
-function : type IDENT '(' parameters? ')' block ;
+function : (type|'void') IDENT '(' parameters? ')' block ;
 //TODO: add void
 
 block : '{' statement* '}' ; 
@@ -14,7 +14,8 @@ statement : declaration ';' #statement1
           | retcode ';' #statement3 
           | ifBlock #statement4
           | whileBlock #statement5
-          | forBlock #statement6;
+          | forBlock #statement6
+          | expression ';' #statement7;
 
 nameFunction : IDENT ;
 
@@ -51,7 +52,8 @@ expression : IDENT #varexpr
            | expression op=('==' | '!=') expression #equalityexpr
           // | expression op=('&&' | '||') expression #logicalexpr
            | op=('-' | '!') expression #unaryexpr
-           | '(' expression ')' #bracketexpr ;
+           | '(' expression ')' #bracketexpr 
+           | IDENT '(' (expression (',' expression)*)? ')' #functionexpr ;
 	  // | VAR '[' expression ']' #arrayexpr;
 	  // | ('-' | '!')? (CONST | CHAR | VAR)	#literalexpr;
 
