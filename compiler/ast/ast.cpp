@@ -193,7 +193,7 @@ string ExprUnary::linearize(CFG * cfg)
     {
         cfg->addInstruction(IRInstr::neg, typeTmp, {tempVar, var2});
     } else {
-        cfg->addInstruction(IRInstr::note, typeTmp, {tempVar, var2});
+        cfg->addInstruction(IRInstr::not_, typeTmp, {tempVar, var2});
     }
     return tempVar;
 }
@@ -300,9 +300,9 @@ string InstructionIF::linearize(CFG * cfg){
     BasicBlock * testBB = cfg->current_bb;
     testBB->test_var_name = testVar;
 
-    BasicBlock * thenBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * thenBB = new BasicBlock(cfg, cfg->new_BB_name());
 
-    BasicBlock * endIfBB = new BasicBlock(cfg,cfg->new_BB_name());
+    auto * endIfBB = new BasicBlock(cfg,cfg->new_BB_name());
     endIfBB->exit_true = testBB->exit_true;
     endIfBB->exit_false = thenBB->exit_false;
 
@@ -336,9 +336,9 @@ InstructionWhile::~InstructionWhile()
 string InstructionWhile::linearize(CFG * cfg)
 {
     BasicBlock * beforeWhileBB = cfg->current_bb;
-    BasicBlock * bodyBB = new BasicBlock(cfg, cfg->new_BB_name());
-    BasicBlock * testBB = new BasicBlock(cfg, cfg->new_BB_name());
-    BasicBlock * afterWhileBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * bodyBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * testBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * afterWhileBB = new BasicBlock(cfg, cfg->new_BB_name());
 
     beforeWhileBB->exit_true = testBB;
     cfg->add_bb(testBB);
@@ -370,11 +370,11 @@ string InstructionFor::linearize(CFG * cfg)
 {
     BasicBlock * beforeForBB = cfg->current_bb;
 
-    BasicBlock * initForBB = new BasicBlock(cfg, cfg->new_BB_name());
-    BasicBlock * testBB = new BasicBlock(cfg, cfg->new_BB_name());
-    BasicBlock * updateBB = new BasicBlock(cfg, cfg->new_BB_name());
-    BasicBlock * forBB = new BasicBlock(cfg, cfg->new_BB_name());
-    BasicBlock * endforBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * initForBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * testBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * updateBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * forBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * endforBB = new BasicBlock(cfg, cfg->new_BB_name());
 
     if(init != nullptr){
         beforeForBB->exit_true = initForBB;
@@ -444,10 +444,10 @@ string Function::linearize(CFG * cfg){
     cfg->setCurrentFunction(name);
     cfg->add_to_symbol_table(name, type, FUNCTION);
 
-    BasicBlock *bb = new BasicBlock(cfg, cfg->new_BB_name());
+    auto *bb = new BasicBlock(cfg, cfg->new_BB_name());
     cfg->add_bb(bb);
 
-    BasicBlock *returnBlock = new BasicBlock(cfg, cfg->new_BB_name());
+    auto *returnBlock = new BasicBlock(cfg, cfg->new_BB_name());
     returnBlock->add_IRInstr(IRInstr::finret, INT, {"!retvalue"});
     cfg->return_bb = returnBlock;
 
@@ -461,7 +461,7 @@ string Function::linearize(CFG * cfg){
 }
 
 vector<CFG*> Prog::linearize(){
-    SymbolTable *symbolTable = new SymbolTable();
+    auto *symbolTable = new SymbolTable();
 
     for(Function * f: functions){
         CFG *cfg = new CFG(symbolTable, f->name);

@@ -37,7 +37,7 @@ public:
         andbit,
         xorbit,
         neg, 
-        note,
+        not_,
         rmem,
         wmem,
         call,
@@ -50,11 +50,18 @@ public:
         jmp,
     } Operation;
 
+    typedef enum {
+        x86,
+        ARM
+    } Arch;
+
     /**  constructor */
     IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> params);
 
     /** Actual code generation */
     void gen_asm_x86(ostream &o); /**< x86 assembly code generation for this IR instruction */
+
+    void gen_asm_ARM(ostream &o); /**< ARM assembly code generation for this IR instruction */
 
 private:
     BasicBlock *bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
@@ -63,24 +70,25 @@ private:
     vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
                         // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design.
 
-    string getMovInstr(string origine, string destination, TypeSymbol type = INT);
-    string getAddInstr(string arg1, string arg2);
-    string getSubInstr(string arg1, string arg2);
-    string getMulInstr(string arg1, string arg2);
-    string getDivInstr(string arg1, string arg2);
-    string getOrInstr(string arg1, string arg2);
-    string getAndInstr(string arg1, string arg2);
-    string getXorInstr(string arg1, string arg2);
-    string getCompInstr(string arg1, string arg2);
-    string getNegInstr(string arg1);
-    string getNotInstr(string arg1);
-    string getEqInstr(string arg1);
-    string getNeqInstr(string arg1);
-    string getLtInstr(string arg1);
-    string getLeInstr(string arg1);
-    string getGtInstr(string arg1);
-    string getGeInstr(string arg1);
-    string getJumpInstr(string arg1);
+    string getMovInstr(const string &origine,const string &destination, TypeSymbol type = INT, Arch arch = x86, bool cst = false);
+    string getAddInstr(const string& arg1, const string& arg2, Arch arch = x86);
+    string getSubInstr(const string& arg1, const string& arg2, Arch arch = x86);
+    string getMulInstr(const string& arg1, const string& arg2, Arch arch = x86);
+    string getDivInstr(const string& arg1, const string& arg2, Arch arch = x86, bool modulo = false);
+    string getOrInstr(const string& arg1, const string& arg2, Arch arch = x86);
+    string getAndInstr(const string& arg1, const string& arg2, Arch arch = x86);
+    string getXorInstr(const string& arg1, const string& arg2, Arch arch = x86);
+    string getCompInstr(const string& arg1, const string& arg2, Arch arch = x86);
+    string getNegInstr(const string& arg1, Arch arch = x86);
+    string getNotInstr(const string& arg1, Arch arch = x86);
+    string getEqInstr(const string& arg1, Arch arch = x86);
+    string getNeqInstr(const string& arg1, Arch arch = x86);
+    string getLtInstr(const string& arg1, Arch arch = x86);
+    string getLeInstr(const string& arg1, Arch arch = x86);
+    string getGtInstr(const string& arg1, Arch arch = x86);
+    string getGeInstr(const string& arg1, Arch arch = x86);
+    string getJumpInstr(const string& arg1, Arch arch = x86);
+
 };
 
 /**  The class for a basic block */
@@ -116,6 +124,7 @@ public:
     virtual ~BasicBlock();
 
     void gen_asm_86(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
+    void gen_asm_ARM(ostream &o);   /**< ARM assembly code generation for this basic block (very simple) */
 
     void add_IRInstr(IRInstr::Operation op, TypeSymbol t, vector<string> params);
 
@@ -155,6 +164,12 @@ public:
     string IR_reg_to_asm(string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
     void gen_asm_prologue_x86(ostream &o);
     void gen_asm_epilogue_x86(ostream &o);
+
+    void gen_asm_ARM(ostream &o);
+    void gen_asm_prologue_ARM(ostream &o);
+    void gen_asm_epilogue_ARM(ostream &o);
+
+
 
     // symbol table methods
     void add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol);

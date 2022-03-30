@@ -201,12 +201,12 @@ antlrcpp::Any AstVisitor::visitMultplicationexpr(ifccParser::MultplicationexprCo
     Operator op;
     if (context->op->getText() == "*") {
         op = MULT;
-    } else if (context->op->getText() == ">=") {
+    } else if (context->op->getText() == "/") {
         op = DIV;
     } else {
         op = MOD;
     }
-    ExprMult *mul = new ExprMult("", lExpr, rExpr, op);
+    auto *mul = new ExprMult("", lExpr, rExpr, op);
     return (Expr *) mul;
 }
 
