@@ -54,40 +54,39 @@ int SymbolTable::assignSymbol(Symbol *symbol) {
     return symbol->getAddress();
 }
 
-int SymbolTable::defFunction(string name, TypeSymbol typeSymbol)
-{
+int SymbolTable::defFunction(string name, TypeSymbol typeSymbol) {
     int level = 0;
-    string nameSymbol = name;
-    if(level != -1){
-        nameSymbol = name + "_" + to_string(level);
+    string symbolName = name;
+    if (level != -1) {
+        symbolName = name + "_" + to_string(level);
     }
 
-    Symbol * symbolToAdd = new Symbol(-1, nameSymbol, typeSymbol, 0, FUNCTION, 0);
+    Symbol *newSymbol = new Symbol(symbolName, 0, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
 
-    if(!doesSymbolExist(nameSymbol,level)){
-        this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
+    if (!doesSymbolExist(symbolName, level)) {
+        this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
         return 0;
     }
-    delete symbolToAdd;
+    delete newSymbol;
     return -1;
 }
 
-int SymbolTable::defParameter(string name, TypeSymbol typeSymbol)
-{
+bool SymbolTable::defParameter(string name, TypeSymbol typeSymbol) {
     int level = 0;
-    string nameSymbol = name;
-    if(level != -1){
-        nameSymbol = name + "_"+current_function+"_" + to_string(level);
+    string symbolName = name;
+    if (level != -1) {
+        //TODO Add scope implementation and handle it in the Symbol::getCode() instead
+        //symbolName = name + "_" + current_function + "_" + to_string(level);
     }
 
-    Symbol * symbolToAdd = new Symbol(-1, nameSymbol, typeSymbol, 0, PARAMETER, 0);
+    Symbol *newSymbol = new Symbol(symbolName, 0, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
 
-    if(!doesSymbolExist(nameSymbol,level)){
-        this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
-        return 0;
+    if (!doesSymbolExist(symbolName, level)) {
+        this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
+        return true;
     }
-    delete symbolToAdd;
-    return -1;
+    delete newSymbol;
+    return false;
 }
 
 

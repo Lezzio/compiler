@@ -34,7 +34,7 @@ public :
     int getOffsetType(TypeSymbol typeSymbol);
     void print_dictionary();
     int defFunction(string name, TypeSymbol typeSymbol);
-    int defParameter(string name, TypeSymbol typeSymbol);
+    bool defParameter(string name, TypeSymbol typeSymbol);
 
     string current_function;
     static int staticIndex;
