@@ -5,7 +5,7 @@ int main()
     int b = 3;
     int c;
     c = a + b;
-    return 0;
+    return c;
 }
 
 /*char d;
