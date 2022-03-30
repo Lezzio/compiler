@@ -44,21 +44,21 @@ int main(int argn, const char **argv) {
     }
 
     ANTLRInputStream input(in.str());
-
+    
     ifccLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
-
     tokens.fill();
-
     auto * syntaxErrorListener =  new SyntaxErrorListener();
     ifccParser parser(&tokens);
    // Ref<ANTLRErrorStrategy> errorStrategyRef = make_shared<ErrorStrategy>();
    // parser.setErrorHandler(errorStrategyRef);
    // parser.addErrorListener(syntaxErrorListener);
     tree::ParseTree *tree = parser.axiom();
-
     if (parser.getNumberOfSyntaxErrors() != 0) {
         cerr << "error: syntax error during parsing" << endl;
+        exit(1);
+    }
+    if(lexer.getNumberOfSyntaxErrors() != 0){
         exit(1);
     }
 
@@ -90,6 +90,5 @@ int main(int argn, const char **argv) {
 
     }
     //delete (prog);
-
     return 0;
 }

@@ -1,3 +1,4 @@
-/bin/sh: /Users/aguigal/CLionProjects/compiler/tests/ifcc-wrapper.sh: Permission denied
+line 2:12 no viable alternative at input 'INTEGER variable'
+error: syntax error during parsing
 
-return code: 126
+return code: 1
