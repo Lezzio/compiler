@@ -16,7 +16,7 @@ enum Operator {
     NEG, NOT
 };
 
-class ASTNode 
+class ASTNode
 {
     public :
         ASTNode() 

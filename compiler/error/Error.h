@@ -13,7 +13,6 @@ class Error {
 
 public:
     Error();
-private:
     string message;
     int line;
 

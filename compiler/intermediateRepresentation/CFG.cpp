@@ -115,9 +115,8 @@ void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol
     else if(stateSymbol==DECLARED){
         this->symbolTable->declareSymbol(name, 0, t, 0, DECLARED, 0);
     } else {
-         symbolTable->addSymbol(name, 0, t, 0,stateSymbol,0);
+        symbolTable->addSymbol(name, 0, t, 0, stateSymbol, 0);
     }
-
 }
 
 void CFG::setParametersPosition(string name, int position) {
