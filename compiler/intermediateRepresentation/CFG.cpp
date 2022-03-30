@@ -13,6 +13,8 @@ CFG::~CFG() {
     for (BasicBlock *bb: bbs) {
         delete (bb);
     }
+    delete (return_bb);
+    //delete (symbolTable);
 }
 
 void CFG::add_bb(BasicBlock *bb) {
@@ -59,8 +61,8 @@ void CFG::gen_asm_ARM(ostream &o) {
             " main: \n";
 #endif
     gen_asm_prologue_ARM(o);
-    for (vector<BasicBlock *>::iterator it = bbs.begin(); it != bbs.end(); it++) {
-        (*it)->gen_asm_ARM(o);
+    for (auto & bb : bbs) {
+        bb->gen_asm_ARM(o);
     }
     gen_asm_epilogue_ARM(o);
 
@@ -149,9 +151,9 @@ void CFG::gen_asm_prologue_ARM(ostream &o) {
 void CFG::gen_asm_epilogue_ARM(ostream &o) {
     o << "\tadds\tr7, r7, #space_needed" << endl;
     o << "\tmov\tsp, r7" << endl;
-    //o << "\tpop\t{r7, pc}" << endl; TODO : call functions
-    o << "\tldr\tr7, [sp], #4" << endl;
-    o << "\tbx\tlr" << endl;
+    o << "\tpop\t{r7, pc}" << endl;
+    //o << "\tldr\tr7, [sp], #4" << endl;
+    //o << "\tbx\tlr" << endl;
 }
 
 
@@ -231,4 +233,8 @@ bool CFG::isSymbolExist(string name){
 
 string CFG::getOffset(){
     return to_string(symbolTable->higherIndex);
+}
+
+SymbolTable * CFG::getSymbolTable() {
+    return symbolTable;
 }

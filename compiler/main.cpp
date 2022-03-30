@@ -89,6 +89,7 @@ int main(int argn, const char **argv) {
         }
 
     }
-    //delete (prog);
+    delete (syntaxErrorListener);
+    delete (prog);
     return 0;
 }

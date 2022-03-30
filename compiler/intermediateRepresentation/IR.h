@@ -186,7 +186,7 @@ public:
     void setParametersPosition(string name, int position);
     bool isSymbolExist(string name);
     string getOffset();
-
+    SymbolTable * getSymbolTable();
 
     // basic block management
     string new_BB_name();
