@@ -54,8 +54,6 @@ string CFG::IR_reg_to_asm(string reg) {
     int level = 0;
     Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, level);
     if (symbolReturned != nullptr) {
-        //ERROR
-        cerr << "Error in IR_reg_to_asm" << endl;
         string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returVal;
     }
@@ -192,6 +190,7 @@ void CFG::setReturnSymbol(string name){
 }
 
 bool CFG::isSymbolExist(string name){
+   
     return symbolTable->doesSymbolExist(name,0);
 }
 

@@ -48,7 +48,7 @@ int SymbolTable::assignSymbol(Symbol *symbol) {
     symbol->setStateSymbol(ASSIGNED);
     staticIndex += getOffsetType(symbol->getTypeSymbol());
     higherIndex = staticIndex;
-    symbol->setLevel(staticIndex);
+    symbol->setIndex(staticIndex);
 
     return symbol->getAddress();
 }
@@ -56,9 +56,9 @@ int SymbolTable::assignSymbol(Symbol *symbol) {
 int SymbolTable::defFunction(string name, TypeSymbol typeSymbol) {
     int level = 0;
     string symbolName = name;
-    if (level != -1) {
+    /*if (level != -1) {
         symbolName = name + "_" + to_string(level);
-    }
+    }*/
 
     Symbol *newSymbol = new Symbol(symbolName, 0, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
 
