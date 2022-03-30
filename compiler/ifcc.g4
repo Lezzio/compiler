@@ -46,6 +46,7 @@ expression : IDENT #varexpr
            | CONST #constexpr
            | CHARACTER #charexpr
            | expression op=('*' | '/' | '%') expression #multplicationexpr
+           | op=('-' | '!') expression #unaryexpr
            | expression op=('+' | '-') expression #additiveexpr
            | expression op=('|' | '&' | '^') expression #bitsexpr
            | expression op=('<' | '<=' | '>=' | '>') expression #relationalexpr
