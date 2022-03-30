@@ -160,6 +160,8 @@ public:
     void add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol);
     string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
+    string get_current_level();
+    string get_level(string varName);
     TypeSymbol get_var_type(string name);
     void assignSymbol(string name);
     bool isAssigneSymbol(string name);

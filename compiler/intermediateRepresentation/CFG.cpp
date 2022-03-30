@@ -15,6 +15,18 @@ CFG::~CFG() {
     }
 }
 
+string CFG::get_current_level()
+{
+    return symbolTable->current_function;
+}
+
+string CFG::get_level(string varName)
+{
+    string nameArray[] = split(varName,"_");
+    string level = nameArray[nameArray.length-1];
+    return level;
+}
+
 void CFG::add_bb(BasicBlock *bb)
 {
     current_bb = bb;

@@ -2,7 +2,9 @@
 
 string ExprVar::linearize(CFG * cfg)
 {
-    return varName;
+    if(cfg->get_current_level() == cfg->get_level(varName)){
+        return varName;
+    }
 }
 
 string ExprConst::linearize(CFG * cfg)
