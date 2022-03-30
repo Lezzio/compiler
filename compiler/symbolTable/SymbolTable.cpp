@@ -1,13 +1,14 @@
 #include "SymbolTable.h"
 #include <iostream>
 #include <string>
+#include "../error/ErrorManager.h"
 
 using namespace std;
 
 int SymbolTable::staticIndex;
 int SymbolTable::staticTempIndex= 0;
 
-SymbolTable::SymbolTable(){ staticIndex = 0; }
+SymbolTable::SymbolTable(){ staticIndex = 0; current_function = ""; }
 
 int SymbolTable::addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst)
 {
@@ -41,6 +42,10 @@ int SymbolTable::declareSymbol(string symbolName, int levelSymbol, TypeSymbol ty
     if(!doesSymbolExist(nameSymbol,levelSymbol)){
         this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
         return 0;
+    } else {
+        //Error, can't declare a symbol twice
+        ErrorManager::getInstance()->addError(new Error());
+        cout << "Error detected can't declare symbol twice" << endl;
     }
     delete symbolToAdd;
     return -1;
@@ -53,6 +58,42 @@ int SymbolTable::assignSymbol(Symbol * symbol)
     symbol->setIndex(staticIndex);
 
     return symbol->getAddress();
+}
+
+int SymbolTable::defFunction(string name, TypeSymbol typeSymbol)
+{
+    int level = 0;
+    string nameSymbol = name;
+    if(level != -1){
+        nameSymbol = name + "_" + to_string(level);
+    }
+
+    Symbol * symbolToAdd = new Symbol(-1, nameSymbol, typeSymbol, 0, FUNCTION, 0);
+
+    if(!doesSymbolExist(nameSymbol,level)){
+        this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
+        return 0;
+    }
+    delete symbolToAdd;
+    return -1;
+}
+
+int SymbolTable::defParameter(string name, TypeSymbol typeSymbol)
+{
+    int level = 0;
+    string nameSymbol = name;
+    if(level != -1){
+        nameSymbol = name + "_"+current_function+"_" + to_string(level);
+    }
+
+    Symbol * symbolToAdd = new Symbol(-1, nameSymbol, typeSymbol, 0, PARAMETER, 0);
+
+    if(!doesSymbolExist(nameSymbol,level)){
+        this->table.insert(pair<string,Symbol *>(nameSymbol, symbolToAdd));
+        return 0;
+    }
+    delete symbolToAdd;
+    return -1;
 }
 
 
@@ -123,6 +164,14 @@ Symbol * SymbolTable::returnSymbol(string name,int level){
 
     if(table.find(ident) != table.end())
         return table.find(ident)->second;
+    return nullptr;
+}
+
+Symbol * SymbolTable::returnParameter(string name,int level){
+    string ident = name+"_"+current_function+"_"+to_string(level);
+
+    if(table.find(ident) != table.end())
+        return table.find(ident)->second;    
     return nullptr;
 }
 

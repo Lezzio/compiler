@@ -1,13 +1,21 @@
 #include <inttypes.h>
-int main()
-{
-    int a = 2;
-    int b = 3;
-    int c;
-    c = a + b;
+int test(int d, int p){
+    int c = d;
+    int e = p;
     return c;
 }
 
-/*char d;
-    d =1080;
-    return d;*/
+int main (){
+    int a = 3;
+    int b = 5;
+    int c;
+    c = a + b;
+
+    return c;
+}
+
+/*int a = 42;
+    if(a == 42){
+        return a;
+    }
+    int b = a;*/

@@ -18,12 +18,24 @@ void IRInstr::gen_asm_x86(ostream &o)
             break;}
         case ret:
             {
-            string origin = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            string origin = this->bb->cfg->IR_reg_to_asm(this->params[1]);
+            string endBBname = bb->cfg->return_bb->label;
             o << getMovInstr(origin, reg);
+            o << getMovInstr(reg, destination);
+            o << getJumpInstr(endBBname);
             break;}
+        case finret:
+            {
+            string origin = this->bb->cfg->IR_reg_to_asm(this->params[0]);   
+            o << getMovInstr(origin, reg);
+            break;
+            }
         case copy:
             {
-            this->bb->cfg->assignSymbol(this->params[0]);
+            if(!bb->cfg->isAssigneSymbol(this->params[0])){
+                this->bb->cfg->assignSymbol(this->params[0]);
+            }
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             o << getMovInstr(origin, reg);
@@ -228,7 +240,7 @@ string IRInstr::getMovInstr(string origin, string destination, TypeSymbol type)
         }
         return action + origin +", " + destination + "\n";
     } else if (type ==INT8_T) {
-        return "    movzbl " + origin +", " + destination + "\n";
+        return "   movzbl " + origin +", " + destination + "\n";
     }
     return "";
 }
@@ -326,22 +338,22 @@ string IRInstr::getNegInstr(string arg1)
 string IRInstr::getEqInstr(string arg1)
 {
     
-    return "    sete " + arg1 + "\n";
+    return "   sete " + arg1 + "\n";
 }
 
 string IRInstr::getNeqInstr(string arg1)
 {
-    return "    setne " + arg1 + "\n";
+    return "   setne " + arg1 + "\n";
 }
 
 string IRInstr::getLtInstr(string arg1)
 {
-    return "    setl " + arg1 + "\n";
+    return "   setl " + arg1 + "\n";
 }
 
 string IRInstr::getLeInstr(string arg1)
 {
-    return "    setle " + arg1 + "\n";
+    return "   setle " + arg1 + "\n";
 }
 
 string IRInstr::getGtInstr(string arg1)
@@ -353,3 +365,10 @@ string IRInstr::getGeInstr(string arg1)
 {
     return "    setge " + arg1 + "\n";
 }
+
+string IRInstr::getJumpInstr(string arg1){
+    return "   jmp   " + arg1 + "\n";
+}
+
+
+

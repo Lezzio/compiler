@@ -4,7 +4,7 @@ using namespace std;
 #include "IR.h"
 
 CFG::CFG(SymbolTable * symbolTable, string name)
-    : name(name), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr), nextTmpVarNumber(0)
+    : name(name), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr),return_bb(nullptr), nextTmpVarNumber(0)
 {
 
 }
@@ -17,10 +17,8 @@ CFG::~CFG() {
 
 void CFG::add_bb(BasicBlock *bb)
 {
-    string name = new_BB_name();
-    BasicBlock * newbb = new BasicBlock(this, name);
-    current_bb = newbb;
-    bbs.push_back(newbb);
+    current_bb = bb;
+    bbs.push_back(bb);
 }
 
 void CFG::addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> params)
@@ -32,36 +30,62 @@ void CFG::gen_asm_x86(ostream &o)
 {
     //TODO: adapt with name of block and multiple blocks? 
         cout << ".text\n";
+        string currentFunction = name;
+        symbolTable->current_function = name;
 #ifdef __APPLE__
-    cout << ".globl _main\n"
-            " _main: \n";
+    cout << ".globl _"+currentFunction+"\n"
+            " _"+currentFunction+": \n";
 #else
-    cout << ".globl	main\n"
-            " main: \n";
+    cout << ".globl	"+currentFunction+"\n"
+            " "+currentFunction+": \n";
 #endif
-    gen_asm_prologue_x86(o);
     for(vector<BasicBlock*>::iterator it = bbs.begin(); it != bbs.end(); it++)
     {
         (*it)->gen_asm_86(o);
     }
+    return_bb->gen_asm_86(o);
     gen_asm_epilogue_x86(o);
-
     //o << "\n";
     //symbolTable->print_dictionary();
 
 }
 
-string CFG::IR_reg_to_asm(string reg)
-{
+string CFG::IR_reg_to_asm(string reg) {
     int level = 0;
-    Symbol * symbolReturned = this->symbolTable->returnSymbol(reg, level);
-    if(symbolReturned == nullptr)
-    {
-        cerr <<"Error in IR_reg_to_asm" << endl;
-        exit(1);
+    Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, level);
+    if (symbolReturned != nullptr) {
+        string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
+        return returVal;
     }
-    string returVal = "-"+to_string(symbolReturned->getIndex())+"(%rbp)";
-    return returVal;
+    symbolReturned = this->symbolTable->returnParameter(reg, 0);
+    if(symbolReturned != nullptr){
+        int position = symbolReturned->getIndex();
+        string returVal = "";
+        switch (position) {
+            case 1:
+                returVal = "%edi";
+                break;
+            case 2:
+                returVal = "%esi";
+                break;
+            case 3:
+                returVal = "%edx";
+                break;
+            case 4:
+                returVal = "%ecx";
+                break;
+            case 5:
+                returVal = "%r8d";
+                break;
+            case 6:
+                returVal = "%r9d";
+                break;
+        }
+        return returVal;
+    }
+    //ERROR
+    cerr << "Error in IR_reg_to_asm" << endl;
+    exit(1);    
 }
 
 void CFG::gen_asm_prologue_x86(ostream &o)
@@ -74,19 +98,30 @@ void CFG::gen_asm_prologue_x86(ostream &o)
 void CFG::gen_asm_epilogue_x86(ostream &o)
 {
     cout << "   #epilogue\n"
-            "   popq %rbp\n"
+       //     "   popq %rbp\n"
+            "   leave\n"
             "   ret\n";
 }
 
 // symbol table methods
 void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol)
-{
-    if(stateSymbol==DECLARED){
+{   
+    if(stateSymbol == PARAMETER){
+        this->symbolTable->defParameter(name,  t);
+    }
+    else if(stateSymbol == FUNCTION){
+        this->symbolTable->defFunction(name,  t);
+    }
+    else if(stateSymbol==DECLARED){
         this->symbolTable->declareSymbol(name, 0, t, 0, DECLARED, 0);
     } else {
-         symbolTable->addSymbol(name, 0, t, 0,stateSymbol,0);
+        symbolTable->addSymbol(name, 0, t, 0, stateSymbol, 0);
     }
+}
 
+void CFG::setParametersPosition(string name, int position) {
+    Symbol * symbol = symbolTable->returnParameter(name, 0);
+    symbol->setIndex(position);
 }
 
 string CFG::create_new_tempvar(TypeSymbol t)
@@ -116,7 +151,7 @@ TypeSymbol CFG::get_var_type(string name)
 
 string CFG::new_BB_name()
 {
-    string name = this->name + "BB" + to_string(nextBBnumber);
+    string name = "."+this->name + "BB" + to_string(nextBBnumber);
     nextBBnumber++;
     return name;
 }
@@ -128,7 +163,18 @@ void CFG::assignSymbol(string name)
 
 }
 
-void CFG::printSymbolTable(){
-    cout << "Print Symbol Table ->" << endl;
-    symbolTable->print_dictionary();
+bool CFG::firstBB(BasicBlock * bb){
+    return (bb == bbs.front());
+}
+
+bool CFG::isAssigneSymbol(string name){
+    Symbol * symbolReturned = this->symbolTable->returnSymbol(name, 0);
+    return (symbolReturned->getStateSymbol()==ASSIGNED);
+}
+
+void CFG::setReturnSymbol(string name){
+    if(!symbolTable->doesSymbolExist(name,0))
+    {
+        symbolTable->addSymbol(name, 0, INT, 0,ASSIGNED, 0);
+    }
 }

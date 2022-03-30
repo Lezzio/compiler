@@ -14,9 +14,12 @@ class ErrorManager {
 
 public:
     ErrorManager();
+    static ErrorManager * getInstance();
+    void addError(Error * error);
 
 private:
-    vector<Error> errors;
+    static ErrorManager * INSTANCE;
+    vector<Error *> errors;
 
 };
 

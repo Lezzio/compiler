@@ -15,6 +15,8 @@
 #include "intermediateRepresentation/IR.h"
 #include "ast/ast.h"
 #include "error/SyntaxErrorListener.h"
+#include "error/ErrorStrategy.h"
+#include "BailErrorStrategy.h"
 
 using namespace antlr4;
 using namespace std;
@@ -39,7 +41,9 @@ int main(int argn, const char **argv) {
 
     SyntaxErrorListener * syntaxErrorListener =  new SyntaxErrorListener();
     ifccParser parser(&tokens);
-    parser.addErrorListener(syntaxErrorListener);
+   // Ref<ANTLRErrorStrategy> errorStrategyRef = make_shared<ErrorStrategy>();
+   // parser.setErrorHandler(errorStrategyRef);
+   // parser.addErrorListener(syntaxErrorListener);
     tree::ParseTree *tree = parser.axiom();
 
     if (parser.getNumberOfSyntaxErrors() != 0) {
@@ -61,10 +65,12 @@ int main(int argn, const char **argv) {
     AstVisitor v;
 
     Prog * prog = v.visit(tree);
-    CFG * cfg = prog->linearize();
-    cfg->gen_asm_x86(cout);
-    delete (prog);
-    delete (cfg);
+    vector<CFG *> cfgs;
+    cfgs = prog->linearize();
+    for(CFG * cfg : cfgs){
+        cfg->gen_asm_x86(cout);   
+    }
+    //delete (prog);
 
     return 0;
 }

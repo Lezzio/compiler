@@ -26,6 +26,7 @@ public:
     {
         ldconst,
         ret,
+        finret,
         copy,
         add,
         add_lValue,
@@ -47,6 +48,7 @@ public:
         cmp_le,
         cmp_gt,
         cmp_ge,
+        jmp,
     } Operation;
 
     /**  constructor */
@@ -79,6 +81,7 @@ private:
     string getLeInstr(string arg1);
     string getGtInstr(string arg1);
     string getGeInstr(string arg1);
+    string getJumpInstr(string arg1);
 };
 
 /**  The class for a basic block */
@@ -160,11 +163,16 @@ public:
     int get_var_index(string name);
     TypeSymbol get_var_type(string name);
     void assignSymbol(string name);
-    void printSymbolTable();
-
+    bool isAssigneSymbol(string name);
+    void setReturnSymbol(string name);
+    void setCurrentFunction(string name) { symbolTable->current_function = name; }
+    void setParametersPosition(string name, int position);
+    
     // basic block management
     string new_BB_name();
     BasicBlock *current_bb;
+    BasicBlock *return_bb;
+    bool firstBB(BasicBlock * bb);
 
 protected:
     string name;

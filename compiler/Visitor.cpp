@@ -46,7 +46,7 @@ antlrcpp::Any Visitor::visitStatement3(ifccParser::Statement3Context *context) {
 }
 
 antlrcpp::Any Visitor::visitDeclaration(ifccParser::DeclarationContext *context) {
-    for (const auto var : context->VAR()) {
+    for (const auto var : context->IDENT()) {
         string newVariableName = var->getText();
         int level = 0;
 
@@ -64,8 +64,12 @@ antlrcpp::Any Visitor::visitAffectation1(ifccParser::Affectation1Context *contex
     // TODO:: affect in symbole table
     // declaration + affectation
     //type VAR '=' expression
+<<<<<<< HEAD
     string newVariableName = context->VAR()->getText();
     cout << "VAR " <<  context->VAR()->getText() << endl;
+=======
+    string newVariableName = context->IDENT()->getText();
+>>>>>>> 686346af0e45a63211255b48149f6bbdfbc2997a
     int level = 0;
     int address = 0;
     int last_tmp = visitChildren(context);
@@ -92,6 +96,7 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
     
     cout << "Affichage expr(0)" << context->expression(0) << endl;
 
+<<<<<<< HEAD
     if(1){
         cout << "Affichage expr(0)" << context->expression(0) << endl;
     }else{
@@ -100,6 +105,13 @@ antlrcpp::Any Visitor::visitAffectation2(ifccParser::Affectation2Context *contex
         int address = 0;
         int last_tmp = visitChildren(context);
         cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
+=======
+    string newVariableName = context->IDENT()->getText();
+    int level = 0;
+    int address = 0;
+    int last_tmp = visitChildren(context);
+    cout << "   movl	" << last_tmp << "(%rbp), %eax\n";
+>>>>>>> 686346af0e45a63211255b48149f6bbdfbc2997a
 
         // si le symbole existe dans la symbolTable, on recupere son adresse
         Symbol *symbolReturned = this->symbolTable->returnSymbol(newVariableName, level);
@@ -178,7 +190,7 @@ antlrcpp::Any Visitor::visitRet1(ifccParser::Ret1Context *context) {
 }
 
 antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context) {
-    string variableName = context->VAR()->getText();
+    string variableName = context->IDENT()->getText();
     int level = 0;
     int address = 0;
     //TODO: Test existence
@@ -268,7 +280,7 @@ antlrcpp::Any Visitor::visitBracketexpr(ifccParser::BracketexprContext *context)
 }
 
 antlrcpp::Any Visitor::visitVarexpr(ifccParser::VarexprContext *context) {
-    string variable = context->VAR()->getText();
+    string variable = context->IDENT()->getText();
     //TODO: check existence and get adress
     int address = 0;
     int level = 0;

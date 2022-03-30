@@ -2,23 +2,47 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog : INT 'main' '(' ')' block ;
+prog :function* ;
+
+function : type IDENT '(' parameters? ')' block ;
+//TODO: add void
 
 block : '{' statement* '}' ; 
 
 statement : declaration ';' #statement1
           | affectation ';' #statement2
-          | retcode ';' #statement3 ;
+          | retcode ';' #statement3 
+          | ifBlock #statement4
+          | whileBlock #statement5
+          | forBlock #statement6;
 
-declaration : type VAR (',' VAR)* ;
+nameFunction : IDENT ;
 
-affectation : type VAR '=' expression #affectation1
-            | expression '=' expression #affectation2;
+parameters : parameter (',' parameter)* ;
+
+parameter : type IDENT ;
+
+declaration : type IDENT (',' IDENT)* ;
+    //        | VAR '(' declaration? ')' #functionexpr;
+
+affectation : type IDENT '=' expression #affectation1
+            | expression '=' expression #affectation2
+            | IDENT '=' expression #affectation3; 
+          //  | VAR '[' expression ']' '=' expression #affectation3;
 
 retcode : RETURN CONST #ret1
-        | RETURN VAR #ret2 ;
-  
-expression : VAR #varexpr
+        | RETURN IDENT #ret2 ;
+
+ifBlock : 'if' '(' expression ')' (statement | block) elseBlock? ;
+
+elseBlock : 'else' (statement| block| ifBlock);      
+
+whileBlock : 'while' '(' expression ')' (statement | block) ;
+
+forBlock : 'for' '(' (init=statement | ';') (test=expression) ';' (update=affectation)? ')' (statement | block) ;
+//deal with infinite loop ?
+
+expression : IDENT #varexpr
            | CONST #constexpr
            | CHARACTER #charexpr
            | expression op=('*' | '/' | '%') expression #multplicationexpr
@@ -26,11 +50,11 @@ expression : VAR #varexpr
            | expression op=('|' | '&' | '^') expression #bitsexpr
            | expression op=('<' | '<=' | '>=' | '>') expression #relationalexpr
            | expression op=('==' | '!=') expression #equalityexpr
-           | expression op=('&&' | '||') expression #logicalexpr
+          // | expression op=('&&' | '||') expression #logicalexpr
            | op=('-' | '!') expression #unaryexpr
-           | '(' expression ')' #bracketexpr
-	   | VAR '[' expression ']' #arrayexpr
-	   | ('-' | '!')? (CONST | CHAR | VAR)	#literalexpr;
+           | '(' expression ')' #bracketexpr ;
+	  // | VAR '[' expression ']' #arrayexpr;
+	  // | ('-' | '!')? (CONST | CHAR | VAR)	#literalexpr;
 
 type : INT | CHAR ;
 
@@ -41,6 +65,7 @@ DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
 INT : 'int' ;
 CHAR : 'char' ;
-VAR : IDENT ;
+//LVALUE : VAR ;
+//VAR : [a-zA-Z_][a-zA-Z1-9_]* ;
 IDENT : [a-zA-Z_][a-zA-Z1-9_]* ;
 CHARACTER : '\'' .? '\'';

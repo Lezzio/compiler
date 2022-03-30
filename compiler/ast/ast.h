@@ -16,7 +16,7 @@ enum Operator {
     NEG, NOT
 };
 
-class ASTNode 
+class ASTNode
 {
     public :
         ASTNode() 
@@ -167,19 +167,6 @@ class Block : public ASTNode
         vector<Statement *> statements;
 };
 
-class Prog : public ASTNode
-{
-    public:
-        CFG* linearize();
-        Prog(Block * block): ASTNode(), block(block)
-            {};
-        virtual ~Prog();
-    protected:
-        Block * block;
-        
-};
-
-
 class Affectation : public Statement
 {
     public :
@@ -241,6 +228,95 @@ class Return : public Statement
     protected :
         Expr * expr;
 
+};
+
+class InstructionIF : public Statement
+{
+    public:
+        virtual string linearize(CFG * cfg);
+        InstructionIF(Expr* test, Block * then, Block * elseb) : Statement(), test(test), falseCodeBlock(elseb), trueCodeBlock(then){};
+        virtual ~InstructionIF();
+    protected :
+        Expr * test;
+        Block * trueCodeBlock;
+        Block * falseCodeBlock;
+};
+
+class InstructionWhile : public Statement
+{
+    public:
+        virtual string linearize(CFG * cfg);
+        InstructionWhile(Expr* test, Block * block) : Statement(), test(test), block(block) {};
+        virtual ~InstructionWhile();
+    protected:
+        Expr * test;
+        Block * block;
+};
+
+class InstructionFor : public Statement
+{
+    public:
+        virtual string linearize(CFG * cfg);
+        InstructionFor(Statement* init, Expr* test, Statement* update, Block * block) : Statement(), test(test), block(block), init(init), update(update) {};
+        virtual ~InstructionFor();
+    protected:
+        Statement * init;
+        Expr * test;
+        Statement * update;
+        Block * block;
+};
+
+class Parameter : public ASTNode
+{
+    public :
+        virtual string linearize(CFG * cfg);
+        Parameter(string name, TypeSymbol type) :
+            name(name),type(type){};
+        virtual ~Parameter()= default;
+    protected :
+        string name;
+        TypeSymbol type;
+};
+
+class Parameters : public Statement
+{
+    public :
+        void addParameter(Parameter *parameter);
+        virtual string linearize(CFG * cfg);
+        Parameters() :
+                Statement(){};
+            virtual ~Parameters();
+    protected :
+        vector<Parameter *> parameters;
+};
+
+class Function : public ASTNode
+{
+    public : 
+        string linearize(CFG * cfg);
+        Function(string name, TypeSymbol type, Parameters * parameters, Block * block): ASTNode(), block(block), name(name), type(type), parameters(parameters) 
+            {};
+        virtual ~Function();
+        string name;
+    protected:
+        Parameters * parameters;
+        Block * block;
+        TypeSymbol type;
+};
+
+
+class Prog : public ASTNode
+{
+    public:
+        vector<CFG*> linearize();
+        void addFunction(Function * function);
+        Prog(): ASTNode()
+            {};
+        virtual ~Prog();
+    protected:
+        vector<Function *> functions;
+        vector<CFG*> cfgs;
+        
 };
 
 #endif
