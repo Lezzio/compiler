@@ -71,6 +71,9 @@ void BasicBlock::gen_asm_ARM(ostream &o)
     o << label << ":" << "\n";
     if(cfg->firstBB(this)){
         this->cfg->gen_asm_prologue_ARM(o);
+        IRInstr * ir = new IRInstr(this,IRInstr::offset, INT64_T, {"124", "start"});
+        ir->gen_asm_ARM(o);
+        delete (ir);
     }
     for(auto & instr : instrs)
     {
