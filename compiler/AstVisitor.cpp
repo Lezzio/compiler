@@ -40,12 +40,12 @@ antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
     }
 
     Block * block = (Block *) visit(context->block());
-    Function * function = new Function(name, t, parameters, block);
+    auto * function = new Function(name, t, parameters, block);
     return (Function * ) function;
 }
 
 antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context) {
-    Block *block = new Block();
+    auto *block = new Block();
     for (const auto s : context->statement()) {
         Statement *statement = (Statement *) visit(s);
         block->addStatement(statement);
@@ -83,13 +83,13 @@ antlrcpp::Any AstVisitor::visitStatement6(ifccParser::Statement6Context *context
 antlrcpp::Any AstVisitor::visitStatement7(ifccParser::Statement7Context *context)
 {
     Expr * expr = (Expr *)visit(context->expression());
-    InstructionExpr * inst = new InstructionExpr(expr);
+    auto * inst = new InstructionExpr(expr);
     return (Statement *) inst;
 }
 
 antlrcpp::Any AstVisitor::visitParameters(ifccParser::ParametersContext *context)
 {
-    Parameters * parameters = new Parameters();
+    auto * parameters = new Parameters();
 
     int index = 0;
     for(const auto p : context->parameter()){
@@ -107,14 +107,14 @@ antlrcpp::Any AstVisitor::visitParameter(ifccParser::ParameterContext *context)
     if (res == "char") {
         t = CHAR;
     }
-    Parameter * parameter = new Parameter(context->IDENT()->getText(), t);
+    auto * parameter = new Parameter(context->IDENT()->getText(), t);
 
     return (Parameter *) parameter;
 }
 
 antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *context)
 {
-    Declarations * declarations = new Declarations();
+    auto * declarations = new Declarations();
     string res = (string) visit(context->type()).as<string>();
 
     TypeSymbol t = INT;
@@ -143,16 +143,16 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
         t = CHAR;
     }
 
-    Declaration *declaration = new Declaration(context->IDENT()->getText(), t);
+    auto *declaration = new Declaration(context->IDENT()->getText(), t);
     Expr *expr = (Expr *) visit(context->expression());
-    DecAffectation *decAffectation = new DecAffectation(declaration, expr);
+    auto *decAffectation = new DecAffectation(declaration, expr);
     return (Statement *) decAffectation;
 }
 
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
-    ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
+    auto *exprVar = new ExprVar(context->IDENT()->getText());
     Expr *expr = (Expr *) visit(context->expression());
-    Affectation *affectation = new Affectation(exprVar, expr);
+    auto *affectation = new Affectation(exprVar, expr);
     return (Statement *) affectation;
 }
 
@@ -164,7 +164,7 @@ antlrcpp::Any AstVisitor::visitUnaryexpr(ifccParser::UnaryexprContext *context) 
     } else {
         op = NOT;
     }
-    ExprUnary *unary = new ExprUnary("", expr, op);
+    auto *unary = new ExprUnary("", expr, op);
     return (Expr *) unary;
 }
 
@@ -173,7 +173,7 @@ antlrcpp::Any AstVisitor::visitCharexpr(ifccParser::CharexprContext *context) {
     char character = variable.substr(1, 2)[0];
     int value = (int) character;
 
-    ExprChar *expr = new ExprChar("", value);
+    auto *expr = new ExprChar("", value);
     return (Expr *) expr;
 }
 
@@ -190,7 +190,7 @@ antlrcpp::Any AstVisitor::visitRelationalexpr(ifccParser::RelationalexprContext 
     } else {     //if(context->op->getText() == "<=")
         op = LEE;
     }
-    ExprRelational *rel = new ExprRelational("", lExpr, rExpr, op);
+    auto *rel = new ExprRelational("", lExpr, rExpr, op);
     return (Expr *) rel;
 }
 

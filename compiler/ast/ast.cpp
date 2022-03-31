@@ -518,6 +518,7 @@ Prog::~Prog(){
         delete(f);
     }
     functions.clear();
+    delete (cfgs[0]->getSymbolTable());
     for(CFG *cfg : cfgs){
         delete(cfg);
     }
