@@ -5,7 +5,6 @@ axiom : prog ;
 prog :function* ;
 
 function : (type|'void') IDENT '(' parameters? ')' block ;
-//TODO: add void
 
 block : '{' statement* '}' ; 
 
@@ -30,8 +29,7 @@ affectation : type IDENT '=' expression #affectation1
             | IDENT '=' expression #affectation2; 
           //  | VAR '[' expression ']' '=' expression #affectation3;
 
-retcode : RETURN CONST #ret1
-        | RETURN IDENT #ret2 ;
+retcode : RETURN expression #ret1 ;
 
 ifBlock : 'if' '(' expression ')' (statement | block) elseBlock? ;
 

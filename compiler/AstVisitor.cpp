@@ -129,16 +129,11 @@ antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *conte
 }
 
 antlrcpp::Any AstVisitor::visitRet1(ifccParser::Ret1Context *context) {
-    ExprConst *exprConst = new ExprConst("", stoi(context->CONST()->getText()));
-    Return *ret = new Return(exprConst);
+    Expr *expr = (Expr *) visit(context->expression());
+    Return *ret = new Return(expr);
     return (Statement *) ret;
 }
 
-antlrcpp::Any AstVisitor::visitRet2(ifccParser::Ret2Context *context) {
-    ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
-    Return *ret = new Return(exprVar);
-    return (Statement *) ret;
-}
 
 antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *context) {
     string res = (string) visit(context->type()).as<string>();

@@ -193,6 +193,9 @@ int CFG::get_var_index(string name) {
 
 TypeSymbol CFG::get_var_type(string name) {
     Symbol *symbol = symbolTable->returnSymbol(name, 0);
+    if(symbol == nullptr){
+        symbol = symbolTable->returnParameter(name, 0);
+    }
     //TODO: check error
     return symbol->getTypeSymbol();
 }

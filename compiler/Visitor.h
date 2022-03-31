@@ -41,7 +41,6 @@ public:
 
     virtual antlrcpp::Any visitRet1(ifccParser::Ret1Context *context) override;
 
-    virtual antlrcpp::Any visitRet2(ifccParser::Ret2Context *context) override;
 
     virtual antlrcpp::Any visitUnaryexpr(ifccParser::UnaryexprContext *context) override;
 

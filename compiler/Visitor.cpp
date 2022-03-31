@@ -161,33 +161,14 @@ antlrcpp::Any Visitor::visitAffectation3(ifccParser::Affectation2Context *contex
 */
 
 antlrcpp::Any Visitor::visitRet1(ifccParser::Ret1Context *context) {
-    int retval = stoi(context->CONST()->getText());
-    cout << " 	movl	$" << retval << ", %eax\n"
+    //int retval = stoi(context->CONST()->getText());
+    cout << " 	movl	$" << "retval" << ", %eax\n"
                                           "   popq %rbp #restore %rbp from the stack\n"
                                           " 	ret\n";
 
     return 0;
 }
 
-antlrcpp::Any Visitor::visitRet2(ifccParser::Ret2Context *context) {
-    string variableName = context->IDENT()->getText();
-    int level = 0;
-    int address = 0;
-    //TODO: Test existence
-
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(variableName, level);
-    if (symbolReturned != nullptr && symbolReturned->getStateSymbol() == ASSIGNED) {
-        address = symbolReturned->getAddress();
-    } else {
-        //TODO:: gestion des erreurs
-        cout << "ret 2 : variableName does not exist " << endl;
-    }
-
-    cout << "   movl	" << address << "(%rbp), %eax\n"
-                                        "   popq %rbp\n"
-                                        "   ret\n";
-    return 0;
-}
 
 antlrcpp::Any Visitor::visitUnaryexpr(ifccParser::UnaryexprContext *context) {
     int expr = visit(context->expression());
