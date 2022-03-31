@@ -54,6 +54,7 @@ class ExprConst : public Expr
         ExprConst(string varName="", int value = 0) :
             Expr(varName), value(value){};
         virtual ~ExprConst()= default;
+        int getValue(){return value;};
     protected : 
         int value;
 };
@@ -65,6 +66,7 @@ class ExprChar : public Expr
         ExprChar(string varName, int value) :
             Expr(varName), value(value){};
         virtual ~ExprChar()= default;
+        int getValue(){return value;};
     protected : 
         int value;
 };

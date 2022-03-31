@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ast/ast.h"
 #include "antlr4-runtime.h"
 #include "generated/ifccBaseVisitor.h"
 
@@ -73,5 +74,11 @@ class AstVisitor : public ifccBaseVisitor {
         virtual antlrcpp::Any visitForBlock(ifccParser::ForBlockContext *context) override;
 
         virtual antlrcpp::Any visitFunctionexpr(ifccParser::FunctionexprContext *context) override;
+
+        protected:
+
+        bool checkConst(Expr * expr);
+        int getConstValue(Expr * expr);
+
 
 };

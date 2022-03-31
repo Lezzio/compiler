@@ -5,5 +5,7 @@ return n;
 
 int main()
 {
-return 2*fibo(8);
+
+    int a = 5 > 4;
+return a;
 }

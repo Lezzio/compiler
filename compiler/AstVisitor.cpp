@@ -190,6 +190,32 @@ antlrcpp::Any AstVisitor::visitRelationalexpr(ifccParser::RelationalexprContext 
     } else {     //if(context->op->getText() == "<=")
         op = LEE;
     }
+
+    bool lConst = checkConst(lExpr);
+    bool rConst = checkConst(rExpr);
+
+    int lValue, rValue;
+    if(lConst) {
+        lValue = getConstValue(lExpr);
+    }
+    if(rConst) {
+        rValue = getConstValue(rExpr);
+    }
+
+    if(lConst && rConst) {
+        delete lExpr;
+        delete rExpr;
+        if(op == GR){
+            return (Expr *) new ExprConst("", lValue > rValue);
+        } else if(op == GRE) {
+            return (Expr *) new ExprConst("", lValue >= rValue);
+        } else if(op == LE){
+            return (Expr *) new ExprConst("", lValue < rValue);
+        } else {
+            return (Expr *) new ExprConst("", lValue <= rValue);
+        }
+    }
+
     auto *rel = new ExprRelational("", lExpr, rExpr, op);
     return (Expr *) rel;
 }
@@ -214,6 +240,40 @@ antlrcpp::Any AstVisitor::visitMultplicationexpr(ifccParser::MultplicationexprCo
     } else {
         op = MOD;
     }
+
+    bool lConst = checkConst(lExpr);
+    bool rConst = checkConst(rExpr);
+
+    int lValue, rValue;
+    if(lConst) {
+        lValue = getConstValue(lExpr);
+    }
+    if(rConst) {
+        rValue = getConstValue(rExpr);
+    }
+
+    if(lConst && rConst) {
+        delete lExpr;
+        delete rExpr;
+        if(op == MULT){
+            return (Expr *) new ExprConst("", lValue * rValue);
+        } else if(op == DIV){
+            return (Expr *) new ExprConst("", lValue / rValue);
+        } else {
+            return (Expr *) new ExprConst("", lValue % rValue);
+        }
+    }
+
+    if(lConst && (lValue == 1) && op ==MULT) {
+        delete lExpr;
+        return (Expr *) rExpr;
+    }
+
+    if(rConst && (rValue ==1)){
+        delete rExpr;
+        return (Expr *) lExpr;
+    }
+
     auto *mul = new ExprMult("", lExpr, rExpr, op);
     return (Expr *) mul;
 }
@@ -227,6 +287,39 @@ antlrcpp::Any AstVisitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *con
     } else {
         op = MINUS;
     }
+
+    bool lConst = checkConst(lExpr);
+    bool rConst = checkConst(rExpr);
+
+    int lValue, rValue;
+    if(lConst) {
+        lValue = getConstValue(lExpr);
+    }
+    if(rConst) {
+        rValue = getConstValue(rExpr);
+    }
+
+    if(lConst && rConst) {
+        delete lExpr;
+        delete rExpr;
+        if(op == PLUS){
+            return (Expr *) new ExprConst("", lValue + rValue);
+        } else {
+            return (Expr *) new ExprConst("", lValue - rValue);
+        } 
+    }
+
+    if(lConst && (lValue == 0)) {
+        delete lExpr;
+        return (Expr *) rExpr;
+    }
+
+    if(rConst && (rValue ==0)){
+        delete rExpr;
+        return (Expr *) lExpr;
+    }
+
+
     ExprAdd *add = new ExprAdd("", lExpr, rExpr, op);
     return (Expr *) add;
 }
@@ -242,6 +335,30 @@ antlrcpp::Any AstVisitor::visitBitsexpr(ifccParser::BitsexprContext *context) {
     } else {
         op = XOR;
     }
+
+    bool lConst = checkConst(lExpr);
+    bool rConst = checkConst(rExpr);
+
+    int lValue, rValue;
+    if(lConst) {
+        lValue = getConstValue(lExpr);
+    }
+    if(rConst) {
+        rValue = getConstValue(rExpr);
+    }
+
+    if(lConst && rConst) {
+        delete lExpr;
+        delete rExpr;
+        if(op == OR){
+            return (Expr *) new ExprConst("", lValue | rValue);
+        } else if(op == AND){
+            return (Expr *) new ExprConst("", lValue & rValue);
+        } else {
+            return (Expr *) new ExprConst("", lValue ^ rValue);
+        }
+    }
+
     ExprBits *bits = new ExprBits("", lExpr, rExpr, op);
     return (Expr *) bits;
 }
@@ -261,6 +378,28 @@ antlrcpp::Any AstVisitor::visitEqualityexpr(ifccParser::EqualityexprContext *con
     } else {
         op = NEQUAL;
     }
+
+    bool lConst = checkConst(lExpr);
+    bool rConst = checkConst(rExpr);
+
+    int lValue, rValue;
+    if(lConst) {
+        lValue = getConstValue(lExpr);
+    }
+    if(rConst) {
+        rValue = getConstValue(rExpr);
+    }
+
+    if(lConst && rConst) {
+        delete lExpr;
+        delete rExpr;
+        if(op == EQUAL){
+            return (Expr *) new ExprConst("", lValue == rValue);
+        } else{
+            return (Expr *) new ExprConst("", lValue != rValue);
+        } 
+    }
+
     ExprEqual *equal = new ExprEqual("", lExpr, rExpr, op);
     return (Expr *) equal;
 }
@@ -364,3 +503,35 @@ antlrcpp::Any AstVisitor::visitFunctionexpr(ifccParser::FunctionexprContext *con
     return (Expr *) function;
 }
 
+
+bool AstVisitor::checkConst(Expr * expr){
+    ExprConst * exprConst = dynamic_cast<ExprConst *>(expr);
+    
+    if(exprConst){
+        return true;
+    }
+
+    ExprChar * exprChar = dynamic_cast<ExprChar *>(expr);
+
+    if(exprChar){
+        return true;
+    }
+
+    return false; 
+}
+
+int AstVisitor::getConstValue(Expr * expr){
+    ExprConst * exprConst = dynamic_cast<ExprConst *>(expr);
+    
+    if(exprConst){
+        return exprConst->getValue();
+    }
+
+    ExprChar * exprChar = dynamic_cast<ExprChar *>(expr);
+
+    if(exprChar){
+        return exprChar->getValue();
+    }
+
+    return 0; 
+}
