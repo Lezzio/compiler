@@ -1,223 +1,240 @@
 #include <iostream>
 #include <utility>
+
 using namespace std;
 
 #include "IR.h"
 
-void IRInstr::gen_asm_x86(ostream &o)
-{
+void IRInstr::gen_asm_x86(ostream &o) {
     string reg = "%eax";
-    if(t == CHAR || t == INT8_T){
+    if (t == CHAR || t == INT8_T) {
         reg = "%al";
     }
 
     switch (op) {
-        case ldconst:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+        case ldconst: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string value = this->params[1];
             o << getMovInstr(value, destination);
-            break;}
-        case ret:
-            {
+            break;
+        }
+        case ret: {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string endBBname = bb->cfg->return_bb->label;
             o << getMovInstr(origin, reg);
             o << getMovInstr(reg, destination);
             o << getJumpInstr(endBBname);
-            break;}
-        case finret:
-            {
+            break;
+        }
+        case finret: {
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             o << getMovInstr(origin, reg);
             break;
-            }
-        case copy:
-            {
+        }
+        case copy: {
             string destination;
-            if(this->params[0].compare("param_reg") == 0){
+            if (this->params[0].compare("param_reg") == 0) {
                 destination = this->bb->cfg->IR_reg_to_asm_param(stoi(this->params[2]));
             } else {
-                if(!bb->cfg->isAssigneSymbol(this->params[0])){
-                 this->bb->cfg->assignSymbol(this->params[0]);
+                if (!bb->cfg->isAssigneSymbol(this->params[0])) {
+                    this->bb->cfg->assignSymbol(this->params[0]);
                 }
                 destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             }
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             o << getMovInstr(origin, reg);
             o << getMovInstr(reg, destination);
-            break;  }
-        case add:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case add: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getAddInstr(rvalue, reg);
-            o << getMovInstr(reg, destination);}
+            o << getMovInstr(reg, destination);
+        }
             break;
-        case sub:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+        case sub: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
-            o << getMovInstr(lvalue,reg);
+            o << getMovInstr(lvalue, reg);
             o << getSubInstr(rvalue, reg);
-            o << getMovInstr(reg, destination);  }
+            o << getMovInstr(reg, destination);
+        }
             break;
-        case mul:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+        case mul: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getMulInstr(rvalue, reg);
             o << getMovInstr(reg, destination);
-            break;}
-        case div:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case div: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getDivInstr(rvalue, reg);
             o << getMovInstr(reg, destination);
-            break;}
-        case mod:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case mod: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getDivInstr(rvalue, reg);
             o << getMovInstr(reg, destination);
-            break;}
-        case orbit:
-           { string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case orbit: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getOrInstr(rvalue, reg);
             o << getMovInstr(reg, destination);
-            break;}
-        case andbit:
-           { string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case andbit: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getAndInstr(rvalue, reg);
             o << getMovInstr(reg, destination);
-            break;}
-        case xorbit:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case xorbit: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getXorInstr(rvalue, reg);
             o << getMovInstr(reg, destination);
-            break; }
-        case neg:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case neg: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getNegInstr(reg);
             o << getMovInstr(reg, destination);
-            break;   }
-        case not_:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case not_: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getNotInstr(reg);
             o << getMovInstr("%edx", destination);
-            break;      }
-        case rmem:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case rmem: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             o << getMovInstr(origin, reg);
-            o << getMovInstr("("+reg+")", "%r10");
+            o << getMovInstr("(" + reg + ")", "%r10");
             o << getMovInstr("%r10", destination);
-            break;}
-        case wmem:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case wmem: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             o << getMovInstr(origin, reg);
             o << getMovInstr(destination, "%r10");
-            o << getMovInstr("%r10", "("+reg+")");
-            break;}
-        case call:
-            {
+            o << getMovInstr("%r10", "(" + reg + ")");
+            break;
+        }
+        case call: {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string funcName = this->params[1];
             o << getCallInstr(funcName);
-            if(t != VOID){
-                 o << getMovInstr(reg, destination);
+            if (t != VOID) {
+                o << getMovInstr(reg, destination);
             }
-            break;}
-        case cmp_eq:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case cmp_eq: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, reg);
             o << getCompInstr(rvalue, reg);
             o << getEqInstr("%al");
-            if(reg != "%al"){
+            if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
             }
             o << getMovInstr(reg, destination);
-            break;}
-        case cmp_neq:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case cmp_neq: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, "%eax");
             o << getCompInstr(rvalue, "%eax");
             o << getNeqInstr("%al");
-            if(reg != "%al"){
+            if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
             }
             o << getMovInstr(reg, destination);
-            break;}
-        case cmp_lt:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case cmp_lt: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, "%eax");
             o << getCompInstr(rvalue, "%eax");
             o << getLtInstr("%al");
-            if(reg != "%al"){
+            if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
             }
             o << getMovInstr(reg, destination);
-            break;}
-        case cmp_le:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case cmp_le: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, "%eax");
             o << getCompInstr(rvalue, "%eax");
             o << getLeInstr("%al");
-            if(reg != "%al"){
+            if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
             }
             o << getMovInstr(reg, destination);
-            break;}
-        case cmp_gt:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case cmp_gt: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, "%eax");
             o << getCompInstr(rvalue, "%eax");
             o << getGtInstr("%al");
-            if(reg != "%al"){
+            if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
             }
             o << getMovInstr(reg, destination);
-            break;}
-        case cmp_ge:
-            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            break;
+        }
+        case cmp_ge: {
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
             o << getMovInstr(lvalue, "%eax");
             o << getCompInstr(rvalue, "%eax");
             o << getGeInstr("%al");
-            if(reg != "%al"){
+            if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
             }
             o << getMovInstr(reg, destination);
@@ -231,66 +248,64 @@ void IRInstr::gen_asm_x86(ostream &o)
             {
             int value = stoi(this->params[0]);
             value = value / 16;
-            value = value *16 +16;
-            string offset = "$"+to_string(value);
+            value = value * 16 + 16;
+            string offset = "$" + to_string(value);
             o << getSubInstr(offset, "%rsp");
             break;
-            }
+        }
         default:
             break;
     }
 }
 
-string shrink_x86_to_ARM(string str_x86){
-    if (str_x86[0] == '$'){ //constant à charger
+string shrink_x86_to_ARM(string str_x86) {
+    if (str_x86[0] == '$') { //constant à charger
         return str_x86.substr(1);
     } else {    //offset
         uint end = str_x86.find('(');
-        return str_x86.substr(1, end-1);
+        return str_x86.substr(1, end - 1);
     }
 }
 
-void IRInstr::gen_asm_ARM(ostream &o)
-{
+void IRInstr::gen_asm_ARM(ostream &o) {
 
     switch (op) {
-        case ldconst:
-        {
+        case ldconst: {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string value = shrink_x86_to_ARM(this->params[1]);
-            if (stoi(value) > 255){ //on ne peut pas faire tenir la constante sur plus de 8 bits
+            if (stoi(value) > 255) { //on ne peut pas faire tenir la constante sur plus de 8 bits
                 cerr << "The value " << value << " is too big for ARM " << endl;
                 break;
             }
             o << getMovInstr(value, "r3", t, ARM, true);
             o << getMovInstr("r3", destination, t, ARM, true);
-            break;}
-        case ret:
-        {
+            break;
+        }
+        case ret: {
             string origin = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string endBBname = bb->cfg->return_bb->label;
             o << getMovInstr(origin, "r3", t, ARM);
             o << getMovInstr("r3", "r0", t, ARM);
             //jump to epilogue
-            break;}
+            break;
+        }
         case finret:    //TODO
         {
             string origin = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             //o << getMovInstr(origin, reg);
             break;
         }
-        case copy:
-        {
-            if(!bb->cfg->isAssigneSymbol(this->params[0])){
+        case copy: {
+            if (!bb->cfg->isAssigneSymbol(this->params[0])) {
                 this->bb->cfg->assignSymbol(this->params[0]);
             }
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string origin = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             o << getMovInstr(origin, "r3", t, ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;  }
-        case add:
-        {
+            break;
+        }
+        case add: {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
@@ -298,170 +313,206 @@ void IRInstr::gen_asm_ARM(ostream &o)
             o << getMovInstr(rvalue, "r3", t, ARM);
             o << getAddInstr("r3", "r2", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case sub:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case sub: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getMovInstr(rvalue, "r3", t, ARM);
             o << getSubInstr("r3", "r2", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case mul:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case mul: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getMovInstr(rvalue, "r3", t, ARM);
             o << getMulInstr("r3", "r2", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case div:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case div: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getDivInstr(lvalue, rvalue, ARM, false);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case mod:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case mod: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getDivInstr(lvalue, rvalue, ARM, true);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case orbit:
-        { string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case orbit: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getMovInstr(rvalue, "r3", t, ARM);
             o << getOrInstr("r3", "r2", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case andbit:
-        { string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case andbit: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getMovInstr(rvalue, "r3", t, ARM);
             o << getAndInstr("r3", "r2", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case xorbit:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case xorbit: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getMovInstr(rvalue, "r3", t, ARM);
             o << getXorInstr("r3", "r2", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break; }
-        case neg:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case neg: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(rvalue, "r3", t, ARM);
             o << getNegInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;   }
-        case not_:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case not_: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(rvalue, "r3", t, ARM);
             o << getNotInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;      }
-        case rmem:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case rmem: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string origin = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             //TODO : rmem
-            break;}
-        case wmem:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case wmem: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string origin = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             //TODO : wmem
-            break;}
-        case call:
-        {//TODO:
-            break;}
-        case cmp_eq:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case call: {//TODO:
+            break;
+        }
+        case cmp_eq: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getEqInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case cmp_neq:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case cmp_neq: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getNeqInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case cmp_lt:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case cmp_lt: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getLtInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case cmp_le:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case cmp_le: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getLeInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case cmp_gt:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case cmp_gt: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getGtInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
-        case cmp_ge:
-        {string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
+            break;
+        }
+        case cmp_ge: {
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0]));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1]));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2]));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getGeInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
-            break;}
+            break;
+        }
+        case offset: {
+            int value = stoi(this->params[0]);
+            value = value / 4;
+            value = value * 4 + 8;
+            string offset = "#" + to_string(value);
+            if (this->params[1] == "start") {
+                o << getSubInstr("sp", offset, ARM, "sp");
+                o << getAddInstr("sp", "#0", ARM, "r7");
+            } else if (this->params[1] == "end") {
+                o << getAddInstr("r7", offset, ARM, "r7");
+                o << getMovInstr("r7", "sp", t, ARM);
+            } else {
+                cerr << "Error in func : " << __FUNCTION__ << " status should be 'start' or 'end' instead of : "
+                     << this->params[1] << endl;
+            }
+
+
+            break;
+        }
         default:
             break;
     }
 }
 
 IRInstr::IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> params)
-    : bb(bb_), op(op), t(t), params(std::move(params))
-{
+        : bb(bb_), op(op), t(t), params(std::move(params)) {
 }
 
 
 /** Instructions */
-string IRInstr::getMovInstr(const string &origine, const string &destination, TypeSymbol type, Arch arch, bool cst){
-    if(arch == x86){
-        if(type == INT){
+string IRInstr::getMovInstr(const string &origine, const string &destination, TypeSymbol type, Arch arch, bool cst) {
+    if (arch == x86) {
+        if (type == INT) {
             string action = "   movl ";
-            if(t == CHAR){
+            if (t == CHAR) {
                 action = "  movb ";
             }
             return action + origine + ", " + destination + "\n";
-        } else if (type ==INT8_T) {
+        } else if (type == INT8_T) {
             return "    movzbl " + origine + ", " + destination + "\n";
         } else {
             return "";
@@ -469,68 +520,70 @@ string IRInstr::getMovInstr(const string &origine, const string &destination, Ty
     } else {
         string action, type_b;
 
-        if (type == CHAR || type == INT8_T){
+        if (type == CHAR || type == INT8_T) {
             type_b = "b";
         }
-        if  (destination[0] == 'r' && origine[0] != 'r'){   //from stack to reg
+        if (destination[0] == 'r' && origine[0] != 'r') {   //from stack to reg
 
-            if(cst){ //load cst to reg
+            if (cst) { //load cst to reg
                 action = "\tmovs\t";
-                return action + destination + ", #" + origine +"\n";
-            }else{  //from stack to reg
+                return action + destination + ", #" + origine + "\n";
+            } else {  //from stack to reg
                 action = "\tldr" + type_b + "\t";
             }
 
-        } else if (destination[0] != 'r' && origine[0] == 'r'){ //from reg to stack
+        } else if (destination[0] == 's' && origine[0] == 'r') { //from reg to sp
+            //mov	sp, r7
+            return "\tmov\tsp, " + origine + "\n";
+        } else if (destination[0] == 'r' && origine[0] == 'r') { // from reg to reg
+            action = "\tmov\t";
+            return action + destination + ", " + origine + "\n";
+        } else if (destination[0] == 's' && origine[0] == 'r') { //from reg to sp
+            //mov	sp, r7
+            return "\tmov\tsp, " + origine + "\n";
+        } else if (destination[0] != 'r' && origine[0] == 'r') { //from reg to stack
             action = "\tstr" + type_b + "\t";
             return action + origine + ", [r7, #" + destination + "]\n";
-        } else if (destination[0] == 'r' && origine[0] == 'r'){ // from reg to reg
-            action = "\tmov\t";
-            return action + destination + ", "  + origine + "\n";
         }
-
         return action + destination + ", [r7, #" + origine + "]\n";
     }
 }
 
-string IRInstr::getAddInstr(const string& arg1, const string& arg2, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
+    if (arch == x86) {
         string action = "   addl ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  addb ";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
-        string action = "\tadds\tr3, ";
+        string action = "\tadds\t" + dest + ", ";
         return action + arg1 + ", " + arg2 + "\n";
         //return string(__FUNCTION__) + " not implemented for ARM\n";
     }
 }
 
 
-string IRInstr::getSubInstr(const string& arg1, const string& arg2, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
+    if (arch == x86) {
         string action = "   subl ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  subb ";
         }
-        if(t == INT64_T){
+        if (t == INT64_T) {
             action = "  subq ";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
-        string action = "\tsubs\tr3, ";
+        string action = "\tsubs\t" + dest + ", ";
         return action + arg1 + ", " + arg2 + "\n";
     }
 }
 
-string IRInstr::getMulInstr(const string& arg1, const string& arg2, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getMulInstr(const string &arg1, const string &arg2, Arch arch) {
+    if (arch == x86) {
         string action = "   imull ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  imulb ";
         }
         return action + arg1 + ", " + arg2 + "\n";
@@ -540,11 +593,10 @@ string IRInstr::getMulInstr(const string& arg1, const string& arg2, Arch arch)
     }
 }
 
-string IRInstr::getDivInstr(const string& arg1, const string& arg2, Arch arch, bool modulo)
-{
-    if (arch == x86){
+string IRInstr::getDivInstr(const string &arg1, const string &arg2, Arch arch, bool modulo) {
+    if (arch == x86) {
         string action = "   idivl ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  idivb ";
         }
         return action + arg1 + ", " + arg2 + "\n";
@@ -554,8 +606,8 @@ string IRInstr::getDivInstr(const string& arg1, const string& arg2, Arch arch, b
             lvalue = getMovInstr(arg1, "r3", t, ARM);
 
             string load_r0 = getMovInstr("r3", "r0", t, ARM);
-            if (t == CHAR){
-                rvalue = getMovInstr(arg2, "r2", t, ARM) + getMovInstr("r2","r1", t, ARM);
+            if (t == CHAR) {
+                rvalue = getMovInstr(arg2, "r2", t, ARM) + getMovInstr("r2", "r1", t, ARM);
                 action = "\tbl\t__aeabi_udivmod(PLT)\n";
             } else {
                 rvalue = getMovInstr(arg2, "r1", t, ARM);
@@ -565,9 +617,9 @@ string IRInstr::getDivInstr(const string& arg1, const string& arg2, Arch arch, b
             result = getMovInstr("r1", "r3", t, ARM);
             return lvalue + rvalue + load_r0 + action + result + "\tuxtb\tr3, r3\n";
         } else {    //division
-            if (t == CHAR){
+            if (t == CHAR) {
                 lvalue = getMovInstr(arg1, "r3", t, ARM);
-                rvalue = getMovInstr(arg2, "r2", t, ARM) + getMovInstr("r2","r1", t, ARM);
+                rvalue = getMovInstr(arg2, "r2", t, ARM) + getMovInstr("r2", "r1", t, ARM);
                 string load_r0 = getMovInstr("r3", "r0", t, ARM);
                 action = "\tbl\t__aeabi_uidiv(PLT)\n";
                 result = getMovInstr("r0", "r3", t, ARM);
@@ -590,11 +642,10 @@ string IRInstr::getDivInstr(const string& arg1, const string& arg2, Arch arch, b
 	bl	__aeabi_idivmod(PLT)
 	mov	r3, r1
  */
-string IRInstr::getOrInstr(const string& arg1, const string& arg2, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getOrInstr(const string &arg1, const string &arg2, Arch arch) {
+    if (arch == x86) {
         string action = "   orl ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  orb ";
         }
         return action + arg1 + ", " + arg2 + "\n";
@@ -604,11 +655,10 @@ string IRInstr::getOrInstr(const string& arg1, const string& arg2, Arch arch)
     }
 }
 
-string IRInstr::getAndInstr(const string& arg1, const string& arg2, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getAndInstr(const string &arg1, const string &arg2, Arch arch) {
+    if (arch == x86) {
         string action = "   andl ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  andb ";
         }
         return action + arg1 + ", " + arg2 + "\n";
@@ -619,11 +669,10 @@ string IRInstr::getAndInstr(const string& arg1, const string& arg2, Arch arch)
     }
 }
 
-string IRInstr::getXorInstr(const string& arg1, const string& arg2, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getXorInstr(const string &arg1, const string &arg2, Arch arch) {
+    if (arch == x86) {
         string action = "   xorl ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  xorb ";
         }
         return "    xorl " + arg1 + ", " + arg2 + "\n";
@@ -634,11 +683,10 @@ string IRInstr::getXorInstr(const string& arg1, const string& arg2, Arch arch)
     }
 }
 
-string IRInstr::getCompInstr(const string& arg1, const string& arg2, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getCompInstr(const string &arg1, const string &arg2, Arch arch) {
+    if (arch == x86) {
         string action = "   cmpl ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  cmpb ";
         }
         return action + arg1 + ", " + arg2 + "\n";
@@ -649,11 +697,10 @@ string IRInstr::getCompInstr(const string& arg1, const string& arg2, Arch arch)
     }
 }
 
-string IRInstr::getNotInstr(const string& arg1, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getNotInstr(const string &arg1, Arch arch) {
+    if (arch == x86) {
         string action = "   notl ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  notb ";
         }
         return action + arg1 + "\n";
@@ -664,11 +711,10 @@ string IRInstr::getNotInstr(const string& arg1, Arch arch)
     }
 }
 
-string IRInstr::getNegInstr(const string& arg1, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getNegInstr(const string &arg1, Arch arch) {
+    if (arch == x86) {
         string action = "   negl ";
-        if(t == CHAR){
+        if (t == CHAR) {
             action = "  negb ";
         }
         return action + arg1 + "\n";
@@ -678,9 +724,8 @@ string IRInstr::getNegInstr(const string& arg1, Arch arch)
     }
 }
 
-string IRInstr::getEqInstr(const string& arg1, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getEqInstr(const string &arg1, Arch arch) {
+    if (arch == x86) {
         return "    sete " + arg1 + "\n";
     } else {
         string action = "   ite eq\n";
@@ -690,9 +735,8 @@ string IRInstr::getEqInstr(const string& arg1, Arch arch)
     }
 }
 
-string IRInstr::getNeqInstr(const string& arg1, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getNeqInstr(const string &arg1, Arch arch) {
+    if (arch == x86) {
         return "    setne " + arg1 + "\n";
     } else {
         string ite = "   ite ne\n";
@@ -702,14 +746,13 @@ string IRInstr::getNeqInstr(const string& arg1, Arch arch)
     }
 }
 
-string IRInstr::getLtInstr(const string& arg1, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getLtInstr(const string &arg1, Arch arch) {
+    if (arch == x86) {
         return "    setl " + arg1 + "\n";
     } else {
         string cond, cond_inv;
 
-        if(t == CHAR){
+        if (t == CHAR) {
             cond = "cc";
             cond_inv = "cs";
         } else {
@@ -724,14 +767,13 @@ string IRInstr::getLtInstr(const string& arg1, Arch arch)
     }
 }
 
-string IRInstr::getLeInstr(const string& arg1, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getLeInstr(const string &arg1, Arch arch) {
+    if (arch == x86) {
         return "    setle " + arg1 + "\n";
     } else {
         string cond, cond_inv;
 
-        if(t == CHAR){
+        if (t == CHAR) {
             cond = "ls";
             cond_inv = "hi";
         } else {
@@ -746,14 +788,13 @@ string IRInstr::getLeInstr(const string& arg1, Arch arch)
     }
 }
 
-string IRInstr::getGtInstr(const string& arg1, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getGtInstr(const string &arg1, Arch arch) {
+    if (arch == x86) {
         return "    setg " + arg1 + "\n";
     } else {
         string cond, cond_inv;
 
-        if(t == CHAR){
+        if (t == CHAR) {
             cond = "hi";
             cond_inv = "ls";
         } else {
@@ -768,14 +809,13 @@ string IRInstr::getGtInstr(const string& arg1, Arch arch)
     }
 }
 
-string IRInstr::getGeInstr(const string& arg1, Arch arch)
-{
-    if (arch == x86){
+string IRInstr::getGeInstr(const string &arg1, Arch arch) {
+    if (arch == x86) {
         return "    setge " + arg1 + "\n";
     } else {
         string cond, cond_inv;
 
-        if(t == CHAR){
+        if (t == CHAR) {
             cond = "cs";
             cond_inv = "cc";
         } else {
@@ -829,10 +869,10 @@ string IRInstr::getGeInstr(const string& arg1, Arch arch)
  */
 
 
-string IRInstr::getJumpInstr(const string& arg1, Arch arch){
+string IRInstr::getJumpInstr(const string &arg1, Arch arch) {
     return "   jmp   " + arg1 + "\n";
 }
 
-string IRInstr::getCallInstr(const string& arg1, Arch arch){
+string IRInstr::getCallInstr(const string &arg1, Arch arch) {
     return "   call " + arg1 + "\n";
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 #include "IR.h"
@@ -60,15 +61,15 @@ void CFG::gen_asm_ARM(ostream &o) {
     cout << ".globl	main\n"
             " main: \n";
 #endif
-    gen_asm_prologue_ARM(o);
+    //gen_asm_prologue_ARM(o);
     for (auto & bb : bbs) {
         bb->gen_asm_ARM(o);
     }
+
+    IRInstr * ir = new IRInstr(bbs.back(),IRInstr::offset, INT64_T, {"124", "end"});
+    ir->gen_asm_ARM(o);
+    delete (ir);
     gen_asm_epilogue_ARM(o);
-
-    //o << "\n";
-    //symbolTable->print_dictionary();
-
 }
 
 string CFG::IR_reg_to_asm(string reg) {
@@ -138,8 +139,6 @@ void CFG::gen_asm_epilogue_x86(ostream &o)
 
 void CFG::gen_asm_prologue_ARM(ostream &o) {
     o << "\tpush\t{r7, lr}" << endl;
-    o << "\tsub\tsp, sp, #space_needed" << endl;
-    o << "\tadd\tr7, sp, #0" << endl;
     //TODO : gerer le sp et r7
 }
 /*
@@ -149,8 +148,6 @@ void CFG::gen_asm_prologue_ARM(ostream &o) {
  */
 
 void CFG::gen_asm_epilogue_ARM(ostream &o) {
-    o << "\tadds\tr7, r7, #space_needed" << endl;
-    o << "\tmov\tsp, r7" << endl;
     o << "\tpop\t{r7, pc}" << endl;
     //o << "\tldr\tr7, [sp], #4" << endl;
     //o << "\tbx\tlr" << endl;
