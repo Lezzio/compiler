@@ -33,7 +33,7 @@ retcode : RETURN expression #ret1 ;
 
 ifBlock : 'if' '(' expression ')' (statement | block) elseBlock? ;
 
-elseBlock : 'else' (statement| block| ifBlock);      
+elseBlock : 'else' (statement| block| ifBlock) ;
 
 whileBlock : 'while' '(' expression ')' (statement | block) ;
 

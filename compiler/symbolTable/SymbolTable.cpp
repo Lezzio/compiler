@@ -4,21 +4,25 @@
 #include "../error/ErrorManager.h"
 
 #define DECLARATION_INDEX -1
+#define GLOBAL_SCOPE "GLOBAL"
 
 using namespace std;
 
-int SymbolTable::staticIndex;
+int SymbolTable::staticIndex = 0;
 int SymbolTable::staticTempIndex = 0;
 
-SymbolTable::SymbolTable(){ staticIndex = 0; current_function = ""; higherIndex =0; }
+SymbolTable::SymbolTable() {
+    current_function = "";
+    highestIndex = 0;
+}
 
-int SymbolTable::addSymbol(const string &symbolName, int symbolLevel, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
+int SymbolTable::addSymbol(const string &symbolName, const string& symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst) {
     int index = staticIndex + getOffsetType(typeSymbol);
-    Symbol *newSymbol = new Symbol(symbolName, symbolLevel, index, typeSymbol, additional, stateSymbol, isConst);
+    auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst);
     if (!doesSymbolExist(newSymbol)) {
         this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
         staticIndex = index;
-        higherIndex = index;
+        highestIndex = index;
         return newSymbol->getAddress();
     } else {
         cout << "Error detected can't declare symbol twice ADD_SYMBOL" << endl;
@@ -27,9 +31,9 @@ int SymbolTable::addSymbol(const string &symbolName, int symbolLevel, TypeSymbol
     return -1;
 }
 
-bool SymbolTable::declareSymbol(const string &symbolName, int symbolLevel, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
+bool SymbolTable::declareSymbol(const string &symbolName, const string& symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
 
-    Symbol *newSymbol = new Symbol(symbolName, symbolLevel, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst);
+    auto *newSymbol = new Symbol(symbolName, symbolScope, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst);
 
     if (!doesSymbolExist(newSymbol)) {
         this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
@@ -47,7 +51,7 @@ bool SymbolTable::declareSymbol(const string &symbolName, int symbolLevel, TypeS
 int SymbolTable::assignSymbol(Symbol *symbol) {
     symbol->setStateSymbol(ASSIGNED);
     staticIndex += getOffsetType(symbol->getTypeSymbol());
-    higherIndex = staticIndex;
+    highestIndex = staticIndex;
     symbol->setIndex(staticIndex);
 
     return symbol->getAddress();
@@ -60,7 +64,7 @@ int SymbolTable::defFunction(string name, TypeSymbol typeSymbol) {
         symbolName = name + "_" + to_string(level);
     }*/
 
-    Symbol *newSymbol = new Symbol(symbolName, 0, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
+    Symbol *newSymbol = new Symbol(symbolName, GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
 
     if (!doesSymbolExist(symbolName, level)) {
         this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
@@ -70,7 +74,7 @@ int SymbolTable::defFunction(string name, TypeSymbol typeSymbol) {
     return -1;
 }
 
-bool SymbolTable::defParameter(string name, TypeSymbol typeSymbol) {
+bool SymbolTable::defParameter(const string& name, string scope, TypeSymbol typeSymbol) {
     int level = 0;
     string symbolName =  name + "_" + current_function ;
     if (level != -1) {
@@ -78,7 +82,7 @@ bool SymbolTable::defParameter(string name, TypeSymbol typeSymbol) {
         //symbolName = name + "_" + current_function + "_" + to_string(level);
     }
 
-    Symbol *newSymbol = new Symbol(symbolName, 0, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
+    auto *newSymbol = new Symbol(symbolName, std::move(scope), DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
 
     if (!doesSymbolExist(symbolName, level)) {
         this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));

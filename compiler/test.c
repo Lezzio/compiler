@@ -1,11 +1,13 @@
-int fibo(int n)
-{
-return n;
+int fibo(int n) {
+    int n;
+    return n;
 }
 
-int main()
-{
+int main() {
 
     int a = 5 > 4;
-return a;
+    for (int a = 0; a < 10; a++) {
+        int a;
+    }
+    return a;
 }

@@ -7,16 +7,16 @@ BasicBlock::BasicBlock(CFG *cfg, string entry_label)
     : cfg(cfg), label(entry_label), exit_true(nullptr), exit_false(nullptr)
 {}
 
-BasicBlock::~BasicBlock() 
+BasicBlock::~BasicBlock()
 {
-    for (IRInstr * instr : this->instrs) {
+    for (IRInstr * instr : this->instructions) {
         delete (instr);
     }
 }
 
 void BasicBlock::add_IRInstr(IRInstr::Operation op, TypeSymbol t, vector<string> params)
 {
-    instrs.push_back(new IRInstr(this, op, t, params));
+    instructions.push_back(new IRInstr(this, op, t, params));
 }
 
 /** TODO: 
@@ -41,7 +41,7 @@ void BasicBlock::gen_asm_86(ostream &o)
         ir->gen_asm_x86(o);
         delete ir;
     }
-    for(auto & instr : instrs)
+    for(auto & instr : instructions)
     {
         instr->gen_asm_x86(o);
     }
@@ -72,7 +72,7 @@ void BasicBlock::gen_asm_ARM(ostream &o)
     if(cfg->firstBB(this)){
         this->cfg->gen_asm_prologue_ARM(o);
     }
-    for(auto & instr : instrs)
+    for(auto & instr : instructions)
     {
         instr->gen_asm_ARM(o);
     }
@@ -88,7 +88,7 @@ void BasicBlock::gen_asm_ARM(ostream &o)
         TypeSymbol t = cfg->get_var_type(test_var_name);
 
         string action = "   cmpl";
-        if(t==CHAR){
+        if(t==CHAR) {
             action = "  cmpb";
         }
         o << action << "    $0, " << address << "\n";

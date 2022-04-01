@@ -5,7 +5,7 @@ using namespace std;
 
 CFG::CFG(SymbolTable *symbolTable, string name)
         : name(name), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr), return_bb(nullptr),
-          nextTmpVarNumber(0) {
+          nextTmpVarNumber(0), level(0), previousLevel(0), highestLevel(0) {
 
 }
 
@@ -158,18 +158,15 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
 
 
 // symbol table methods
-void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol)
-{
-    if(stateSymbol == PARAMETER){
-        this->symbolTable->defParameter(name,  t);
-    }
-    else if(stateSymbol == FUNCTION){
-        this->symbolTable->defFunction(name,  t);
-    }
-    else if(stateSymbol==DECLARED){
-        this->symbolTable->declareSymbol(name, 0, t, 0, DECLARED, 0);
+void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol) {
+    if (stateSymbol == PARAMETER) {
+        this->symbolTable->defParameter(name, getCurrentScope(), std::string(), t);
+    } else if (stateSymbol == FUNCTION) {
+        this->symbolTable->defFunction(name, t);
+    } else if (stateSymbol == DECLARED) {
+        this->symbolTable->declareSymbol(name, getCurrentScope(), t, 0, DECLARED, false);
     } else {
-        symbolTable->addSymbol(name, 0, t, 0, stateSymbol, 0);
+        symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false);
     }
 }
 
@@ -202,8 +199,12 @@ TypeSymbol CFG::get_var_type(string name) {
     return symbol->getTypeSymbol();
 }
 
+/**
+ * @return a newly generated name for a basic block following the format :
+ * .(function name)#(basic block number)
+ */
 string CFG::new_BB_name() {
-    string name = "." + this->name + "BB" + to_string(nextBBnumber);
+    string name = "." + this->name + "#" + to_string(nextBBnumber);
     nextBBnumber++;
     return name;
 }
@@ -229,15 +230,28 @@ void CFG::setReturnSymbol(string name) {
     }
 }
 
-bool CFG::isSymbolExist(string name){
-   
+bool CFG::doesSymbolExist(string name){
     return symbolTable->doesSymbolExist(name,0);
 }
 
 string CFG::getOffset(){
-    return to_string(symbolTable->higherIndex);
+    return to_string(symbolTable->highestIndex);
 }
 
 SymbolTable * CFG::getSymbolTable() {
     return symbolTable;
+}
+
+void CFG::enteringScope() {
+    previousLevel = level;
+    highestLevel++;
+    level = highestLevel;
+}
+
+void CFG::exitingScope() {
+    level = previousLevel;
+}
+
+string CFG::getCurrentScope() {
+    return name + "_" + to_string(this->level);
 }

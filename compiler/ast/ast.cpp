@@ -1,76 +1,67 @@
 #include "ast.h"
 
-string ExprVar::linearize(CFG * cfg)
-{
+string ExprVar::linearize(CFG *cfg) {
     return varName;
 }
 
-string ExprConst::linearize(CFG * cfg)
-{
+string ExprConst::linearize(CFG *cfg) {
     string tempVar = cfg->create_new_tempvar(INT);
-    string constant = "$"+ to_string(value);
+    string constant = "$" + to_string(value);
     cfg->addInstruction(IRInstr::ldconst, INT, {tempVar, constant});
     return tempVar;
 }
 
-string ExprChar::linearize(CFG * cfg)
-{
+string ExprChar::linearize(CFG *cfg) {
     string tempVar = cfg->create_new_tempvar(CHAR);
-    string constant = "$"+ to_string(value);
+    string constant = "$" + to_string(value);
     cfg->addInstruction(IRInstr::ldconst, CHAR, {tempVar, constant});
     return tempVar;
 }
 
-string ExprMult::linearize(CFG * cfg)
-{
+string ExprMult::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
     TypeSymbol t1 = cfg->get_var_type(var1);
     TypeSymbol t2 = cfg->get_var_type(var2);
-    if(t1 == INT || t2 == INT){
+    if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
         typeTmp = CHAR;
     }
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
-    if(op == MULT)
-    {
+    if (op == MULT) {
         cfg->addInstruction(IRInstr::mul, typeTmp, {tempVar, var1, var2});
-    } else if(op == DIV)
-    {
+    } else if (op == DIV) {
         cfg->addInstruction(IRInstr::div, typeTmp, {tempVar, var1, var2});
-    } else 
-    {
+    } else {
         cfg->addInstruction(IRInstr::mod, typeTmp, {tempVar, var1, var2});
     }
     return tempVar;
 }
 
-ExprMult::~ExprMult(){
+ExprMult::~ExprMult() {
     delete (lExpr);
     delete (rExpr);
 }
 
-string ExprAdd::linearize(CFG * cfg)
-{
+string ExprAdd::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
     TypeSymbol t1 = cfg->get_var_type(var1);
     TypeSymbol t2 = cfg->get_var_type(var2);
-    if(t1 == INT || t2 == INT){
+    if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
         typeTmp = CHAR;
     }
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
-    if(op == PLUS)
-    {
+    if (op == PLUS) {
         cfg->addInstruction(IRInstr::add, typeTmp, {tempVar, var1, var2});
     } else {
         cfg->addInstruction(IRInstr::sub, typeTmp, {tempVar, var1, var2});
@@ -78,96 +69,86 @@ string ExprAdd::linearize(CFG * cfg)
     return tempVar;
 }
 
-ExprAdd::~ExprAdd(){
+ExprAdd::~ExprAdd() {
     delete (lExpr);
     delete (rExpr);
 }
 
-string ExprBits::linearize(CFG * cfg)
-{
+string ExprBits::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
     TypeSymbol t1 = cfg->get_var_type(var1);
     TypeSymbol t2 = cfg->get_var_type(var2);
-    if(t1 == INT || t2 == INT){
+    if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
         typeTmp = CHAR;
     }
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
-    if(op == OR)
-    {
+    if (op == OR) {
         cfg->addInstruction(IRInstr::orbit, typeTmp, {tempVar, var1, var2});
-    } else if(op == AND)
-    {
+    } else if (op == AND) {
         cfg->addInstruction(IRInstr::andbit, typeTmp, {tempVar, var1, var2});
-    } else 
-    {
+    } else {
         cfg->addInstruction(IRInstr::xorbit, typeTmp, {tempVar, var1, var2});
     }
     return tempVar;
 }
 
-ExprBits::~ExprBits(){
+ExprBits::~ExprBits() {
     delete (lExpr);
     delete (rExpr);
 }
 
-string ExprRelational::linearize(CFG * cfg)
-{
+string ExprRelational::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
     TypeSymbol t1 = cfg->get_var_type(var1);
     TypeSymbol t2 = cfg->get_var_type(var2);
-    if(t1 == INT || t2 == INT){
+    if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
         typeTmp = CHAR;
     }
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
-    if(op == GR)
-    {
+    if (op == GR) {
         cfg->addInstruction(IRInstr::cmp_gt, typeTmp, {tempVar, var1, var2});
-    } else if(op == GRE)
-    {
+    } else if (op == GRE) {
         cfg->addInstruction(IRInstr::cmp_ge, typeTmp, {tempVar, var1, var2});
-    } else if(op == LE)
-    {
+    } else if (op == LE) {
         cfg->addInstruction(IRInstr::cmp_lt, typeTmp, {tempVar, var1, var2});
     } else {
-         cfg->addInstruction(IRInstr::cmp_le, typeTmp, {tempVar, var1, var2});
+        cfg->addInstruction(IRInstr::cmp_le, typeTmp, {tempVar, var1, var2});
     }
     return tempVar;
 }
 
-ExprRelational::~ExprRelational(){
+ExprRelational::~ExprRelational() {
     delete (lExpr);
     delete (rExpr);
 }
 
-string ExprEqual::linearize(CFG * cfg)
-{
+string ExprEqual::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
     TypeSymbol t1 = cfg->get_var_type(var1);
     TypeSymbol t2 = cfg->get_var_type(var2);
-    if(t1 == INT || t2 == INT){
+    if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
         typeTmp = CHAR;
     }
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
-    if(op == EQUAL)
-    {
+    if (op == EQUAL) {
         cfg->addInstruction(IRInstr::cmp_eq, typeTmp, {tempVar, var1, var2});
     } else {
         cfg->addInstruction(IRInstr::cmp_neq, typeTmp, {tempVar, var1, var2});
@@ -175,13 +156,12 @@ string ExprEqual::linearize(CFG * cfg)
     return tempVar;
 }
 
-ExprEqual::~ExprEqual(){
+ExprEqual::~ExprEqual() {
     delete (lExpr);
     delete (rExpr);
 }
 
-string ExprUnary::linearize(CFG * cfg)
-{
+string ExprUnary::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
@@ -189,8 +169,7 @@ string ExprUnary::linearize(CFG * cfg)
     typeTmp = t2;
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
-    if(op == NEG)
-    {
+    if (op == NEG) {
         cfg->addInstruction(IRInstr::neg, typeTmp, {tempVar, var2});
     } else {
         cfg->addInstruction(IRInstr::not_, typeTmp, {tempVar, var2});
@@ -198,31 +177,33 @@ string ExprUnary::linearize(CFG * cfg)
     return tempVar;
 }
 
-ExprUnary::~ExprUnary(){
+ExprUnary::~ExprUnary() {
     delete (rExpr);
 }
 
 
-
-void Block::addStatement(Statement * statement)
-{
+void Block::addStatement(Statement *statement) {
     statements.push_back(statement);
 }
 
-void Block::linearize(CFG * cfg){
-    for(Statement *s: statements){
+void Block::linearize(CFG *cfg) {
+    //CFG entering scope
+    cfg->enteringScope();
+    for (Statement *s: statements) {
         s->linearize(cfg);
     }
+    //CFG entering scope
+    cfg->exitingScope();
 }
 
-Block::~Block(){
-    for(Statement *s: statements){
+Block::~Block() {
+    for (Statement *s: statements) {
         delete (s);
     }
     statements.clear();
 }
 
-string Affectation::linearize(CFG * cfg){
+string Affectation::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
@@ -232,12 +213,12 @@ string Affectation::linearize(CFG * cfg){
     return var1;
 }
 
-Affectation::~Affectation(){
+Affectation::~Affectation() {
     delete (lExpr);
     delete (rExpr);
 }
 
-string DecAffectation::linearize(CFG * cfg){
+string DecAffectation::linearize(CFG *cfg) {
     string var1 = declaration->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
@@ -247,35 +228,35 @@ string DecAffectation::linearize(CFG * cfg){
     return var1;
 }
 
-DecAffectation::~DecAffectation(){
+DecAffectation::~DecAffectation() {
     delete (declaration);
     delete (rExpr);
 }
 
-string Declaration::linearize(CFG * cfg){
+string Declaration::linearize(CFG *cfg) {
     cfg->add_to_symbol_table(name, type, DECLARED);
     return name;
 }
 
-void Declarations::addDeclaration(Declaration *declaration){
+void Declarations::addDeclaration(Declaration *declaration) {
     declarations.push_back(declaration);
 }
 
-string Declarations::linearize(CFG * cfg){
-    for(Declaration *d: declarations){
+string Declarations::linearize(CFG *cfg) {
+    for (Declaration *d: declarations) {
         d->linearize(cfg);
     }
     return "";
 }
 
-Declarations::~Declarations(){
-    for(Declaration *d: declarations){
+Declarations::~Declarations() {
+    for (Declaration *d: declarations) {
         delete (d);
     }
     declarations.clear();
 }
 
-string Return::linearize(CFG * cfg){
+string Return::linearize(CFG *cfg) {
     string var1 = expr->linearize(cfg);
 
     TypeSymbol typeTmp = cfg->get_var_type(var1);
@@ -285,29 +266,30 @@ string Return::linearize(CFG * cfg){
     return var1;
 }
 
-Return::~Return(){
+Return::~Return() {
     delete (expr);
 }
 
-InstructionIF::~InstructionIF(){
+InstructionIF::~InstructionIF() {
     delete (test);
     delete (trueCodeBlock);
     delete (falseCodeBlock);
 }
 
-string InstructionIF::linearize(CFG * cfg){
+string InstructionIF::linearize(CFG *cfg) {
+
     string testVar = test->linearize(cfg);
-    BasicBlock * testBB = cfg->current_bb;
+    BasicBlock *testBB = cfg->current_bb;
     testBB->test_var_name = testVar;
 
-    auto * thenBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto *thenBB = new BasicBlock(cfg, cfg->new_BB_name());
 
-    auto * endIfBB = new BasicBlock(cfg,cfg->new_BB_name());
+    auto *endIfBB = new BasicBlock(cfg, cfg->new_BB_name());
     endIfBB->exit_true = testBB->exit_true;
     endIfBB->exit_false = thenBB->exit_false;
 
     BasicBlock *elseBB = endIfBB;
-    if(falseCodeBlock!=nullptr){
+    if (falseCodeBlock != nullptr) {
         elseBB = new BasicBlock(cfg, cfg->new_BB_name());
     }
     testBB->exit_true = thenBB;
@@ -315,30 +297,31 @@ string InstructionIF::linearize(CFG * cfg){
 
     cfg->add_bb(thenBB);
     cfg->current_bb->exit_true = endIfBB;
+
     trueCodeBlock->linearize(cfg);
 
-    if(falseCodeBlock!=nullptr){
+    if (falseCodeBlock != nullptr) {
         cfg->add_bb(elseBB);
         cfg->current_bb->exit_true = endIfBB;
         falseCodeBlock->linearize(cfg);
     }
 
     cfg->add_bb(endIfBB);
+
     return "";
 }
 
-InstructionWhile::~InstructionWhile()
-{
+InstructionWhile::~InstructionWhile() {
     delete (test);
     delete (block);
 }
 
-string InstructionWhile::linearize(CFG * cfg)
-{
-    BasicBlock * beforeWhileBB = cfg->current_bb;
-    auto * bodyBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto * testBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto * afterWhileBB = new BasicBlock(cfg, cfg->new_BB_name());
+string InstructionWhile::linearize(CFG *cfg) {
+
+    BasicBlock *beforeWhileBB = cfg->current_bb;
+    auto *bodyBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto *testBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto *afterWhileBB = new BasicBlock(cfg, cfg->new_BB_name());
 
     beforeWhileBB->exit_true = testBB;
     cfg->add_bb(testBB);
@@ -358,28 +341,31 @@ string InstructionWhile::linearize(CFG * cfg)
     return "";
 }
 
-InstructionFor::~InstructionFor()
-{
+InstructionFor::~InstructionFor() {
     delete (block);
     delete (init);
     delete (test);
     delete (update);
 }
 
-string InstructionFor::linearize(CFG * cfg)
-{
-    BasicBlock * beforeForBB = cfg->current_bb;
+string InstructionFor::linearize(CFG *cfg) {
 
-    auto * initForBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto * testBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto * updateBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto * forBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto * endforBB = new BasicBlock(cfg, cfg->new_BB_name());
+    BasicBlock *beforeForBB = cfg->current_bb;
 
-    if(init != nullptr){
+    auto *initForBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto *testBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto *updateBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto *forBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto *endforBB = new BasicBlock(cfg, cfg->new_BB_name());
+
+    if (init != nullptr) {
         beforeForBB->exit_true = initForBB;
         cfg->add_bb(initForBB);
+        //CFG entering scope
+        cfg->enteringScope();
         init->linearize(cfg);
+        //CFG exiting scope
+        cfg->exitingScope();
         initForBB->exit_true = testBB;
     } else {
         beforeForBB->exit_true = testBB;
@@ -394,11 +380,11 @@ string InstructionFor::linearize(CFG * cfg)
 
     cfg->add_bb(forBB);
     block->linearize(cfg);
-    if(update != nullptr) {
-         forBB->exit_true = updateBB;
-         cfg->add_bb(updateBB);
-         update->linearize(cfg);
-         updateBB->exit_true = testBB;
+    if (update != nullptr) {
+        forBB->exit_true = updateBB;
+        cfg->add_bb(updateBB);
+        update->linearize(cfg);
+        updateBB->exit_true = testBB;
     } else {
         forBB->exit_true = testBB;
     }
@@ -409,43 +395,43 @@ string InstructionFor::linearize(CFG * cfg)
     return "";
 }
 
-string InstructionExpr::linearize(CFG * cfg){
+string InstructionExpr::linearize(CFG *cfg) {
     string val = expr->linearize(cfg);
     return val;
 }
 
-string Parameter::linearize(CFG * cfg){
+string Parameter::linearize(CFG *cfg) {
     cfg->add_to_symbol_table(name, type, PARAMETER);
     return name;
 }
 
-void Parameters::addParameter(Parameter *parameter){
+void Parameters::addParameter(Parameter *parameter) {
     parameters.push_back(parameter);
 }
 
-string Parameters::linearize(CFG * cfg){
+string Parameters::linearize(CFG *cfg) {
     int position = 1;
-    for(Parameter *p: parameters){
+    for (Parameter *p: parameters) {
         string name = p->linearize(cfg);
         cfg->setParametersPosition(name, position);
-        position ++;
+        position++;
     }
     return "";
 }
 
-Parameters::~Parameters(){
-    for(Parameter *p: parameters){
+Parameters::~Parameters() {
+    for (Parameter *p: parameters) {
         delete (p);
     }
     parameters.clear();
 }
 
-Function::~Function(){
+Function::~Function() {
     delete (parameters);
     delete (block);
 }
 
-string Function::linearize(CFG * cfg){
+string Function::linearize(CFG *cfg) {
     cfg->setCurrentFunction(name);
     cfg->add_to_symbol_table(name, type, FUNCTION);
 
@@ -456,7 +442,7 @@ string Function::linearize(CFG * cfg){
     returnBlock->add_IRInstr(IRInstr::finret, INT, {"!retvalue"});
     cfg->return_bb = returnBlock;
 
-    if(parameters != nullptr){
+    if (parameters != nullptr) {
         parameters->linearize(cfg);
     }
 
@@ -465,27 +451,27 @@ string Function::linearize(CFG * cfg){
     return "";
 }
 
-ExprFunction::~ExprFunction(){
-    for(Expr *e : parameters){
-        delete(e);
+ExprFunction::~ExprFunction() {
+    for (Expr *e : parameters) {
+        delete (e);
     }
     parameters.clear();
 }
 
-void ExprFunction::addParameter(Expr *expr){
+void ExprFunction::addParameter(Expr *expr) {
     parameters.push_back(expr);
 }
 
-string ExprFunction::linearize(CFG * cfg){
+string ExprFunction::linearize(CFG *cfg) {
     int position = 1;
-    for(Expr *e : parameters){
+    for (Expr *e : parameters) {
         string var = e->linearize(cfg);
         TypeSymbol typeTmp = cfg->get_var_type(var);
-        cfg->addInstruction(IRInstr::copy, typeTmp, { "param_reg",var, to_string(position)});
+        cfg->addInstruction(IRInstr::copy, typeTmp, {"param_reg", var, to_string(position)});
         position++;
     }
 
-    if(!cfg->isSymbolExist(varName)){
+    if (!cfg->doesSymbolExist(varName)) {
         varName = varName + "@PLT";
     }
 
@@ -496,13 +482,13 @@ string ExprFunction::linearize(CFG * cfg){
     return tempVar;
 }
 
-vector<CFG*> Prog::linearize(){
+vector<CFG *> Prog::linearize() {
     auto *symbolTable = new SymbolTable();
 
     symbolTable->defFunction("getchar@PLT", CHAR);
     symbolTable->defFunction("putchar@PLT", VOID);
 
-    for(Function * f: functions){
+    for (Function *f: functions) {
         CFG *cfg = new CFG(symbolTable, f->name);
         f->linearize(cfg);
         cfgs.push_back(cfg);
@@ -513,18 +499,18 @@ vector<CFG*> Prog::linearize(){
     return cfgs;
 }
 
-Prog::~Prog(){
-    for(Function *f : functions){
-        delete(f);
+Prog::~Prog() {
+    for (Function *f : functions) {
+        delete (f);
     }
     functions.clear();
     delete (cfgs[0]->getSymbolTable());
-    for(CFG *cfg : cfgs){
-        delete(cfg);
+    for (CFG *cfg : cfgs) {
+        delete (cfg);
     }
     cfgs.clear();
 }
 
-void Prog::addFunction(Function * function){
+void Prog::addFunction(Function *function) {
     functions.push_back(function);
 }

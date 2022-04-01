@@ -11,12 +11,10 @@ class Symbol {
 public:
     Symbol();
 
-    Symbol(string name, int level, int index, TypeSymbol typeSymbol, int additional,
+    Symbol(string name, string scope, int index, TypeSymbol typeSymbol, int additional,
            StateSymbol stateSymbol, bool isConst);
 
     ~Symbol();
-
-    void setLevel(int l);
 
     void setName(string name);
 
@@ -25,8 +23,6 @@ public:
     void setAdditional(int additional);
 
     void setStateSymbol(StateSymbol stateSymbol);
-
-    int getLevel() const;
 
     string getName();
 
@@ -50,13 +46,12 @@ public:
 
 protected:
     string name;
-    int level;
-    int index;
-    const string scope = "LOCAL";
+    int index{};
+    string scope;
     TypeSymbol typeSymbol;
-    int additional;
+    int additional{};
     StateSymbol stateSymbol;
-    bool isConst;
+    bool isConst{};
 };
 
 #endif // SYMBOL_H  

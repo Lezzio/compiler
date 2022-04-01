@@ -68,8 +68,9 @@ private:
     BasicBlock *bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
     Operation op;
     TypeSymbol t;
-    vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
-                        // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design.
+    vector<string> params; /**< For 3-op instructions: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
+    // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design.
+    int line; //The instruction line
 
     string getMovInstr(const string &origine,const string &destination, TypeSymbol type = INT, Arch arch = x86, bool cst = false);
     string getAddInstr(const string& arg1, const string& arg2, Arch arch = x86);
@@ -135,20 +136,19 @@ public:
     BasicBlock *exit_false;   /**< pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
     string label;             /**< label of the BB, also will be the label in the generated code */
     CFG *cfg;                 /** < the CFG where this block belongs */
-    vector<IRInstr *> instrs; /** < the instructions themselves. */
-    string test_var_name;     /** < when generating IR code for an if(expr) or while(expr) etc,
-                                                          store here the name of the variable that holds the value of expr */
+    vector<IRInstr *> instructions; /** < the instructions themselves. */
+    string test_var_name;     /** < when generating IR code for an if(expr) or while(expr) etc, store here the name of the variable that holds the value of expr */
 protected:
 };
 
 /** The class for the control flow graph, also includes the symbol table */
 
-/* A few important comments:
+/*
+    A few important comments:
      The entry block is the one with the same label as the AST function name.
        (it could be the first of bbs, or it could be defined by an attribute value)
      The exit block is the one with both exit pointers equal to nullptr.
      (again it could be identified in a more explicit way)
-
  */
 class CFG
 {
@@ -159,7 +159,7 @@ public:
     DefFonction *ast; /**< The AST this CFG comes from */
 
     void add_bb(BasicBlock *bb);
-    void addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> params); 
+    void addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> params);
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream &o);
@@ -184,7 +184,7 @@ public:
     void setReturnSymbol(string name);
     void setCurrentFunction(string name) { symbolTable->current_function = name; }
     void setParametersPosition(string name, int position);
-    bool isSymbolExist(string name);
+    bool doesSymbolExist(string name);
     string getOffset();
     SymbolTable * getSymbolTable();
 
@@ -194,8 +194,15 @@ public:
     BasicBlock *return_bb;
     bool firstBB(BasicBlock * bb);
 
+    void enteringScope();
+    void exitingScope();
+    string getCurrentScope();
+
 protected:
     string name;
+    int highestLevel;
+    int previousLevel;
+    int level;
     SymbolTable * symbolTable;
     int nextTmpVarNumber;
     //int nextFreeSymbolIndex;      /**< to allocate new symbols in the symbol table */

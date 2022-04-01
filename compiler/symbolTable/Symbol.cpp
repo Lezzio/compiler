@@ -5,9 +5,9 @@
 
 Symbol::Symbol() {}
 
-Symbol::Symbol(string name, int level, int index, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
+Symbol::Symbol(string name, string scope, int index, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
     this->name = std::move(name);
-    this->level = level;
+    this->scope = std::move(scope);
     this->index = index;
     this->typeSymbol = typeSymbol;
     this->additional = additional;
@@ -16,10 +16,6 @@ Symbol::Symbol(string name, int level, int index, TypeSymbol typeSymbol, int add
 }
 
 Symbol::~Symbol() {}
-
-void Symbol::setLevel(int level) {
-    this->level = level;
-}
 
 void Symbol::setName(string name) {
     this->name = name;
@@ -66,11 +62,7 @@ int Symbol::getAddress() const {
 }
 
 string Symbol::getCode() {
-    return name + "_" + to_string(level);
-}
-
-int Symbol::getLevel() const {
-    return level;
+    return scope + "_" + name;
 }
 
 int Symbol::getIndex() const {
