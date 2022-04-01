@@ -160,7 +160,7 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
 // symbol table methods
 void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol) {
     if (stateSymbol == PARAMETER) {
-        this->symbolTable->defParameter(name, getCurrentScope(), std::string(), t);
+        this->symbolTable->defParameter(name, getCurrentScope(), t);
     } else if (stateSymbol == FUNCTION) {
         this->symbolTable->defFunction(name, t);
     } else if (stateSymbol == DECLARED) {

@@ -192,7 +192,7 @@ void Block::linearize(CFG *cfg) {
     for (Statement *s: statements) {
         s->linearize(cfg);
     }
-    //CFG entering scope
+    //CFG exiting scope
     cfg->exitingScope();
 }
 
@@ -357,17 +357,16 @@ InstructionFor::~InstructionFor() {
     delete (update);
 }
 
-string InstructionFor::linearize(CFG *cfg) {
+string InstructionFor::linearize(CFG * cfg)
+{
+    BasicBlock * beforeForBB = cfg->current_bb;
 
-    BasicBlock *beforeForBB = cfg->current_bb;
+    auto * initForBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * testBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * updateBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * forBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * endforBB = new BasicBlock(cfg, cfg->new_BB_name());
 
-    auto *initForBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto *testBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto *updateBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto *forBB = new BasicBlock(cfg, cfg->new_BB_name());
-    auto *endforBB = new BasicBlock(cfg, cfg->new_BB_name());
-
-    if (init != nullptr) {
     cfg->breakBBname = endforBB->label;
     if(update != nullptr) {
         cfg->continueBBname = updateBB->label;
@@ -379,14 +378,14 @@ string InstructionFor::linearize(CFG *cfg) {
     endforBB->exit_false = beforeForBB->exit_false;
 
     if(init != nullptr){
-        beforeForBB->exit_true = initForBB;
-        cfg->add_bb(initForBB);
         //CFG entering scope
         cfg->enteringScope();
+        beforeForBB->exit_true = initForBB;
+        cfg->add_bb(initForBB);
         init->linearize(cfg);
+        initForBB->exit_true = testBB;
         //CFG exiting scope
         cfg->exitingScope();
-        initForBB->exit_true = testBB;
     } else {
         beforeForBB->exit_true = testBB;
     }
@@ -398,7 +397,6 @@ string InstructionFor::linearize(CFG *cfg) {
     testBB->test_var_name = testVar;
 
     cfg->add_bb(forBB);
-    block->linearize(cfg);
     if(update != nullptr) {
         forBB->exit_true = updateBB;
         updateBB->exit_true = testBB;
