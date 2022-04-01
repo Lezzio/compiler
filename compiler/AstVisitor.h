@@ -31,6 +31,10 @@ class AstVisitor : public ifccBaseVisitor {
 
         virtual antlrcpp::Any visitStatement7(ifccParser::Statement7Context *context) override;
 
+        virtual antlrcpp::Any visitStatement8(ifccParser::Statement8Context *context) override;
+
+        virtual antlrcpp::Any visitStatement9(ifccParser::Statement9Context *context) override;
+
         virtual antlrcpp::Any visitParameters(ifccParser::ParametersContext *context) override;
 
         virtual antlrcpp::Any visitParameter(ifccParser::ParameterContext *context) override;

@@ -34,6 +34,22 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, TypeSymbol t, vector<string>
   the if, while, etc of the AST  to IR. */
 void BasicBlock::gen_asm_86(ostream &o)
 {
+    /*cout << "----------------" << endl;
+    cout << "BasikBlock :" << endl;
+        cout << label << endl;
+        if(exit_true){
+                cout << "exit true :" << endl;
+                cout << exit_true->label << endl;
+        }
+        
+        if(exit_false){
+            cout << "exit false :" << endl;
+            cout << exit_false->label << endl;
+        }
+    cout << "----------------" << endl;    */
+
+
+
     o << label << ":" << "\n";
     if(cfg->firstBB(this)){
         this->cfg->gen_asm_prologue_x86(o);
@@ -71,6 +87,9 @@ void BasicBlock::gen_asm_ARM(ostream &o)
     o << label << ":" << "\n";
     if(cfg->firstBB(this)){
         this->cfg->gen_asm_prologue_ARM(o);
+        IRInstr * ir = new IRInstr(this,IRInstr::offset, INT64_T, {"124", "start"});
+        ir->gen_asm_ARM(o);
+        delete (ir);
     }
     for(auto & instr : instructions)
     {

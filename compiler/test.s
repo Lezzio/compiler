@@ -1,58 +1,69 @@
-	.file	"test.c"
-	.text
-	.globl	fibo
-	.type	fibo, @function
-fibo:
-.LFB0:
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	%edi, -4(%rbp)
-	movl	-4(%rbp), %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE0:
-	.size	fibo, .-fibo
-	.globl	main
-	.type	main, @function
-main:
-.LFB1:
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	$1, -4(%rbp)
-	movl	-4(%rbp), %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE1:
-	.size	main, .-main
-	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
-	.section	.note.GNU-stack,"",@progbits
-	.section	.note.gnu.property,"a"
-	.align 8
-	.long	 1f - 0f
-	.long	 4f - 1f
-	.long	 5
-0:
-	.string	 "GNU"
-1:
-	.align 8
-	.long	 0xc0000002
-	.long	 3f - 2f
-2:
-	.long	 0x3
-3:
-	.align 8
-4:
+.text
+.globl	main
+ main: 
+.mainBB0:
+   #prologue
+   pushq %rbp
+   movq %rsp, %rbp
+  subq $64, %rsp
+   movl $1, -4(%rbp)
+   movl -4(%rbp), %eax
+   movl %eax, -56(%rbp)
+   jmp   .mainBB2
+.mainBB2:
+   movl $0, -8(%rbp)
+   movl -8(%rbp), %eax
+   movl %eax, -60(%rbp)
+   jmp   .mainBB3
+.mainBB3:
+   movl $10, -12(%rbp)
+   movl -60(%rbp), %eax
+   cmpl -12(%rbp), %eax
+    setl %al
+    movzbl %al, %eax
+   movl %eax, -16(%rbp)
+   cmpl    $0, -16(%rbp)
+   je  .mainBB6
+.mainBB5:
+   movl $1, -20(%rbp)
+   movl -56(%rbp), %eax
+   addl -20(%rbp), %eax
+   movl %eax, -24(%rbp)
+   movl -24(%rbp), %eax
+   movl %eax, -56(%rbp)
+   movl $6, -28(%rbp)
+   movl -56(%rbp), %eax
+   cmpl -28(%rbp), %eax
+    sete %al
+    movzbl %al, %eax
+   movl %eax, -32(%rbp)
+   cmpl    $0, -32(%rbp)
+   je  .mainBB8
+.mainBB7:
+   movl $3, -36(%rbp)
+   movl -36(%rbp), %eax
+   movl %eax, -64(%rbp)
+   jmp   .mainBB6
+   jmp   .mainBB8
+.mainBB8:
+   movl $5, -40(%rbp)
+   movl -40(%rbp), %eax
+   movl %eax, -68(%rbp)
+   jmp   .mainBB4
+.mainBB4:
+   movl $1, -44(%rbp)
+   movl -60(%rbp), %eax
+   addl -44(%rbp), %eax
+   movl %eax, -48(%rbp)
+   movl -48(%rbp), %eax
+   movl %eax, -60(%rbp)
+   jmp   .mainBB3
+.mainBB6:
+   movl -56(%rbp), %eax
+   movl %eax, -52(%rbp)
+   jmp   .mainBB1
+.mainBB1:
+   movl -52(%rbp), %eax
+   #epilogue
+   leave
+   ret

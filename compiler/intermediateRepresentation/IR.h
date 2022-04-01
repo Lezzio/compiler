@@ -73,8 +73,8 @@ private:
     int line; //The instruction line
 
     string getMovInstr(const string &origine,const string &destination, TypeSymbol type = INT, Arch arch = x86, bool cst = false);
-    string getAddInstr(const string& arg1, const string& arg2, Arch arch = x86);
-    string getSubInstr(const string& arg1, const string& arg2, Arch arch = x86);
+    string getAddInstr(const string& arg1, const string& arg2, Arch arch = x86, const string& dest = "r3");
+    string getSubInstr(const string& arg1, const string& arg2, Arch arch = x86, const string& dest = "r3");
     string getMulInstr(const string& arg1, const string& arg2, Arch arch = x86);
     string getDivInstr(const string& arg1, const string& arg2, Arch arch = x86, bool modulo = false);
     string getOrInstr(const string& arg1, const string& arg2, Arch arch = x86);
@@ -192,6 +192,9 @@ public:
     string new_BB_name();
     BasicBlock *current_bb;
     BasicBlock *return_bb;
+    string breakBBname;
+    string continueBBname;
+
     bool firstBB(BasicBlock * bb);
 
     void enteringScope();

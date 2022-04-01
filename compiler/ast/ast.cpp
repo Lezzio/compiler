@@ -286,14 +286,16 @@ string InstructionIF::linearize(CFG *cfg) {
 
     auto *endIfBB = new BasicBlock(cfg, cfg->new_BB_name());
     endIfBB->exit_true = testBB->exit_true;
-    endIfBB->exit_false = thenBB->exit_false;
+    endIfBB->exit_false = testBB->exit_false;
 
     BasicBlock *elseBB = endIfBB;
     if (falseCodeBlock != nullptr) {
         elseBB = new BasicBlock(cfg, cfg->new_BB_name());
+        testBB->exit_false = elseBB;
+    } else {
+        testBB->exit_false = endIfBB;
     }
     testBB->exit_true = thenBB;
-    testBB->exit_false = elseBB;
 
     cfg->add_bb(thenBB);
     cfg->current_bb->exit_true = endIfBB;
@@ -323,20 +325,27 @@ string InstructionWhile::linearize(CFG *cfg) {
     auto *testBB = new BasicBlock(cfg, cfg->new_BB_name());
     auto *afterWhileBB = new BasicBlock(cfg, cfg->new_BB_name());
 
+    afterWhileBB->exit_true = beforeWhileBB->exit_true;
+    afterWhileBB->exit_false = beforeWhileBB->exit_false;
+
+    cfg->breakBBname = afterWhileBB->label;
+    cfg->continueBBname = testBB->label;
+
     beforeWhileBB->exit_true = testBB;
     cfg->add_bb(testBB);
+    testBB->exit_true = bodyBB;
+    testBB->exit_false = afterWhileBB;
     string testVar = test->linearize(cfg);
     testBB->test_var_name = testVar;
 
-    testBB->exit_true = bodyBB;
-    testBB->exit_false = afterWhileBB;
-
     cfg->add_bb(bodyBB);
-    block->linearize(cfg);
     bodyBB->exit_true = testBB;
     bodyBB->exit_false = nullptr;
+    block->linearize(cfg);
 
     cfg->add_bb(afterWhileBB);
+    cfg->breakBBname = "";
+    cfg->continueBBname = "";
 
     return "";
 }
@@ -359,6 +368,17 @@ string InstructionFor::linearize(CFG *cfg) {
     auto *endforBB = new BasicBlock(cfg, cfg->new_BB_name());
 
     if (init != nullptr) {
+    cfg->breakBBname = endforBB->label;
+    if(update != nullptr) {
+        cfg->continueBBname = updateBB->label;
+    } else {
+        cfg->continueBBname = testBB->label;
+    }
+
+    endforBB->exit_true = beforeForBB->exit_true;
+    endforBB->exit_false = beforeForBB->exit_false;
+
+    if(init != nullptr){
         beforeForBB->exit_true = initForBB;
         cfg->add_bb(initForBB);
         //CFG entering scope
@@ -372,25 +392,29 @@ string InstructionFor::linearize(CFG *cfg) {
     }
 
     cfg->add_bb(testBB);
+    testBB->exit_true = forBB;
+    testBB->exit_false = endforBB;
     string testVar = test->linearize(cfg);
     testBB->test_var_name = testVar;
 
-    testBB->exit_true = forBB;
-    testBB->exit_false = endforBB;
-
     cfg->add_bb(forBB);
     block->linearize(cfg);
-    if (update != nullptr) {
+    if(update != nullptr) {
         forBB->exit_true = updateBB;
-        cfg->add_bb(updateBB);
-        update->linearize(cfg);
         updateBB->exit_true = testBB;
     } else {
         forBB->exit_true = testBB;
     }
     forBB->exit_false = nullptr;
+    block->linearize(cfg);
+    if(update != nullptr) {
+        cfg->add_bb(updateBB);
+        update->linearize(cfg);
+    }
 
     cfg->add_bb(endforBB);
+    cfg->breakBBname = "";
+    cfg->continueBBname = "";
 
     return "";
 }
@@ -513,4 +537,24 @@ Prog::~Prog() {
 
 void Prog::addFunction(Function *function) {
     functions.push_back(function);
+}
+
+string InstructionBreak::linearize(CFG * cfg){
+    if(cfg->breakBBname.compare("")==0){
+        cerr<<"ERROR: a Break statement can only be used in a loop" << endl;
+        exit(1);
+    }
+
+    cfg->addInstruction(IRInstr::jmp, VOID, {cfg->breakBBname});
+    return "";
+}
+
+string InstructionContinue::linearize(CFG * cfg){
+    if(cfg->continueBBname.compare("")==0){
+        cerr<<"ERROR: a Continue statement can only be used in a loop" << endl;
+        exit(1);
+    }
+
+    cfg->addInstruction(IRInstr::jmp, VOID, {cfg->continueBBname});
+    return "";
 }

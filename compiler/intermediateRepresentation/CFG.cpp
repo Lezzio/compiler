@@ -5,7 +5,7 @@ using namespace std;
 
 CFG::CFG(SymbolTable *symbolTable, string name)
         : name(name), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr), return_bb(nullptr),
-          nextTmpVarNumber(0), level(0), previousLevel(0), highestLevel(0) {
+          nextTmpVarNumber(0), level(0), previousLevel(0), highestLevel(0), breakBBname(""), continueBBname("") {
 
 }
 
@@ -60,15 +60,15 @@ void CFG::gen_asm_ARM(ostream &o) {
     cout << ".globl	main\n"
             " main: \n";
 #endif
-    gen_asm_prologue_ARM(o);
+    //gen_asm_prologue_ARM(o);
     for (auto & bb : bbs) {
         bb->gen_asm_ARM(o);
     }
+
+    IRInstr * ir = new IRInstr(bbs.back(),IRInstr::offset, INT64_T, {"124", "end"});
+    ir->gen_asm_ARM(o);
+    delete (ir);
     gen_asm_epilogue_ARM(o);
-
-    //o << "\n";
-    //symbolTable->print_dictionary();
-
 }
 
 string CFG::IR_reg_to_asm(string reg) {

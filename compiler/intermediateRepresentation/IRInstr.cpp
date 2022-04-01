@@ -238,9 +238,14 @@ void IRInstr::gen_asm_x86(ostream &o) {
                 o << getMovInstr("%al", reg, INT8_T);
             }
             o << getMovInstr(reg, destination);
-            break;
-        }
-        case offset: {
+            break;}
+        case jmp:
+            {
+            o << getJumpInstr(this->params[0]);    
+            break;    
+            }    
+        case offset:
+            {
             int value = stoi(this->params[0]);
             value = value / 16;
             value = value * 16 + 16;
@@ -469,6 +474,25 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             o << getMovInstr("r3", destination, t, ARM);
             break;
         }
+        case offset: {
+            int value = stoi(this->params[0]);
+            value = value / 4;
+            value = value * 4 + 8;
+            string offset = "#" + to_string(value);
+            if (this->params[1] == "start") {
+                o << getSubInstr("sp", offset, ARM, "sp");
+                o << getAddInstr("sp", "#0", ARM, "r7");
+            } else if (this->params[1] == "end") {
+                o << getAddInstr("r7", offset, ARM, "r7");
+                o << getMovInstr("r7", "sp", t, ARM);
+            } else {
+                cerr << "Error in func : " << __FUNCTION__ << " status should be 'start' or 'end' instead of : "
+                     << this->params[1] << endl;
+            }
+
+
+            break;
+        }
         default:
             break;
     }
@@ -508,19 +532,24 @@ string IRInstr::getMovInstr(const string &origine, const string &destination, Ty
                 action = "\tldr" + type_b + "\t";
             }
 
-        } else if (destination[0] != 'r' && origine[0] == 'r') { //from reg to stack
-            action = "\tstr" + type_b + "\t";
-            return action + origine + ", [r7, #" + destination + "]\n";
+        } else if (destination[0] == 's' && origine[0] == 'r') { //from reg to sp
+            //mov	sp, r7
+            return "\tmov\tsp, " + origine + "\n";
         } else if (destination[0] == 'r' && origine[0] == 'r') { // from reg to reg
             action = "\tmov\t";
             return action + destination + ", " + origine + "\n";
+        } else if (destination[0] == 's' && origine[0] == 'r') { //from reg to sp
+            //mov	sp, r7
+            return "\tmov\tsp, " + origine + "\n";
+        } else if (destination[0] != 'r' && origine[0] == 'r') { //from reg to stack
+            action = "\tstr" + type_b + "\t";
+            return action + origine + ", [r7, #" + destination + "]\n";
         }
-
         return action + destination + ", [r7, #" + origine + "]\n";
     }
 }
 
-string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch) {
+string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
     if (arch == x86) {
         string action = "   addl ";
         if (t == CHAR) {
@@ -528,14 +557,14 @@ string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch) {
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
-        string action = "\tadds\tr3, ";
+        string action = "\tadds\t" + dest + ", ";
         return action + arg1 + ", " + arg2 + "\n";
         //return string(__FUNCTION__) + " not implemented for ARM\n";
     }
 }
 
 
-string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch) {
+string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
     if (arch == x86) {
         string action = "   subl ";
         if (t == CHAR) {
@@ -546,7 +575,7 @@ string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch) {
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
-        string action = "\tsubs\tr3, ";
+        string action = "\tsubs\t" + dest + ", ";
         return action + arg1 + ", " + arg2 + "\n";
     }
 }

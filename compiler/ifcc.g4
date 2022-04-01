@@ -14,7 +14,9 @@ statement : declaration ';' #statement1
           | ifBlock #statement4
           | whileBlock #statement5
           | forBlock #statement6
-          | expression ';' #statement7;
+          | expression ';' #statement7
+          | BREAK ';' #statement8
+          | CONTINUE ';' #statement9;
 
 nameFunction : IDENT ;
 
@@ -65,6 +67,8 @@ DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
 INT : 'int' ;
 CHAR : 'char' ;
+BREAK : 'break';
+CONTINUE : 'continue' ;
 //LVALUE : VAR ;
 //VAR : [a-zA-Z_][a-zA-Z1-9_]* ;
 IDENT : [a-zA-Z_][a-zA-Z1-9_]* ;

@@ -277,6 +277,24 @@ class InstructionExpr : public Statement
         Expr * expr;
 };
 
+class InstructionBreak : public Statement
+{
+    public:
+        virtual string linearize(CFG * cfg);
+        virtual ~InstructionBreak() = default;
+        InstructionBreak(): Statement() {};
+    protected:
+};
+
+class InstructionContinue : public Statement
+{
+    public:
+        virtual string linearize(CFG * cfg);
+        virtual ~InstructionContinue() = default;
+        InstructionContinue(): Statement() {};
+    protected:
+};
+
 class Parameter : public ASTNode
 {
     public :
