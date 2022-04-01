@@ -222,6 +222,11 @@ void IRInstr::gen_asm_x86(ostream &o)
             }
             o << getMovInstr(reg, destination);
             break;}
+        case jmp:
+            {
+            o << getJumpInstr(this->params[0]);    
+            break;    
+            }    
         case offset:
             {
             int value = stoi(this->params[0]);

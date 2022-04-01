@@ -87,6 +87,18 @@ antlrcpp::Any AstVisitor::visitStatement7(ifccParser::Statement7Context *context
     return (Statement *) inst;
 }
 
+antlrcpp::Any AstVisitor::visitStatement8(ifccParser::Statement8Context *context)
+{
+    InstructionBreak * instructionBreak = new InstructionBreak();
+    return (Statement *) instructionBreak;
+}
+
+antlrcpp::Any AstVisitor::visitStatement9(ifccParser::Statement9Context *context)
+{
+    InstructionContinue * instruction = new InstructionContinue();
+    return (Statement *) instruction;
+}
+
 antlrcpp::Any AstVisitor::visitParameters(ifccParser::ParametersContext *context)
 {
     auto * parameters = new Parameters();

@@ -10,7 +10,6 @@
 
 //#include "CodeGenVisitor.h"
 #include "AstVisitor.h"
-#include "Visitor.h"
 #include "symbolTable/SymbolTable.h"
 #include "intermediateRepresentation/IR.h"
 #include "ast/ast.h"

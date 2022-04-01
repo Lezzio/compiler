@@ -192,6 +192,9 @@ public:
     string new_BB_name();
     BasicBlock *current_bb;
     BasicBlock *return_bb;
+    string breakBBname;
+    string continueBBname;
+
     bool firstBB(BasicBlock * bb);
 
 protected:

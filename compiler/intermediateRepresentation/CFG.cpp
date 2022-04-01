@@ -5,7 +5,7 @@ using namespace std;
 
 CFG::CFG(SymbolTable *symbolTable, string name)
         : name(name), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr), return_bb(nullptr),
-          nextTmpVarNumber(0) {
+          nextTmpVarNumber(0), breakBBname(""), continueBBname("") {
 
 }
 

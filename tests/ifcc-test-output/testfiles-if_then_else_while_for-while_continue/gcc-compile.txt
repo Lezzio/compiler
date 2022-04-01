@@ -1,0 +1,6 @@
+input.c: In function ‘main’:
+input.c:3:9: warning: variable ‘var2’ set but not used [-Wunused-but-set-variable]
+    3 |     int var2 = 3;
+      |         ^~~~
+
+return code: 0

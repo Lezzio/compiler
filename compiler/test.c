@@ -1,11 +1,13 @@
-int fibo(int n)
-{
-return n;
-}
+int main() {
+    int variable = 1;
 
-int main()
-{
-
-    int a = 5 > 4;
-return a;
+    for(int i = 0; i < 10; i = i+1){
+        variable = variable + 1;
+        if(variable == 6){
+            int c = 3;
+            break;
+        }
+        int d = 5;
+    }
+    return variable;
 }
