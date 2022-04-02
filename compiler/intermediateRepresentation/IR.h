@@ -138,6 +138,7 @@ public:
     CFG *cfg;                 /** < the CFG where this block belongs */
     vector<IRInstr *> instructions; /** < the instructions themselves. */
     string test_var_name;     /** < when generating IR code for an if(expr) or while(expr) etc, store here the name of the variable that holds the value of expr */
+    string scope;
 protected:
 };
 
@@ -163,7 +164,7 @@ public:
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream &o);
-    string IR_reg_to_asm(string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
+    string IR_reg_to_asm(const string &reg, const string &scope); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
     string IR_reg_to_asm_param(int position);
     void gen_asm_prologue_x86(ostream &o);
     void gen_asm_epilogue_x86(ostream &o);
@@ -172,15 +173,13 @@ public:
     void gen_asm_prologue_ARM(ostream &o);
     void gen_asm_epilogue_ARM(ostream &o);
 
-
-
     // symbol table methods
     void add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol);
     string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
     TypeSymbol get_var_type(string name);
     void assignSymbol(string name);
-    bool isAssigneSymbol(string name);
+    bool isSymbolAssigned(string name);
     void setReturnSymbol(string name);
     void setCurrentFunction(string name) { symbolTable->current_function = name; }
     void setParametersPosition(string name, int position);

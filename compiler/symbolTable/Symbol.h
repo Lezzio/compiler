@@ -44,6 +44,8 @@ public:
 
     void setIndex(int index);
 
+    static string getAssociatedCode(const string& name, const string& scope);
+
 protected:
     string name;
     int index{};

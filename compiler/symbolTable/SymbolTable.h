@@ -17,8 +17,8 @@ public :
     bool doesSymbolExist(Symbol * symbol);
     bool doesSymbolExist(string code);
     bool doesSymbolExist(string identn, int level);
-    Symbol * returnSymbol(string name, int level);
-    Symbol * returnParameter(string name, int level);
+    Symbol * returnSymbol(const string& name, const string& scope);
+    Symbol * returnParameter(const string& name, const string& scope);
     /**
      * Add a symbol to the table
      * @return the address or -1 if the symbol couldn't be added (e.g already exists)
@@ -30,13 +30,12 @@ public :
      */
     bool declareSymbol(const string& symbolName, const string& symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst);
     int assignSymbol(Symbol * symbol);
-    int getAddressSymbol(string name, int level);
     int getOffsetType(TypeSymbol typeSymbol);
     void print_dictionary();
     int defFunction(string name, TypeSymbol typeSymbol);
     bool defParameter(const string& name, string scope, TypeSymbol typeSymbol);
 
-    string current_function;
+    string current_function; //TODO Check usage, maybe not needed anymore
     static int staticIndex;
     //TODO: reset when change function
     int highestIndex;

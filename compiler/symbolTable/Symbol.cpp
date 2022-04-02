@@ -62,7 +62,7 @@ int Symbol::getAddress() const {
 }
 
 string Symbol::getCode() {
-    return scope + "_" + name;
+    return getAssociatedCode(name, scope);
 }
 
 int Symbol::getIndex() const {
@@ -71,4 +71,8 @@ int Symbol::getIndex() const {
 
 void Symbol::setIndex(int index) {
     this->index = index;
+}
+
+string Symbol::getAssociatedCode(const string& name, const string& scope) {
+    return scope + "_" + name;
 }

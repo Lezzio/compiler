@@ -1,10 +1,12 @@
 #include <iostream>
+#include <utility>
+
 using namespace std;
 
 #include "IR.h"
 
 CFG::CFG(SymbolTable *symbolTable, string name)
-        : name(name), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr), return_bb(nullptr),
+        : name(std::move(name)), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr), return_bb(nullptr),
           nextTmpVarNumber(0), level(0), previousLevel(0), highestLevel(0), breakBBname(""), continueBBname("") {
 
 }
@@ -26,22 +28,20 @@ void CFG::addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> par
     current_bb->add_IRInstr(op, t, params);
 }
 
-void CFG::gen_asm_x86(ostream &o)
-{
+void CFG::gen_asm_x86(ostream &o) {
     //TODO: adapt with name of block and multiple blocks? 
-        cout << ".text\n";
-        string currentFunction = name;
-        symbolTable->current_function = name;
+    cout << ".text\n";
+    string currentFunction = name;
+    symbolTable->current_function = name;
 
 #ifdef __APPLE__
-    cout << ".globl _"+currentFunction+"\n"
-            " _"+currentFunction+": \n";
+    cout << ".globl _" + currentFunction + "\n"
+                                           " _" + currentFunction + ": \n";
 #else
     cout << ".globl	"+currentFunction+"\n"
             " "+currentFunction+": \n";
 #endif
-    for(auto it = bbs.begin(); it != bbs.end(); it++)
-    {
+    for (auto it = bbs.begin(); it != bbs.end(); it++) {
         (*it)->gen_asm_86(o);
     }
     return_bb->gen_asm_86(o);
@@ -61,24 +61,25 @@ void CFG::gen_asm_ARM(ostream &o) {
             " main: \n";
 #endif
     //gen_asm_prologue_ARM(o);
-    for (auto & bb : bbs) {
+    for (auto &bb : bbs) {
         bb->gen_asm_ARM(o);
     }
 
-    IRInstr * ir = new IRInstr(bbs.back(),IRInstr::offset, INT64_T, {"124", "end"});
+    IRInstr *ir = new IRInstr(bbs.back(), IRInstr::offset, INT64_T, {"124", "end"});
     ir->gen_asm_ARM(o);
     delete (ir);
     gen_asm_epilogue_ARM(o);
 }
 
-string CFG::IR_reg_to_asm(string reg) {
-    int level = 0;
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, level);
+string CFG::IR_reg_to_asm(const string &reg, const string &scope) {
+    cout << "IR reg to asm" << endl;
+    cout << "reg = " << reg << endl;
+    Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, scope);
     if (symbolReturned != nullptr) {
-        string returVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
-        return returVal;
+        string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
+        return returnVal;
     }
-    symbolReturned = this->symbolTable->returnParameter(reg, level);
+    symbolReturned = this->symbolTable->returnParameter(reg, scope);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
         return IR_reg_to_asm_param(position);
@@ -88,33 +89,32 @@ string CFG::IR_reg_to_asm(string reg) {
     exit(1);
 }
 
-string CFG::IR_reg_to_asm_param(int position)
-{
+string CFG::IR_reg_to_asm_param(int position) {
     string returVal;
     switch (position) {
-            case 1:
-                returVal = "%edi";
-                break;
-            case 2:
-                returVal = "%esi";
-                break;
-            case 3:
-                returVal = "%edx";
-                break;
-            case 4:
-                returVal = "%ecx";
-                break;
-            case 5:
-                returVal = "%r8d";
-                break;
-            case 6:
-                returVal = "%r9d";
-                break;
-            default:
-                returVal = "unknown";
-                break;
-        }
-        return returVal;
+        case 1:
+            returVal = "%edi";
+            break;
+        case 2:
+            returVal = "%esi";
+            break;
+        case 3:
+            returVal = "%edx";
+            break;
+        case 4:
+            returVal = "%ecx";
+            break;
+        case 5:
+            returVal = "%r8d";
+            break;
+        case 6:
+            returVal = "%r9d";
+            break;
+        default:
+            returVal = "unknown";
+            break;
+    }
+    return returVal;
 }
 
 
@@ -124,15 +124,14 @@ void CFG::gen_asm_prologue_x86(ostream &o) {
          "   movq %rsp, %rbp\n";
 }
 
-void CFG::gen_asm_epilogue_x86(ostream &o)
-{
+void CFG::gen_asm_epilogue_x86(ostream &o) {
     cout << "   #epilogue\n";
-            if(get_var_type(name)== VOID){
-                cout << "   nop\n";
-            }
-       //     "   popq %rbp\n"
-    cout <<     "   leave\n"
-                "   ret\n";
+    if (get_var_type(name) == VOID) {
+        cout << "   nop\n";
+    }
+    //     "   popq %rbp\n"
+    cout << "   leave\n"
+            "   ret\n";
 }
 
 
@@ -142,6 +141,7 @@ void CFG::gen_asm_prologue_ARM(ostream &o) {
     o << "\tadd\tr7, sp, #0" << endl;
     //TODO : gerer le sp et r7
 }
+
 /*
  * push	{r7}
 	sub	sp, sp, #20
@@ -159,6 +159,8 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
 
 // symbol table methods
 void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol) {
+    cout << "About to add symbol name = " << name << endl;
+    symbolTable->print_dictionary();
     if (stateSymbol == PARAMETER) {
         this->symbolTable->defParameter(name, getCurrentScope(), t);
     } else if (stateSymbol == FUNCTION) {
@@ -168,6 +170,7 @@ void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol
     } else {
         symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false);
     }
+    cout << "Added symbol finished" << endl;
 }
 
 void CFG::setParametersPosition(string name, int position) {
@@ -179,20 +182,20 @@ string CFG::create_new_tempvar(TypeSymbol t) {
     string name = "!tmp" + to_string(nextTmpVarNumber);
     nextTmpVarNumber++;
 
-    symbolTable->addSymbol(name, 0, t, 0, ASSIGNED, 0);
+    symbolTable->addSymbol(name, getCurrentScope(), t, 0, ASSIGNED, false);
     return name;
 }
 
 int CFG::get_var_index(string name) {
-    Symbol *symbol = symbolTable->returnSymbol(name, 0);
+    Symbol *symbol = symbolTable->returnSymbol(name, getCurrentScope());
     //TODO: check error
 
     return symbol->getIndex();
 }
 
 TypeSymbol CFG::get_var_type(string name) {
-    Symbol *symbol = symbolTable->returnSymbol(name, 0);
-    if(symbol == nullptr){
+    Symbol *symbol = symbolTable->returnSymbol(name, getCurrentScope());
+    if (symbol == nullptr) {
         symbol = symbolTable->returnParameter(name, 0);
     }
     //TODO: check error
@@ -210,7 +213,7 @@ string CFG::new_BB_name() {
 }
 
 void CFG::assignSymbol(string name) {
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(name, 0);
+    Symbol *symbolReturned = this->symbolTable->returnSymbol(name, getCurrentScope());
     this->symbolTable->assignSymbol(symbolReturned);
 
 }
@@ -219,26 +222,26 @@ bool CFG::firstBB(BasicBlock *bb) {
     return (bb == bbs.front());
 }
 
-bool CFG::isAssigneSymbol(string name) {
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(name, 0);
+bool CFG::isSymbolAssigned(string name) {
+    Symbol *symbolReturned = this->symbolTable->returnSymbol(name, getCurrentScope());
     return (symbolReturned->getStateSymbol() == ASSIGNED);
 }
 
 void CFG::setReturnSymbol(string name) {
     if (!symbolTable->doesSymbolExist(name, 0)) {
-        symbolTable->addSymbol(name, 0, INT, 0, ASSIGNED, 0);
+        symbolTable->addSymbol(name, getCurrentScope(), INT, 0, ASSIGNED, 0);
     }
 }
 
-bool CFG::doesSymbolExist(string name){
-    return symbolTable->doesSymbolExist(name,0);
+bool CFG::doesSymbolExist(string name) {
+    return symbolTable->doesSymbolExist(name, 0);
 }
 
-string CFG::getOffset(){
+string CFG::getOffset() {
     return to_string(symbolTable->highestIndex);
 }
 
-SymbolTable * CFG::getSymbolTable() {
+SymbolTable *CFG::getSymbolTable() {
     return symbolTable;
 }
 
@@ -253,5 +256,6 @@ void CFG::exitingScope() {
 }
 
 string CFG::getCurrentScope() {
+    cout << "Scope is = " << name + "_" + to_string(this->level) << endl;
     return name + "_" + to_string(this->level);
 }

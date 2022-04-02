@@ -4,7 +4,7 @@ using namespace std;
 #include "IR.h"
 
 BasicBlock::BasicBlock(CFG *cfg, string entry_label)
-    : cfg(cfg), label(entry_label), exit_true(nullptr), exit_false(nullptr)
+    : cfg(cfg), label(entry_label), exit_true(nullptr), exit_false(nullptr), scope(cfg->getCurrentScope())
 {}
 
 BasicBlock::~BasicBlock()
@@ -69,11 +69,11 @@ void BasicBlock::gen_asm_86(ostream &o)
     {
         o << "   jmp   " << exit_true->label << "\n";
     } else {
-        string address = cfg->IR_reg_to_asm(test_var_name);
+        string address = cfg->IR_reg_to_asm(test_var_name, this->scope);
         TypeSymbol t = cfg->get_var_type(test_var_name);
 
         string action = "   cmpl";
-        if(t==CHAR){
+        if (t == CHAR) {
             action = "  cmpb";
         }
        o << action << "    $0, " << address << "\n";
@@ -103,11 +103,11 @@ void BasicBlock::gen_asm_ARM(ostream &o)
     {
         o << "   jmp   " << exit_true->label << "\n";
     } else {
-        string address = cfg->IR_reg_to_asm(test_var_name);
+        string address = cfg->IR_reg_to_asm(test_var_name, this->scope);
         TypeSymbol t = cfg->get_var_type(test_var_name);
 
         string action = "   cmpl";
-        if(t==CHAR) {
+        if (t == CHAR) {
             action = "  cmpb";
         }
         o << action << "    $0, " << address << "\n";

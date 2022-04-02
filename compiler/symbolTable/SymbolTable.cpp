@@ -3,7 +3,7 @@
 #include <string>
 #include "../error/ErrorManager.h"
 
-#define DECLARATION_INDEX -1
+#define DECLARATION_INDEX 1
 #define GLOBAL_SCOPE "GLOBAL"
 
 using namespace std;
@@ -58,15 +58,8 @@ int SymbolTable::assignSymbol(Symbol *symbol) {
 }
 
 int SymbolTable::defFunction(string name, TypeSymbol typeSymbol) {
-    int level = 0;
-    string symbolName = name;
-    /*if (level != -1) {
-        symbolName = name + "_" + to_string(level);
-    }*/
-
-    Symbol *newSymbol = new Symbol(symbolName, GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
-
-    if (!doesSymbolExist(symbolName, level)) {
+    Symbol *newSymbol = new Symbol(name, GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
+    if (!doesSymbolExist(newSymbol)) {
         this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
         return 0;
     }
@@ -75,16 +68,8 @@ int SymbolTable::defFunction(string name, TypeSymbol typeSymbol) {
 }
 
 bool SymbolTable::defParameter(const string& name, string scope, TypeSymbol typeSymbol) {
-    int level = 0;
-    string symbolName =  name + "_" + current_function ;
-    if (level != -1) {
-        //TODO Add scope implementation and handle it in the Symbol::getCode() instead
-        //symbolName = name + "_" + current_function + "_" + to_string(level);
-    }
-
-    auto *newSymbol = new Symbol(symbolName, std::move(scope), DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
-
-    if (!doesSymbolExist(symbolName, level)) {
+    auto *newSymbol = new Symbol(name, std::move(scope), DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
+    if (!doesSymbolExist(newSymbol)) {
         this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
         return true;
     }
@@ -174,18 +159,23 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  * @param name 
  * @return SYMBOL 
  */
-Symbol *SymbolTable::returnSymbol(string name, int level) {
-    string ident = name + "_" + to_string(level);
-
-    if (table.find(ident) != table.end())
-        return table.find(ident)->second;
+Symbol *SymbolTable::returnSymbol(const string& name, const string& scope) {
+    string code = Symbol::getAssociatedCode(name, scope);
+    cout << "code = " << code << endl;
+    print_dictionary();
+    if (table.find(code) != table.end())
+        return table.find(code)->second;
+    cout << "THE SYMBOL IS NULL" << endl;
     return nullptr;
 }
 
-Symbol *SymbolTable::returnParameter(string name, int level) {
-    string ident = name + "_" + current_function + "_" + to_string(level);
-    if (table.find(ident) != table.end())
-        return table.find(ident)->second;
+Symbol *SymbolTable::returnParameter(const string& name, const string& scope) {
+    string code = Symbol::getAssociatedCode(name, scope);
+    cout << "code = " << code << endl;
+    print_dictionary();
+    if (table.find(code) != table.end())
+        return table.find(code)->second;
+    cout << "THE SYMBOL IS NULL" << endl;
     return nullptr;
 }
 

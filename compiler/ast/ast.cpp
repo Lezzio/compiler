@@ -187,13 +187,9 @@ void Block::addStatement(Statement *statement) {
 }
 
 void Block::linearize(CFG *cfg) {
-    //CFG entering scope
-    cfg->enteringScope();
     for (Statement *s: statements) {
         s->linearize(cfg);
     }
-    //CFG exiting scope
-    cfg->exitingScope();
 }
 
 Block::~Block() {
@@ -219,12 +215,17 @@ Affectation::~Affectation() {
 }
 
 string DecAffectation::linearize(CFG *cfg) {
+    cout << " DEF AFFECTATION L " << endl;
     string var1 = declaration->linearize(cfg);
+    cout << " POINT #1 " << endl;
     string var2 = rExpr->linearize(cfg);
+    cout << " POINT #2 " << endl;
 
     TypeSymbol typeTmp = cfg->get_var_type(var1);
+    cout << " POINT #3 " << endl;
 
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
+    cout << " END DEF AFFECTATION L " << endl;
     return var1;
 }
 
@@ -379,13 +380,13 @@ string InstructionFor::linearize(CFG * cfg)
 
     if(init != nullptr){
         //CFG entering scope
-        cfg->enteringScope();
+        //cfg->enteringScope();
         beforeForBB->exit_true = initForBB;
         cfg->add_bb(initForBB);
         init->linearize(cfg);
         initForBB->exit_true = testBB;
         //CFG exiting scope
-        cfg->exitingScope();
+        //cfg->exitingScope();
     } else {
         beforeForBB->exit_true = testBB;
     }
@@ -454,6 +455,9 @@ Function::~Function() {
 }
 
 string Function::linearize(CFG *cfg) {
+    //CFG entering scope
+    cfg->enteringScope();
+
     cfg->setCurrentFunction(name);
     cfg->add_to_symbol_table(name, type, FUNCTION);
 
@@ -465,11 +469,14 @@ string Function::linearize(CFG *cfg) {
     cfg->return_bb = returnBlock;
 
     if (parameters != nullptr) {
+        cout << "About to L parameters" << endl;
         parameters->linearize(cfg);
     }
 
+    cout << "About to L block" << endl;
     block->linearize(cfg);
-
+    //CFG exiting scope
+    cfg->exitingScope();
     return "";
 }
 
@@ -512,7 +519,9 @@ vector<CFG *> Prog::linearize() {
 
     for (Function *f: functions) {
         CFG *cfg = new CFG(symbolTable, f->name);
+        cout << "going to L function :" << f->name << endl;
         f->linearize(cfg);
+        cout << "end L of function :" << f->name << endl;
         cfgs.push_back(cfg);
     }
 
