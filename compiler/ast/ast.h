@@ -173,7 +173,7 @@ class Affectation : public Statement
 {
     public :
         virtual string linearize(CFG * cfg);
-        Affectation(ExprVar * lExpr, Expr * rExpr) :
+        Affectation(Expr * lExpr, Expr * rExpr) :
             Statement(), lExpr(lExpr), rExpr(rExpr) {};
         virtual ~Affectation();
     protected :
