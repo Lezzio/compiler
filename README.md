@@ -22,11 +22,15 @@ Normalement, l'installation et le lancement du projet ne diffère pas selon votr
 
 ## Organisation du code
 `compiler/`: contient le code source du projet et notemment le Makefile
-  ``compiler/ast/``: texte descriptif
-  ``compiler/error/``: texte descriptif
-  `compiler/intermediateRepresentation/`: texte descriptif
-  `compiler/listener/`: texte descriptif
-  `compiler/symbolTable/`: texte descriptif
+
+- `compiler/ast/`: code relatif à la création et au parcours de l'AST
+
+- `compiler/error/`: code relatif à la gestion des erreurs du compilateur
+  
+- `compiler/intermediateRepresentation/`: code relatif à l'IR et au CFG
+  
+- `compiler/symbolTable/`: code relatif à la gestion de la table des symboles
+  
 `tests/`: contient tous les fichiers et les scripts relatifs aux tests du projet. 
 
 
