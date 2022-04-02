@@ -235,12 +235,19 @@ string Affectation::linearize(CFG * cfg){
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
     return var1;*/
 
+    //cfg->getSymbolTable()->print_dictionary();
+
     string right = rExpr->linearize(cfg);
     string leftName = lExpr->getVarName();
+
+    /*cout << "right " << right << endl;
+    cout << "left " << leftName << endl;*/
 
     if(true){
         string left = lExpr->linearize(cfg);
         //1. ldconst
+        cfg->assignSymbol(left);
+
         TypeSymbol typeTmpLeft = cfg->get_var_type(left);
         //string tmpLeft = cfg->create_new_tempvar(typeTmpLeft);
         int indexLeft = cfg->get_var_index(left);//tmpLeft
@@ -248,11 +255,11 @@ string Affectation::linearize(CFG * cfg){
         cfg->addInstruction(IRInstr::ldconst, typeTmpLeft, {left, "$"+to_string(indexLeft)});
 
         //2. add
-        cfg->addInstruction(IRInstr::add_lValue, typeTmpLeft, {left, "%rbp", left});//tmpLeft
+        cfg->addInstruction(IRInstr::add_lValue, typeTmpLeft, {left, "%ebp", left});//tmpLeft
         //3. wmem
         //TypeSymbol typeTmpRight = cfg->get_var_type(right);
         //string tmpRight = cfg->create_new_tempvar(typeTmpRight);
-        cfg->addInstruction(IRInstr::wmem, typeTmpLeft, {left, right});//tmpRight
+        cfg->addInstruction(IRInstr::wmem, typeTmpLeft, {right, left});//tmpRight
         return left;
     }
     //Else case with lValue = Variable
@@ -313,6 +320,7 @@ string Return::linearize(CFG * cfg){
     cfg->setReturnSymbol("!retvalue");
 
     cfg->addInstruction(IRInstr::ret, typeTmp, {"!retvalue", var1});
+    //cfg->getSymbolTable()->print_dictionary();
     return var1;
 }
 
