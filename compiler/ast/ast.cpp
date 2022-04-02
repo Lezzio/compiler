@@ -223,13 +223,37 @@ Block::~Block(){
 }
 
 string Affectation::linearize(CFG * cfg){
-    string var1 = lExpr->linearize(cfg);
+    /*string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp = cfg->get_var_type(var1);
 
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
-    return var1;
+    return var1;*/
+
+    string right = rExpr->linearize(cfg);
+    string leftName = lExpr->getVarName();
+
+    if(true){
+        string left = lExpr->linearize(cfg);
+        //1. ldconst
+        TypeSymbol typeTmp = cfg->get_var_type(left);
+        int indexLeft = cfg->get_var_index(left);
+        string tmpRbp = cfg->create_new_tempvar(typeTmp);
+        
+        cfg->addInstruction(IRInstr::ldconst, typeTmp, {tmpRbp, "$"+to_string(indexLeft)});
+        //2. add
+        cfg->addInstruction(IRInstr::add_lValue, typeTmp, {tmpRbp, "%rbp", tmpRbp});
+        //3. wmem
+        cfg->addInstruction(IRInstr::wmem, typeTmp, {tmpRbp, right});
+        return left;
+    }
+    //Else case with lValue = Variable
+    TypeSymbol typeTmp = cfg->get_var_type(leftName);
+    //cout << "typeTmp : " << typeTmp << endl;
+    cfg->addInstruction(IRInstr::copy, typeTmp, {leftName, right});
+    return leftName;
+
 }
 
 Affectation::~Affectation(){
