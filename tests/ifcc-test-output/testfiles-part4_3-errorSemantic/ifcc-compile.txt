@@ -1,5 +1,3 @@
-line 3:17 token recognition error at: '.'
-line 3:18 extraneous input '5' expecting ';'
-error: syntax error during parsing
+/bin/sh: 1: /home/maxime/pld/compiler/tests/ifcc-wrapper.sh: Permission denied
 
-return code: 1
+return code: 126

@@ -1,9 +1,9 @@
 input.c: In function ‘main’:
 input.c:4:5: error: continue statement not within a loop
-    4 |     continue;
-      |     ^~~~~~~~
+     continue;
+     ^~~~~~~~
 input.c:3:9: warning: unused variable ‘var2’ [-Wunused-variable]
-    3 |     int var2 = 3;
-      |         ^~~~
+     int var2 = 3;
+         ^~~~
 
 return code: 1

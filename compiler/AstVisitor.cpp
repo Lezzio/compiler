@@ -171,6 +171,7 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
     Expr *lexpr = (Expr *) visit(context->expression(0));
     Expr *rexpr = (Expr *) visit(context->expression(1));
+
     Affectation *affectation = new Affectation(lexpr, rexpr);
     return (Statement *) affectation;
 }

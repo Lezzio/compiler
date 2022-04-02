@@ -28,7 +28,7 @@ declaration : type IDENT (',' IDENT)* ;
     //        | VAR '(' declaration? ')' #functionexpr;
 
 affectation : type IDENT '=' expression #affectation1
-            | IDENT '=' expression #affectation2; 
+            | expression '=' expression #affectation2; 
           //  | VAR '[' expression ']' '=' expression #affectation3;
 
 retcode : RETURN expression #ret1 ;

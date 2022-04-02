@@ -241,15 +241,18 @@ string Affectation::linearize(CFG * cfg){
     if(true){
         string left = lExpr->linearize(cfg);
         //1. ldconst
-        TypeSymbol typeTmp = cfg->get_var_type(left);
-        int indexLeft = cfg->get_var_index(left);
-        string tmpRbp = cfg->create_new_tempvar(typeTmp);
+        TypeSymbol typeTmpLeft = cfg->get_var_type(left);
+        //string tmpLeft = cfg->create_new_tempvar(typeTmpLeft);
+        int indexLeft = cfg->get_var_index(left);//tmpLeft
         
-        cfg->addInstruction(IRInstr::ldconst, typeTmp, {tmpRbp, "$"+to_string(indexLeft)});
+        cfg->addInstruction(IRInstr::ldconst, typeTmpLeft, {left, "$"+to_string(indexLeft)});
+
         //2. add
-        cfg->addInstruction(IRInstr::add_lValue, typeTmp, {tmpRbp, "%rbp", tmpRbp});
+        cfg->addInstruction(IRInstr::add_lValue, typeTmpLeft, {left, "%rbp", left});//tmpLeft
         //3. wmem
-        cfg->addInstruction(IRInstr::wmem, typeTmp, {tmpRbp, right});
+        //TypeSymbol typeTmpRight = cfg->get_var_type(right);
+        //string tmpRight = cfg->create_new_tempvar(typeTmpRight);
+        cfg->addInstruction(IRInstr::wmem, typeTmpLeft, {left, right});//tmpRight
         return left;
     }
     //Else case with lValue = Variable

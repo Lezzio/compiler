@@ -147,8 +147,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             break;
         }
         case rmem: {
-            string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
-            string origin = this->bb->cfg->IR_reg_to_asm(this->params[1]);
+            string destination = this->bb->cfg->IR_reg_to_asm(this->params[1]);
+            string origin = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             o << getMovInstr(origin, reg);
             o << getMovInstr("(" + reg + ")", "%r10");
             o << getMovInstr("%r10", destination);
