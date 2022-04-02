@@ -1,0 +1,6 @@
+input.c: In function ‘main’:
+input.c:4:13: warning: comparison between pointer and integer
+    4 |     return a<b;
+      |             ^
+
+return code: 0
