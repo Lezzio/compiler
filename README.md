@@ -51,7 +51,8 @@ Notre compilateur est capable de comprendre un programme C composé:
 - d’opérations arithmétiques 
 
 ## Gestion des erreurs
-Notre compilateur est capable de détecter des erreurs sémantiques et syntaxiques. La détection des erreurs suivantes a été implémentées:
-- déclaration d’une variable alors qui aurait déjà été déclarée
-- assignation de la valeur d’une variable à une autre variable alors que la variable assignante n’a été  ni déclarée ni définie (ex: int a = b alors que b n’existe pas)
+Notre compilateur est capable de détecter différentes erreurs. La détection des erreurs suivantes a été implémentées:
+- détection des erreurs lexicales
+- détection des erreurs syntaxiques
+- détection des erreurs sémantiques simples
 
