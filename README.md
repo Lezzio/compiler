@@ -14,9 +14,15 @@ Ce projet a été créé par l'hexanome H4212 composé de:
 
 ## Prérequis
 Pour pouvoir reprendre ce projet, assurez-vous:
-- d'être en capacité decompiler du C++ (c++ xx en l'occurence)
-- d'avoir antlr4 d'installé sur votre machiné
+- d'être en capacité de compiler du C++ (C++ 11 en l'occurence)
+- d'avoir antlr4 d'installé sur votre machine
 - d'avoir cmake installé sur votre machine
+
+Normalement, l'installation et le lancement du projet ne diffère pas selon votre OS: la compatibilité mac / windows est gérée dans le code.
+
+## Organisation du code
+`compiler`:
+`tests`:
 
 
 
