@@ -1,4 +1,7 @@
 #include <iostream>
+#include <stdio.h>
+#include <string.h>
+
 using namespace std;
 
 #include "IR.h"
@@ -22,8 +25,14 @@ string CFG::get_current_level()
 
 string CFG::get_level(string varName)
 {
-    string nameArray[] = split(varName,"_");
-    string level = nameArray[nameArray.length-1];
+    //Extract the number after the last "_" in the variable name (ex : a_1, or get_var_2).
+    string level;
+    string token = strtok(varName,"_");
+    while(token!= NULL)
+    {
+        level = token;
+        token = strtok(NULL, "-");
+    }
     return level;
 }
 

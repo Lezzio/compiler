@@ -5,6 +5,15 @@ string ExprVar::linearize(CFG * cfg)
     if(cfg->get_current_level() == cfg->get_level(varName)){
         return varName;
     }
+    else
+    {
+        // TODO:: Gérer les erreurs
+        /*
+        Error *error = new Error();
+        ErrorManager::addError(error);
+        */
+        return NULL;
+    }
 }
 
 string ExprConst::linearize(CFG * cfg)
