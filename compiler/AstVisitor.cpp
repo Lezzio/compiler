@@ -161,10 +161,17 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
     return (Statement *) decAffectation;
 }
 
-antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
+/*antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
     auto *exprVar = new ExprVar(context->IDENT()->getText());
     Expr *expr = (Expr *) visit(context->expression());
     auto *affectation = new Affectation(exprVar, expr);
+    return (Statement *) affectation;
+}*/
+
+antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
+    Expr *lexpr = (Expr *) visit(context->expression(0));
+    Expr *rexpr = (Expr *) visit(context->expression(1));
+    Affectation *affectation = new Affectation(lexpr, rexpr);
     return (Statement *) affectation;
 }
 
