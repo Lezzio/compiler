@@ -1,5 +1,9 @@
 #include "ast.h"
 
+string Expr::getVarName(){
+    return varName;
+}
+
 string ExprVar::linearize(CFG * cfg)
 {
     return varName;
