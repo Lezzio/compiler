@@ -55,7 +55,16 @@ void IRInstr::gen_asm_x86(ostream &o) {
             o << getAddInstr(rvalue, reg);
             o << getMovInstr(reg, destination);
         }
-            break;
+        break;
+        case add_lValue:
+            {string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
+            string lvalue = this->params[1];
+            string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2]);
+            o << getMovInstr(lvalue, reg);
+            o << getAddInstr(rvalue, reg);
+            o << getMovInstr(reg, destination);
+        }
+            break; 
         case sub: {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0]);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1]);

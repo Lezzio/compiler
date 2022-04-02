@@ -29,6 +29,7 @@ public:
         finret,
         copy,
         add,
+        add_lValue,
         sub,
         mul,
         div,
