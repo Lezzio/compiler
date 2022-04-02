@@ -22,8 +22,8 @@ Normalement, l'installation et le lancement du projet ne diffère pas selon votr
 
 ## Organisation du code
 `compiler/`: contient le code source du projet et notemment le Makefile
-  `compiler/ast/`: texte descriptif
-  `compiler/error/`: texte descriptif
+  ``compiler/ast/``: texte descriptif
+  ``compiler/error/``: texte descriptif
   `compiler/intermediateRepresentation/`: texte descriptif
   `compiler/listener/`: texte descriptif
   `compiler/symbolTable/`: texte descriptif
