@@ -1,7 +1,7 @@
 # PLD compilateur: documentation développeur
 
 ## Introduction
-Ce répertoire contient le code source d'un projet étudiant (4A INSA Lyon) visant à créer un compilateur pour un sous ensemble simple du langage C. Ce projet est réalisé en C++ et utilise le framework antlr4.
+Ce répertoire contient le code source d'un projet étudiant (4A INSA Lyon) visant à créer un compilateur pour un sous ensemble simple du langage C. Ce projet est réalisé en C++, suivant la méthodologie TDD et utilise le framework antlr4.
 
 Ce projet a été créé par l'hexanome H4212 composé de:
 - Bouvier Julien
@@ -21,8 +21,13 @@ Pour pouvoir reprendre ce projet, assurez-vous:
 Normalement, l'installation et le lancement du projet ne diffère pas selon votre OS: la compatibilité mac / windows est gérée dans le code.
 
 ## Organisation du code
-`compiler`:
-`tests`:
+`compiler/`: contient le code source du projet et notemment le Makefile
+  `compiler/ast/`: texte descriptif
+  `compiler/error/`: texte descriptif
+  `compiler/intermediateRepresentation/`: texte descriptif
+  `compiler/listener/`: texte descriptif
+  `compiler/symbolTable/`: texte descriptif
+`tests/`: contient tous les fichiers et les scripts relatifs aux tests du projet. 
 
 
 
