@@ -178,7 +178,7 @@ class Affectation : public Statement
             Statement(), lExpr(lExpr), rExpr(rExpr) {};
         virtual ~Affectation();
     protected :
-        ExprVar *lExpr;
+        Expr *lExpr;
         Expr *rExpr;
 };
 
