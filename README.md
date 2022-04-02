@@ -33,10 +33,22 @@ Normalement, l'installation et le lancement du projet ne diffère pas selon votr
   
 `tests/`: contient tous les fichiers et les scripts relatifs aux tests du projet. 
 
+## Utilisation
+Dans un premier temps, allez dans le dossier `compiler/` puis entrez la commande `make` pour compiler le projet. Ensuite, entrez la commande `ifcc FICHIER` ou FICHIER est le nom du fichier .c que vous souhaitez compiler.
 
+Pour lancer les tests, allez dans le dossier `compiler/` et entrez la commande `ifcc-test.py testfiles/`.
 
+## Fonctionalités implémentées
+Notre compilateur est capable de comprendre un programme C composé:
+- d’un main et son retour
+- d’initialisations de variables (pas forcément sur une seule ligne, les variables peuvent être initialisées n’importe où)
+- d’affectations (tout type d'affectations)
+- de conditions (if /else)
+- de boucles
+- de fonctions
+- d’opérations arithmétiques 
 
+De plus, notre compilateur est capable de détecter des erreurs sémantiques et syntaxiques. La détection des erreurs suivantes a été implémentées:
+- déclaration d’une variable alors qui aurait déjà été déclarée
+- assignation de la valeur d’une variable à une autre variable alors que la variable assignante n’a été  ni déclarée ni définie (ex: int a = b alors que b n’existe pas)
 
-The source code is in the compiler folder. <br>
-The tests are in the test folder. <br>
-The intermediate document is in the docs folder. <br>
