@@ -432,6 +432,10 @@ antlrcpp::Any AstVisitor::visitEqualityexpr(ifccParser::EqualityexprContext *con
     return (Expr *) equal;
 }
 
+antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context) {
+    
+}
+
 antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context) {
     string type = context->getText();
     return type;
