@@ -56,3 +56,8 @@ Notre compilateur est capable de détecter différentes erreurs. La détection d
 - détection des erreurs syntaxiques
 - détection des erreurs sémantiques simples
 
+## Gestion des tests
+Ce projet a été développé selon la méthodologie du Test Driven Development (TDD). Les tests ont donc été créés en amont. 
+
+Les tests, placés dans le répertoire `tests/`, fonctionnent de la manière suivante. Notre compilateur essaye de compiler différents fichiers .c créés spécifiquement pour les tests. Les mêmes fichiers sont compilés en parallèle avec gcc, le compilateur officiel du langage c, et les résultats obtenus sont alors comparés. Cette gestion des tests nous permet de contrôler le fait que tout nouveau développement n'entraîne pas de changements néfastes au niveau des exécutables produits par notre compilateur.
+
