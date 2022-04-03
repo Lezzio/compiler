@@ -25,6 +25,7 @@ Dans un premier temps, allez dans le dossier `compiler/` puis entrez la commande
 
 ## Fonctionnalités implémentées
 Notre compilateur est capable de comprendre un programme C composé :
+- d'un seul fichier source (les directives pré-processing sont ignorées)
 - d’un main et son retour
 - d’initialisations de variables (pas forcément sur une seule ligne, les variables peuvent être initialisées n’importe où)
 - d’affectations (tout type d'affectations)
@@ -38,3 +39,6 @@ Notre compilateur est capable de détecter différentes erreurs. La détection d
 - détection des erreurs lexicales
 - détection des erreurs syntaxiques
 - détection des erreurs sémantiques simples
+
+## Limites de notre compilateur
+TODO à compléter
