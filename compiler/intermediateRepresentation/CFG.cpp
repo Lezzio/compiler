@@ -228,8 +228,8 @@ bool CFG::isSymbolAssigned(const string& name, const string& scope) {
 }
 
 void CFG::setReturnSymbol(const string& name, const string& scope) {
-    if (!symbolTable->doesSymbolExist(name, 0)) {
-        symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, 0);
+    if (!symbolTable->doesSymbolExist(name, scope)) {
+        symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, false);
     }
 }
 
