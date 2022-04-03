@@ -2,8 +2,12 @@
 #define SYMBOLTABLE_H
 
 #include <map>
+#include <string>
+#include <sstream>
 #include "Scope.h"
 #include "Symbol.h"
+#include <cstring>
+
 using namespace std;
 
 extern Scope GLOBAL_SCOPE;
