@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <initializer_list>
+#include <deque>
 
 // Declarations from the parser -- replace with your own
 //TODO: fix path
@@ -179,11 +180,11 @@ public:
     int get_var_index(string name);
     TypeSymbol get_var_type(string name);
     void assignSymbol(string name);
-    bool isSymbolAssigned(string name);
-    void setReturnSymbol(string name);
+    bool isSymbolAssigned(const string& name, const string& scope);
+    void setReturnSymbol(const string& name, const string& scope);
     void setCurrentFunction(string name) { symbolTable->current_function = name; }
     void setParametersPosition(string name, int position);
-    bool doesSymbolExist(string name);
+    bool doesSymbolExist(string name, string scope);
     string getOffset();
     SymbolTable * getSymbolTable();
 
@@ -203,8 +204,7 @@ public:
 protected:
     string name;
     int highestLevel;
-    int previousLevel;
-    int level;
+    vector<int> levelHistory;
     SymbolTable * symbolTable;
     int nextTmpVarNumber;
     //int nextFreeSymbolIndex;      /**< to allocate new symbols in the symbol table */

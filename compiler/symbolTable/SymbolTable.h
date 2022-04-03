@@ -16,7 +16,7 @@ public :
     ~SymbolTable();
     bool doesSymbolExist(Symbol * symbol);
     bool doesSymbolExist(string code);
-    bool doesSymbolExist(string identn, int level);
+    bool doesSymbolExist(string name, string scope);
     Symbol * returnSymbol(const string& name, const string& scope);
     Symbol * returnParameter(const string& name, const string& scope);
     /**

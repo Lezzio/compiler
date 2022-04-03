@@ -10,7 +10,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
     if (t == CHAR || t == INT8_T) {
         reg = "%al";
     }
-
+    cout << "op = " << op << endl;
     switch (op) {
         case ldconst: {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
@@ -33,11 +33,14 @@ void IRInstr::gen_asm_x86(ostream &o) {
             break;
         }
         case copy: {
+            cout << "copy operation" << endl;
             string destination;
-            if (this->params[0].compare("param_reg") == 0) {
+            if (this->params[0] == "param_reg") {
+                cout << "BRANCH 1" << endl;
                 destination = this->bb->cfg->IR_reg_to_asm_param(stoi(this->params[2]));
             } else {
-                if (!bb->cfg->isSymbolAssigned(this->params[0])) {
+                cout << "BRANCH 2" << endl;
+                if (!bb->cfg->isSymbolAssigned(this->params[0], this->bb->scope)) {
                     this->bb->cfg->assignSymbol(this->params[0]);
                 }
                 destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
@@ -296,7 +299,7 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             break;
         }
         case copy: {
-            if (!bb->cfg->isSymbolAssigned(this->params[0])) {
+            if (!bb->cfg->isSymbolAssigned(this->params[0], this->bb->scope)) {
                 this->bb->cfg->assignSymbol(this->params[0]);
             }
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
@@ -435,9 +438,9 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             break;
         }
         case cmp_lt: {
-            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], std::string()));
-            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], std::string()));
-            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], std::string()));
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
+            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
+            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getLtInstr("r3", ARM);
@@ -445,9 +448,9 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             break;
         }
         case cmp_le: {
-            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], std::string()));
-            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], std::string()));
-            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], std::string()));
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
+            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
+            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getLeInstr("r3", ARM);
@@ -455,9 +458,9 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             break;
         }
         case cmp_gt: {
-            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], std::string()));
-            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], std::string()));
-            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], std::string()));
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
+            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
+            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getGtInstr("r3", ARM);
@@ -465,9 +468,9 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             break;
         }
         case cmp_ge: {
-            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], std::string()));
-            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], std::string()));
-            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], std::string()));
+            string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
+            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
+            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getCompInstr(rvalue, "r3", ARM);
             o << getGeInstr("r3", ARM);

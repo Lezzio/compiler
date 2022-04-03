@@ -261,7 +261,7 @@ string Return::linearize(CFG *cfg) {
     string var1 = expr->linearize(cfg);
 
     TypeSymbol typeTmp = cfg->get_var_type(var1);
-    cfg->setReturnSymbol("!retvalue");
+    cfg->setReturnSymbol("!retvalue", ""); //TODO Return symbol
 
     cfg->addInstruction(IRInstr::ret, typeTmp, {"!retvalue", var1});
     return var1;
@@ -500,7 +500,7 @@ string ExprFunction::linearize(CFG *cfg) {
         position++;
     }
 
-    if (!cfg->doesSymbolExist(varName)) {
+    if (!cfg->doesSymbolExist(varName, std::string())) {
         varName = varName + "@PLT";
     }
 

@@ -1,7 +1,6 @@
 #include "SymbolTable.h"
 #include <iostream>
 #include <string>
-#include "../error/ErrorManager.h"
 
 #define DECLARATION_INDEX 1
 #define GLOBAL_SCOPE "GLOBAL"
@@ -114,12 +113,12 @@ bool SymbolTable::doesSymbolExist(Symbol *symbol) {
 /**
  * @brief
  *
- * @param ident
+ * @param name
  * @return true if symbol exists in the table
  * @return false else
  */
-bool SymbolTable::doesSymbolExist(string ident, int level) {
-    string code = ident + "_" + to_string(level);
+bool SymbolTable::doesSymbolExist(string name, string scope) {
+    string code = Symbol::getAssociatedCode(name, scope);
     return doesSymbolExist(code);
 }
 
@@ -161,11 +160,11 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  */
 Symbol *SymbolTable::returnSymbol(const string& name, const string& scope) {
     string code = Symbol::getAssociatedCode(name, scope);
-    cout << "code = " << code << endl;
     print_dictionary();
+    cout << "code = " << code << endl;
     if (table.find(code) != table.end())
         return table.find(code)->second;
-    cout << "THE SYMBOL IS NULL" << endl;
+    cout << "returnSymbol# THE SYMBOL IS NULL" << endl;
     return nullptr;
 }
 

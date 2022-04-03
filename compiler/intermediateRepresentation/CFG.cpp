@@ -7,8 +7,8 @@ using namespace std;
 
 CFG::CFG(SymbolTable *symbolTable, string name)
         : name(std::move(name)), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr), return_bb(nullptr),
-          nextTmpVarNumber(0), level(0), previousLevel(0), highestLevel(0), breakBBname(""), continueBBname("") {
-
+          nextTmpVarNumber(0), highestLevel(0), breakBBname(""), continueBBname("") {
+    levelHistory.push_back(0);
 }
 
 CFG::~CFG() {
@@ -222,19 +222,19 @@ bool CFG::firstBB(BasicBlock *bb) {
     return (bb == bbs.front());
 }
 
-bool CFG::isSymbolAssigned(string name) {
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(name, getCurrentScope());
+bool CFG::isSymbolAssigned(const string& name, const string& scope) {
+    Symbol *symbolReturned = this->symbolTable->returnSymbol(name, scope);
     return (symbolReturned->getStateSymbol() == ASSIGNED);
 }
 
-void CFG::setReturnSymbol(string name) {
+void CFG::setReturnSymbol(const string& name, const string& scope) {
     if (!symbolTable->doesSymbolExist(name, 0)) {
-        symbolTable->addSymbol(name, getCurrentScope(), INT, 0, ASSIGNED, 0);
+        symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, 0);
     }
 }
 
-bool CFG::doesSymbolExist(string name) {
-    return symbolTable->doesSymbolExist(name, 0);
+bool CFG::doesSymbolExist(string name, string scope) {
+    return symbolTable->doesSymbolExist(name, scope);
 }
 
 string CFG::getOffset() {
@@ -246,16 +246,18 @@ SymbolTable *CFG::getSymbolTable() {
 }
 
 void CFG::enteringScope() {
-    previousLevel = level;
-    highestLevel++;
-    level = highestLevel;
+    cout << "Entering scope" << endl;
+    int level = highestLevel++;
+    cout << "Level = " << level;
+    levelHistory.push_back(level);
 }
 
 void CFG::exitingScope() {
-    level = previousLevel;
+    levelHistory.pop_back();
 }
 
 string CFG::getCurrentScope() {
-    cout << "Scope is = " << name + "_" + to_string(this->level) << endl;
-    return name + "_" + to_string(this->level);
+    int level = levelHistory.back();
+    cout << "Scope is = " << level << " " + name + "_" + to_string(level) << endl;
+    return name + "_" + to_string(level);
 }
