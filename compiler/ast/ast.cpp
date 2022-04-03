@@ -235,20 +235,22 @@ string Affectation::linearize(CFG * cfg){
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
     return var1;*/
 
+    //We linearize rValue et get the name of the lValue
     string right = rExpr->linearize(cfg);
     string leftName = lExpr->getVarName();
 
     if(true){
+        //if the lValue isn't a var we go into the machin algorithm
         string left = lExpr->linearize(cfg);
-        //1. ldconst
+        //1 step is the ldconst
         cfg->assignSymbol(left);
         TypeSymbol typeTmpLeft = cfg->get_var_type(left);
         int indexLeft = cfg->get_var_index(left);
         string tmpLeft = cfg->create_new_tempvar(typeTmpLeft);
-        cfg->addInstruction(IRInstr::ldconst, typeTmpLeft, {tmpLeft, "$-"+to_string(indexLeft)});//left 2
-        //2. add
+        cfg->addInstruction(IRInstr::ldconst, typeTmpLeft, {tmpLeft, "$-"+to_string(indexLeft)});
+        //2 step is the add
         cfg->addInstruction(IRInstr::add_lValue, typeTmpLeft, {tmpLeft, "%ebp", tmpLeft});
-        //3. wmem
+        //3 step is the wmem
         cfg->addInstruction(IRInstr::wmem, typeTmpLeft, {right, tmpLeft});
 
         return left;

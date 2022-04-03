@@ -161,6 +161,14 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
     return (Statement *) decAffectation;
 }
 
+antlrcpp::Any AstVisitor::visitArray_declaration(ifccParser::Array_declarationContext *context) {
+    
+}
+
+antlrcpp::Any AstVisitor::visitArray_affectation(ifccParser::Array_affectationContext *context) {
+    
+}
+
 /*antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
     auto *exprVar = new ExprVar(context->IDENT()->getText());
     Expr *expr = (Expr *) visit(context->expression());
