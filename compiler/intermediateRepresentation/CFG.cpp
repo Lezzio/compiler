@@ -73,13 +73,13 @@ void CFG::gen_asm_ARM(ostream &o) {
 
 string CFG::IR_reg_to_asm(const string &reg, const string &scope) {
     cout << "IR reg to asm" << endl;
-    cout << "reg = " << reg << endl;
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, scope);
+    cout << "reg = " << reg << " | scope = " << scope << endl;
+    Symbol *symbolReturned = this->symbolTable->lookupSymbol(reg, scope);
     if (symbolReturned != nullptr) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returnVal;
     }
-    symbolReturned = this->symbolTable->returnParameter(reg, scope);
+    symbolReturned = this->symbolTable->lookupParameter(reg, scope);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
         return IR_reg_to_asm_param(position);
@@ -90,31 +90,31 @@ string CFG::IR_reg_to_asm(const string &reg, const string &scope) {
 }
 
 string CFG::IR_reg_to_asm_param(int position) {
-    string returVal;
+    string retVal;
     switch (position) {
         case 1:
-            returVal = "%edi";
+            retVal = "%edi";
             break;
         case 2:
-            returVal = "%esi";
+            retVal = "%esi";
             break;
         case 3:
-            returVal = "%edx";
+            retVal = "%edx";
             break;
         case 4:
-            returVal = "%ecx";
+            retVal = "%ecx";
             break;
         case 5:
-            returVal = "%r8d";
+            retVal = "%r8d";
             break;
         case 6:
-            returVal = "%r9d";
+            retVal = "%r9d";
             break;
         default:
-            returVal = "unknown";
+            retVal = "unknown";
             break;
     }
-    return returVal;
+    return retVal;
 }
 
 
@@ -160,6 +160,7 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
 // symbol table methods
 void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol) {
     cout << "About to add symbol name = " << name << endl;
+    cout << "Scope is " << getCurrentScope() << "|||" << endl;
     symbolTable->print_dictionary();
     if (stateSymbol == PARAMETER) {
         this->symbolTable->defParameter(name, getCurrentScope(), t);
@@ -174,7 +175,7 @@ void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol
 }
 
 void CFG::setParametersPosition(string name, int position) {
-    Symbol *symbol = symbolTable->returnParameter(name, 0);
+    Symbol *symbol = symbolTable->lookupParameter(name, 0);
     symbol->setIndex(position);
 }
 
@@ -187,16 +188,16 @@ string CFG::create_new_tempvar(TypeSymbol t) {
 }
 
 int CFG::get_var_index(string name) {
-    Symbol *symbol = symbolTable->returnSymbol(name, getCurrentScope());
+    Symbol *symbol = symbolTable->lookupSymbol(name, getCurrentScope());
     //TODO: check error
 
     return symbol->getIndex();
 }
 
 TypeSymbol CFG::get_var_type(const string& name, const string& scope) {
-    Symbol *symbol = symbolTable->returnSymbol(name, scope);
+    Symbol *symbol = symbolTable->lookupSymbol(name, scope);
     if (symbol == nullptr) {
-        symbol = symbolTable->returnParameter(name, scope);
+        symbol = symbolTable->lookupParameter(name, scope);
     }
     //TODO: check error
     return symbol->getTypeSymbol();
@@ -207,15 +208,14 @@ TypeSymbol CFG::get_var_type(const string& name, const string& scope) {
  * .(function name)#(basic block number)
  */
 string CFG::new_BB_name() {
-    string name = "." + this->name + "#" + to_string(nextBBnumber);
+    string name = "." + this->name + "_" + to_string(nextBBnumber);
     nextBBnumber++;
     return name;
 }
 
-void CFG::assignSymbol(string name) {
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(name, getCurrentScope());
+void CFG::assignSymbol(const string& name, const string& scope) {
+    Symbol *symbolReturned = this->symbolTable->lookupSymbol(name, scope);
     this->symbolTable->assignSymbol(symbolReturned);
-
 }
 
 bool CFG::firstBB(BasicBlock *bb) {
@@ -223,7 +223,7 @@ bool CFG::firstBB(BasicBlock *bb) {
 }
 
 bool CFG::isSymbolAssigned(const string& name, const string& scope) {
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(name, scope);
+    Symbol *symbolReturned = this->symbolTable->lookupSymbol(name, scope);
     return (symbolReturned->getStateSymbol() == ASSIGNED);
 }
 
@@ -250,6 +250,7 @@ void CFG::enteringScope() {
     int level = highestLevel++;
     cout << "Level = " << level;
     levelHistory.push_back(level);
+    current_bb->scope = getCurrentScope(); //Update the current basic block to be aligned with the new scope
 }
 
 void CFG::exitingScope() {

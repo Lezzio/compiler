@@ -179,7 +179,7 @@ public:
     string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
     TypeSymbol get_var_type(const string& name, const string& scope);
-    void assignSymbol(string name);
+    void assignSymbol(const string& name, const string& scope);
     bool isSymbolAssigned(const string& name, const string& scope);
     void setReturnSymbol(const string& name, const string& scope);
     void setCurrentFunction(string name) { symbolTable->current_function = name; }

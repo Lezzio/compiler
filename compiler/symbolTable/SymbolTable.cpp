@@ -52,7 +52,6 @@ int SymbolTable::assignSymbol(Symbol *symbol) {
     staticIndex += getOffsetType(symbol->getTypeSymbol());
     highestIndex = staticIndex;
     symbol->setIndex(staticIndex);
-
     return symbol->getAddress();
 }
 
@@ -129,7 +128,7 @@ bool SymbolTable::doesSymbolExist(string name, string scope) {
  * @return true if symbol exists in the table
  * @return false else
  */
-bool SymbolTable::doesSymbolExist(string code) {
+bool SymbolTable::doesSymbolExist(const string& code) {
     if (table.find(code) != table.end()) {
         return true;
     } else {
@@ -158,17 +157,17 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  * @param name 
  * @return SYMBOL 
  */
-Symbol *SymbolTable::returnSymbol(const string& name, const string& scope) {
+Symbol *SymbolTable::lookupSymbol(const string& name, const string& scope) {
     string code = Symbol::getAssociatedCode(name, scope);
     print_dictionary();
     cout << "code = " << code << endl;
     if (table.find(code) != table.end())
         return table.find(code)->second;
-    cout << "returnSymbol# THE SYMBOL IS NULL" << endl;
+    cout << "lookupSymbol # THE SYMBOL IS NULL" << endl;
     return nullptr;
 }
 
-Symbol *SymbolTable::returnParameter(const string& name, const string& scope) {
+Symbol *SymbolTable::lookupParameter(const string& name, const string& scope) {
     string code = Symbol::getAssociatedCode(name, scope);
     cout << "code = " << code << endl;
     print_dictionary();
@@ -179,7 +178,7 @@ Symbol *SymbolTable::returnParameter(const string& name, const string& scope) {
 }
 
 SymbolTable::~SymbolTable() {
-    for (const auto myPair : table) {
-        delete myPair.second;
+    for (const auto& pair : table) {
+        delete pair.second;
     }
 }

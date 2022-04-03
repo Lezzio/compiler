@@ -30,26 +30,26 @@ int main(int argn, const char **argv){
 
 
     
-    string test1 = newTest("SymboleTable", "returnSymbol", "nameExisting");
+    string test1 = newTest("SymboleTable", "lookupSymbol", "nameExisting");
     cout << test1;
-    if(ST->returnSymbol("a", 0) != nullptr){
-        Iassert("a", ST->returnSymbol("a", 0)->getName());
+    if(ST->lookupSymbol("a", 0) != nullptr){
+        Iassert("a", ST->lookupSymbol("a", 0)->getName());
     }else{
         cout << "Error" <<endl;
     }
     
-    string test2 = newTest("SymboleTable", "returnSymbol", "renamed");
+    string test2 = newTest("SymboleTable", "lookupSymbol", "renamed");
     cout << test2;
-    if(ST->returnSymbol("a_1", 0) != nullptr){
-        Iassert("a_1", ST->returnSymbol("a_1", 0)->getName());
+    if(ST->lookupSymbol("a_1", 0) != nullptr){
+        Iassert("a_1", ST->lookupSymbol("a_1", 0)->getName());
     }else{
         cout << "Error" <<endl;
     }
 
-    string test3 = newTest("SymboleTable", "returnSymbol", "non existing");
+    string test3 = newTest("SymboleTable", "lookupSymbol", "non existing");
     cout << test3;
-    if(ST->returnSymbol("babar", 0) != nullptr){
-        Iassert("error", ST->returnSymbol("babar", 0)->getName());
+    if(ST->lookupSymbol("babar", 0) != nullptr){
+        Iassert("error", ST->lookupSymbol("babar", 0)->getName());
     }else{
         cout << "PASSED" <<endl;
     }

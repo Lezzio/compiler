@@ -187,9 +187,13 @@ void Block::addStatement(Statement *statement) {
 }
 
 void Block::linearize(CFG *cfg) {
+    //CFG entering scope
+    cfg->enteringScope();
     for (Statement *s: statements) {
         s->linearize(cfg);
     }
+    //CFG exiting scope
+    cfg->exitingScope();
 }
 
 Block::~Block() {
@@ -302,6 +306,7 @@ string InstructionIF::linearize(CFG *cfg) {
     cfg->current_bb->exit_true = endIfBB;
 
     trueCodeBlock->linearize(cfg);
+    cout << "BB scope is " << cfg->current_bb->scope << endl;
 
     if (falseCodeBlock != nullptr) {
         cfg->add_bb(elseBB);
@@ -342,7 +347,7 @@ string InstructionWhile::linearize(CFG *cfg) {
     cfg->add_bb(bodyBB);
     bodyBB->exit_true = testBB;
     bodyBB->exit_false = nullptr;
-    block->linearize(cfg);
+    block->linearize(cfg); //1
 
     cfg->add_bb(afterWhileBB);
     cfg->breakBBname = "";
@@ -362,7 +367,7 @@ string InstructionFor::linearize(CFG * cfg)
 {
     BasicBlock * beforeForBB = cfg->current_bb;
 
-    auto * initForBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * initForBB = new BasicBlock(cfg, cfg->new_BB_name()); //getCurrentScope
     auto * testBB = new BasicBlock(cfg, cfg->new_BB_name());
     auto * updateBB = new BasicBlock(cfg, cfg->new_BB_name());
     auto * forBB = new BasicBlock(cfg, cfg->new_BB_name());
@@ -378,15 +383,12 @@ string InstructionFor::linearize(CFG * cfg)
     endforBB->exit_true = beforeForBB->exit_true;
     endforBB->exit_false = beforeForBB->exit_false;
 
-    if(init != nullptr){
-        //CFG entering scope
-        //cfg->enteringScope();
+    if(init != nullptr) {
         beforeForBB->exit_true = initForBB;
         cfg->add_bb(initForBB);
+        //TODO CFG entering & exiting scope
         init->linearize(cfg);
         initForBB->exit_true = testBB;
-        //CFG exiting scope
-        //cfg->exitingScope();
     } else {
         beforeForBB->exit_true = testBB;
     }
@@ -455,9 +457,6 @@ Function::~Function() {
 }
 
 string Function::linearize(CFG *cfg) {
-    //CFG entering scope
-    cfg->enteringScope();
-
     cfg->setCurrentFunction(name);
     cfg->add_to_symbol_table(name, type, FUNCTION);
 
@@ -475,8 +474,6 @@ string Function::linearize(CFG *cfg) {
 
     cout << "About to L block" << endl;
     block->linearize(cfg);
-    //CFG exiting scope
-    cfg->exitingScope();
     return "";
 }
 

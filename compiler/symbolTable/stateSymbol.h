@@ -1,8 +1,8 @@
-#if ! defined ( STATE_H )
+#if !defined ( STATE_H )
 #define STATE_H
 
 
-enum StateSymbol{
+enum StateSymbol {
     DECLARED,
     ASSIGNED,
     FUNCTION,
