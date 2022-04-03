@@ -24,12 +24,13 @@ parameters : parameter (',' parameter)* ;
 
 parameter : type IDENT ;
 
-declaration : type IDENT (',' IDENT)* ;
+declaration : type IDENT (',' IDENT)* #declaration1
+            | type IDENT '[' expression ']' #declaration2;
     //        | VAR '(' declaration? ')' #functionexpr;
 
 affectation : type IDENT '=' expression #affectation1
-            | expression '=' expression #affectation2; 
-          //  | VAR '[' expression ']' '=' expression #affectation3;
+            | expression '=' expression #affectation2 
+            | IDENT '[' expression ']' '=' expression #affectation3;
 
 retcode : RETURN expression #ret1 ;
 
@@ -54,8 +55,8 @@ expression : IDENT #varexpr
           // | expression op=('&&' | '||') expression #logicalexpr
            | op=('-' | '!') expression #unaryexpr
            | '(' expression ')' #bracketexpr 
-           | IDENT '(' (expression (',' expression)*)? ')' #functionexpr ;
-	  // | VAR '[' expression ']' #arrayexpr;
+           | IDENT '(' (expression (',' expression)*)? ')' #functionexpr 
+	         | IDENT '[' expression ']' #arrayexpr;
 	  // | ('-' | '!')? (CONST | CHAR | VAR)	#literalexpr;
 
 type : INT | CHAR ;

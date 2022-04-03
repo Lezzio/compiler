@@ -248,6 +248,8 @@ string Affectation::linearize(CFG * cfg){
         //1. ldconst
         cfg->assignSymbol(left);
 
+        cfg->getSymbolTable()->print_dictionary();
+
         TypeSymbol typeTmpLeft = cfg->get_var_type(left);
         int indexLeft = cfg->get_var_index(left);
         string tmpLeft = cfg->create_new_tempvar(typeTmpLeft);
@@ -256,7 +258,7 @@ string Affectation::linearize(CFG * cfg){
         cfg->addInstruction(IRInstr::add_lValue, typeTmpLeft, {tmpLeft, "%ebp", tmpLeft});
         //3. wmem
         cfg->addInstruction(IRInstr::wmem, typeTmpLeft, {right, tmpLeft});
-        //cfg->getSymbolTable()->print_dictionary();
+        cfg->getSymbolTable()->print_dictionary();
 
         return left;
     }
