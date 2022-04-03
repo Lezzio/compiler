@@ -149,6 +149,17 @@ class ExprUnary : public Expr
         Expr *rExpr;
 };
 
+class ExprArray : public Expr
+{
+    public :
+        virtual string linearize(CFG * cfg);
+        ExprArray(string varName, Expr * arrayExpr) :
+            Expr(varName), arrayExpr(arrayExpr) {};
+        virtual ~ExprArray();
+    protected : 
+        Expr *arrayExpr;
+};
+
 class Statement : public ASTNode 
 {
     public :

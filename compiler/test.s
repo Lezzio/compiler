@@ -18,7 +18,7 @@
    movq -32(%rbp), %rax
    addq -36(%rbp), %rax
    movq %rax, -16(%rbp)
-   movq $-20, -24(%rbp)
+   movq $-44, -24(%rbp)
    movq %rbp, %rax
    addq -24(%rbp), %rax
    movq %rax, -24(%rbp)

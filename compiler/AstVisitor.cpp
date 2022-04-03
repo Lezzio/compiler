@@ -433,7 +433,11 @@ antlrcpp::Any AstVisitor::visitEqualityexpr(ifccParser::EqualityexprContext *con
 }
 
 antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context) {
+    Expr* indexExpr = (Expr*) visit(context->expression());
+    ExprVar *varArray = new ExprVar(context->IDENT()->getText());
+
     
+
 }
 
 antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context) {
