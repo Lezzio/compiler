@@ -51,6 +51,10 @@ Notre compilateur est capable de comprendre un programme C composé :
 - de fonctions
 - d’opérations arithmétiques 
 
+Voici un schéma qui montre le fonctionnement de notre compilateur:
+
+![compilo](https://user-images.githubusercontent.com/60465886/161430149-a9525f0e-1419-4fbe-9572-2d22e90ada82.png)
+
 ## Gestion des erreurs
 Notre compilateur est capable de détecter différentes erreurs. La détection des erreurs suivantes a été implémentée :
 - détection des erreurs lexicales
