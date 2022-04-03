@@ -15,7 +15,7 @@ where `N` is a positive integer constant.
 ## Source Files
 - `ifcc.g4` contains the grammar in antlr4 format
 - `main.cpp` contains the C++ code to call the antlr4-generated parser
-  on the file name provided in the command line.
+  on the file functionName provided in the command line.
 - `CodeGenVisitor.h` produces the actual assembly-language output
 
 ## Prerequisites

@@ -14,7 +14,7 @@ all: ifcc
 
 ##########################################
 # link together all pieces of our compiler
-OBJECTS=build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/IRInstr.o build/CFG.o build/BasicBlock.o build/ast.o build/SyntaxErrorListener.o build/Error.o build/ErrorManager.o build/ErrorStrategy.o build/AstVisitor.o build/main.o
+OBJECTS=build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/IRInstr.o build/CFG.o build/BasicBlock.o build/ast.o build/SyntaxErrorListener.o build/Error.o build/ErrorManager.o build/ErrorStrategy.o build/AstVisitor.o build/Scope.o build/main.o
 
 ifcc: $(OBJECTS)
 	@mkdir -p build
@@ -22,6 +22,10 @@ ifcc: $(OBJECTS)
 
 ##########################################
 # compile our hand-writen C++ code: main(), Visitor, etc.
+
+build/Scope.o: symbolTable/Scope.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
 build/ErrorStrategy.o: error/ErrorStrategy.cpp
 	@mkdir -p build
