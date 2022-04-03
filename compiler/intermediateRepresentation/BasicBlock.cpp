@@ -70,7 +70,7 @@ void BasicBlock::gen_asm_86(ostream &o)
         o << "   jmp   " << exit_true->label << "\n";
     } else {
         string address = cfg->IR_reg_to_asm(test_var_name, this->scope);
-        TypeSymbol t = cfg->get_var_type(test_var_name);
+        TypeSymbol t = cfg->get_var_type(test_var_name, this->scope);
 
         string action = "   cmpl";
         if (t == CHAR) {
@@ -104,7 +104,7 @@ void BasicBlock::gen_asm_ARM(ostream &o)
         o << "   jmp   " << exit_true->label << "\n";
     } else {
         string address = cfg->IR_reg_to_asm(test_var_name, this->scope);
-        TypeSymbol t = cfg->get_var_type(test_var_name);
+        TypeSymbol t = cfg->get_var_type(test_var_name, this->scope);
 
         string action = "   cmpl";
         if (t == CHAR) {

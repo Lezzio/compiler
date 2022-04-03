@@ -178,7 +178,7 @@ public:
     void add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol);
     string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
-    TypeSymbol get_var_type(string name);
+    TypeSymbol get_var_type(const string& name, const string& scope);
     void assignSymbol(string name);
     bool isSymbolAssigned(const string& name, const string& scope);
     void setReturnSymbol(const string& name, const string& scope);

@@ -23,8 +23,8 @@ string ExprMult::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1);
-    TypeSymbol t2 = cfg->get_var_type(var2);
+    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -52,8 +52,8 @@ string ExprAdd::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1);
-    TypeSymbol t2 = cfg->get_var_type(var2);
+    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -79,8 +79,8 @@ string ExprBits::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1);
-    TypeSymbol t2 = cfg->get_var_type(var2);
+    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -108,8 +108,8 @@ string ExprRelational::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1);
-    TypeSymbol t2 = cfg->get_var_type(var2);
+    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -139,8 +139,8 @@ string ExprEqual::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1);
-    TypeSymbol t2 = cfg->get_var_type(var2);
+    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -165,7 +165,7 @@ string ExprUnary::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t2 = cfg->get_var_type(var2);
+    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
     typeTmp = t2;
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
@@ -203,7 +203,7 @@ string Affectation::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
-    TypeSymbol typeTmp = cfg->get_var_type(var1);
+    TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
 
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
     return var1;
@@ -221,7 +221,7 @@ string DecAffectation::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
     cout << " POINT #2 " << endl;
 
-    TypeSymbol typeTmp = cfg->get_var_type(var1);
+    TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
     cout << " POINT #3 " << endl;
 
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
@@ -260,7 +260,7 @@ Declarations::~Declarations() {
 string Return::linearize(CFG *cfg) {
     string var1 = expr->linearize(cfg);
 
-    TypeSymbol typeTmp = cfg->get_var_type(var1);
+    TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
     cfg->setReturnSymbol("!retvalue", ""); //TODO Return symbol
 
     cfg->addInstruction(IRInstr::ret, typeTmp, {"!retvalue", var1});
@@ -495,16 +495,16 @@ string ExprFunction::linearize(CFG *cfg) {
     int position = 1;
     for (Expr *e : parameters) {
         string var = e->linearize(cfg);
-        TypeSymbol typeTmp = cfg->get_var_type(var);
+        TypeSymbol typeTmp = cfg->get_var_type(var, cfg->getCurrentScope());
         cfg->addInstruction(IRInstr::copy, typeTmp, {"param_reg", var, to_string(position)});
         position++;
     }
 
-    if (!cfg->doesSymbolExist(varName, std::string())) {
+    if (!cfg->doesSymbolExist(varName, cfg->getCurrentScope())) {
         varName = varName + "@PLT";
     }
 
-    TypeSymbol typeFunc = cfg->get_var_type(varName);
+    TypeSymbol typeFunc = cfg->get_var_type(varName, cfg->getCurrentScope());
     string tempVar = cfg->create_new_tempvar(typeFunc);
 
     cfg->addInstruction(IRInstr::call, typeFunc, {tempVar, varName});

@@ -126,7 +126,7 @@ void CFG::gen_asm_prologue_x86(ostream &o) {
 
 void CFG::gen_asm_epilogue_x86(ostream &o) {
     cout << "   #epilogue\n";
-    if (get_var_type(name) == VOID) {
+    if (get_var_type(name, "GLOBAL") == VOID) {
         cout << "   nop\n";
     }
     //     "   popq %rbp\n"
@@ -193,10 +193,10 @@ int CFG::get_var_index(string name) {
     return symbol->getIndex();
 }
 
-TypeSymbol CFG::get_var_type(string name) {
-    Symbol *symbol = symbolTable->returnSymbol(name, getCurrentScope());
+TypeSymbol CFG::get_var_type(const string& name, const string& scope) {
+    Symbol *symbol = symbolTable->returnSymbol(name, scope);
     if (symbol == nullptr) {
-        symbol = symbolTable->returnParameter(name, 0);
+        symbol = symbolTable->returnParameter(name, scope);
     }
     //TODO: check error
     return symbol->getTypeSymbol();
