@@ -9,7 +9,7 @@
    movq $3, -4(%rbp)
    movq -4(%rbp), %rax
    movq %rax, -32(%rbp)
-   movq $2, -8(%rbp)
+   movq $5, -8(%rbp)
    movq -8(%rbp), %rax
    movq %rax, -36(%rbp)
    movq $7, -12(%rbp)

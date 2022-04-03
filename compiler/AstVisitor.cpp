@@ -124,39 +124,7 @@ antlrcpp::Any AstVisitor::visitParameter(ifccParser::ParameterContext *context)
     return (Parameter *) parameter;
 }
 
-antlrcpp::Any visitDeclaration1(ifccParser::Declaration1Context *context) {
-    auto * declarations = new Declarations();
-    string res = (string) visit(context->type()).as<string>();
-
-    TypeSymbol t = INT;
-    if (res == "char") {
-        t = CHAR;
-    }
-
-    for (const auto var : context->IDENT()) {
-        declarations->addDeclaration(new Declaration(var->getText(), t));
-    }
-    return (Statement *) declarations;
-
-}
-
-antlrcpp::Any visitDeclaration2(ifccParser::Declaration2Context *context) {
-    auto * declarations = new Declarations();
-    string res = (string) visit(context->type()).as<string>();
-
-    TypeSymbol t = INT;
-    if (res == "char") {
-        t = CHAR;
-    }
-
-    for (const auto var : context->IDENT()) {
-        declarations->addDeclaration(new Declaration(var->getText(), t));
-    }
-    return (Statement *) declarations;
-
-}
-
-/*antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *context)
+antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *context)
 {
     auto * declarations = new Declarations();
     string res = (string) visit(context->type()).as<string>();
@@ -170,7 +138,7 @@ antlrcpp::Any visitDeclaration2(ifccParser::Declaration2Context *context) {
         declarations->addDeclaration(new Declaration(var->getText(), t));
     }
     return (Statement *) declarations;
-}*/
+}
 
 antlrcpp::Any AstVisitor::visitRet1(ifccParser::Ret1Context *context) {
     Expr *expr = (Expr *) visit(context->expression());

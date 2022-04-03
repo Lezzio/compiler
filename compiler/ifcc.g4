@@ -24,8 +24,9 @@ parameters : parameter (',' parameter)* ;
 
 parameter : type IDENT ;
 
-declaration : type IDENT (',' IDENT)* #declaration1
-            | type IDENT '[' expression ']' #declaration2;
+declarationArray : type IDENT '[' expression ']';
+
+declaration : type IDENT (',' IDENT)* ;
     //        | VAR '(' declaration? ')' #functionexpr;
 
 affectation : type IDENT '=' expression #affectation1
