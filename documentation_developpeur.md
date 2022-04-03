@@ -42,6 +42,7 @@ Pour lancer les tests, allez dans le dossier `compiler/` et entrez la commande `
 
 ## Fonctionnalités implémentées
 Notre compilateur est capable de comprendre un programme C composé :
+- d'un seul fichier source (les directives pré-processing sont ignorées)
 - d’un main et son retour
 - d’initialisations de variables (pas forcément sur une seule ligne, les variables peuvent être initialisées n’importe où)
 - d’affectations (tout type d'affectations)
@@ -61,3 +62,5 @@ Ce projet a été développé selon la méthodologie du Test Driven Development 
 
 Les tests, placés dans le répertoire `tests/`, fonctionnent de la manière suivante. Notre compilateur essaye de compiler différents fichiers .c créés spécifiquement pour les tests. Les mêmes fichiers sont compilés en parallèle avec gcc, le compilateur officiel du langage c, et les résultats obtenus sont alors comparés. Cette gestion des tests nous permet de contrôler le fait que tout nouveau développement n'entraîne pas de changements néfastes au niveau des exécutables produits par notre compilateur.
 
+## Limites du compilateur
+TODO : ajouter les limites du compilateur
