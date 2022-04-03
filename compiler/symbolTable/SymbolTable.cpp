@@ -89,12 +89,9 @@ void SymbolTable::print_dictionary() {
 
     for (const auto& firstPair : symbolTable) {
         for (const auto secondPair: firstPair.second) {
-            std::stringstream context;
-            auto levelContext = secondPair.second->getScope()->levelContext;
-            std::copy(levelContext.begin(), levelContext.end(), std::ostream_iterator<int>(context, " "));
-
+            auto levelContextStr = secondPair.second->getScope()->getLevelContextAsString();
             cout << "|  " << secondPair.second->getIndex() << "  ;  " << secondPair.second->getName() << "  ;  "
-                 << secondPair.second->getScope()->name << "  ;  " << "-" << context.str()
+                 << secondPair.second->getScope()->name << "  ;  " << "-" << levelContextStr
                  << to_string(secondPair.second->getTypeSymbol()) << "  ;  "
                  << to_string(secondPair.second->getAdditional()) << "  ;  " << to_string(secondPair.second->getStateSymbol())
                  << "  ;  " << to_string(secondPair.second->getIsConst()) << "  | " << endl;
@@ -150,6 +147,7 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  * @return SYMBOL 
  */
 Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
+    cout << "SYMBOL LOOK UP name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
     print_dictionary();
     auto matchedMap = symbolTable.find(name);
     if (matchedMap != symbolTable.end()) {

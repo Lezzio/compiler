@@ -5,8 +5,11 @@
 #include "Scope.h"
 
 int Scope::getCurrentLevel() {
-    if (levelContext.empty()) {
-        return 0;
-    }
     return levelContext.back();
+}
+
+string Scope::getLevelContextAsString() {
+    std::stringstream context;
+    std::copy(levelContext.begin(), levelContext.end(), std::ostream_iterator<int>(context, " "));
+    return context.str();
 }

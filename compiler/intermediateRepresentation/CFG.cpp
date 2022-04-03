@@ -195,6 +195,7 @@ int CFG::get_var_index(string name) {
 }
 
 TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
+    cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
     Symbol *symbol = symbolTable->lookupSymbol(name, scope);
     if (symbol == nullptr) {
         symbol = symbolTable->lookupParameter(name, scope);
