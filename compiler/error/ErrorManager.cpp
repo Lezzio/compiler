@@ -6,9 +6,18 @@
 
 ErrorManager * ErrorManager::INSTANCE;
 
+/**
+ * @brief Construct a new Error Manager:: Error Manager object
+ * 
+ */
 ErrorManager::ErrorManager() {
 }
 
+/**
+ * @brief get the instance of the error manager
+ * 
+ * @return ErrorManager* : a pointer on the error manager
+ */
 ErrorManager * ErrorManager::getInstance() {
     if (INSTANCE == nullptr) {
         INSTANCE = new ErrorManager();
@@ -16,6 +25,11 @@ ErrorManager * ErrorManager::getInstance() {
     return INSTANCE;
 }
 
+/**
+ * @brief add an error to the list of errors
+ * 
+ * @param error : the error to add
+ */
 void ErrorManager::addError(Error * error) {
     this->errors.push_back(error);
 }

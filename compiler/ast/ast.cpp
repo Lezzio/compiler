@@ -1,10 +1,21 @@
 #include "ast.h"
 
-
+/**
+ * @brief Method which linearize an expression which is a variable
+ * 
+ * @param cfg
+ * @return string : the name of the variable expression
+ */
 string ExprVar::linearize(CFG *cfg) {
     return varName;
 }
 
+/**
+ * @brief Method which linearize an expression which is a constant
+ * 
+ * @param cfg 
+ * @return string : the name of the temporary variable's name just created
+ */
 string ExprConst::linearize(CFG *cfg) {
     string tempVar = cfg->create_new_tempvar(INT);
     string constant = "$" + to_string(value);
@@ -12,6 +23,12 @@ string ExprConst::linearize(CFG *cfg) {
     return tempVar;
 }
 
+/**
+ * @brief Method which linearize a character expression (instance : char 'a')
+ * 
+ * @param cfg 
+ * @return string : the name of the temporary variable's name just created
+ */
 string ExprChar::linearize(CFG *cfg) {
     string tempVar = cfg->create_new_tempvar(CHAR);
     string constant = "$" + to_string(value);
@@ -19,11 +36,23 @@ string ExprChar::linearize(CFG *cfg) {
     return tempVar;
 }
 
+/**
+ * @brief Method which linearize an array expression
+ * 
+ * @param cfg 
+ * @return string : the name of the array variable in the symbol table
+ */
 string ExprArray::linearize(CFG *cfg) {
     cfg->add_to_symbol_table(varName, type, DECLARED,size);
     return varName;
 }
 
+/**
+ * @brief Method which linearize a left value array
+ * 
+ * @param cfg 
+ * @return string : the temporary variable's name just created
+ */
 string ExprLArray::linearize(CFG *cfg) {
     string var1 = this->position->linearize(cfg);
     int offset = -cfg->get_var_index(varName);
@@ -40,10 +69,20 @@ string ExprLArray::linearize(CFG *cfg) {
     return tmpVar;
 }
 
+/**
+ * @brief Destroy the Expr L Array:: Expr L Array object
+ * 
+ */
 ExprLArray::~ExprLArray(){
     delete position;
 }
 
+/**
+ * @brief Method which linearize a right value array
+ * 
+ * @param cfg 
+ * @return string : the temporary variable's name just created
+ */
 string ExprRArray::linearize(CFG *cfg) {
     string var1 = this->position->linearize(cfg);
     int offset = -cfg->get_var_index(varName);
@@ -62,10 +101,20 @@ string ExprRArray::linearize(CFG *cfg) {
     return tmpVar2;
 }
 
+/**
+ * @brief Destroy the Expr R Array:: Expr R Array object
+ * 
+ */
 ExprRArray::~ExprRArray(){
     delete position;
 }
 
+/**
+ * @brief Method which linearize an multiplication expression
+ * 
+ * @param cfg 
+ * @return string : the temporary variable's name just created
+ */
 string ExprMult::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
@@ -90,11 +139,21 @@ string ExprMult::linearize(CFG *cfg) {
     return tempVar;
 }
 
+/**
+ * @brief Destroy the Expr Mult:: Expr Mult object
+ * 
+ */
 ExprMult::~ExprMult() {
     delete (lExpr);
     delete (rExpr);
 }
 
+/**
+ * @brief Method which linearize an addition expression
+ * 
+ * @param cfg 
+ * @return string : the temporary variable's name just created
+ */
 string ExprAdd::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
@@ -117,11 +176,21 @@ string ExprAdd::linearize(CFG *cfg) {
     return tempVar;
 }
 
+/**
+ * @brief Destroy the Expr Add:: Expr Add object
+ * 
+ */
 ExprAdd::~ExprAdd() {
     delete (lExpr);
     delete (rExpr);
 }
 
+/**
+ * @brief Method which linearize an bit to bit operation expression
+ * 
+ * @param cfg 
+ * @return string : the temporary variable's name just created
+ */
 string ExprBits::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
@@ -146,11 +215,21 @@ string ExprBits::linearize(CFG *cfg) {
     return tempVar;
 }
 
+/**
+ * @brief Destroy the Expr Bits:: Expr Bits object
+ * 
+ */
 ExprBits::~ExprBits() {
     delete (lExpr);
     delete (rExpr);
 }
 
+/**
+ * @brief Method which linearize a boolean relational expression
+ * 
+ * @param cfg 
+ * @return string : the temporary variable's name just created
+ */
 string ExprRelational::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
@@ -177,11 +256,21 @@ string ExprRelational::linearize(CFG *cfg) {
     return tempVar;
 }
 
+/**
+ * @brief Destroy the Expr Relational:: Expr Relational object
+ * 
+ */
 ExprRelational::~ExprRelational() {
     delete (lExpr);
     delete (rExpr);
 }
 
+/**
+ * @brief Method which linearize an equal expression
+ * 
+ * @param cfg 
+ * @return string : the temporary variable's name just created
+ */
 string ExprEqual::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
@@ -204,11 +293,21 @@ string ExprEqual::linearize(CFG *cfg) {
     return tempVar;
 }
 
+/**
+ * @brief Destroy the Expr Equal:: Expr Equal object
+ * 
+ */
 ExprEqual::~ExprEqual() {
     delete (lExpr);
     delete (rExpr);
 }
 
+/**
+ * @brief Method which linearize an unary expression
+ * 
+ * @param cfg 
+ * @return string : the temporary variable's name just created 
+ */
 string ExprUnary::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
@@ -225,18 +324,32 @@ string ExprUnary::linearize(CFG *cfg) {
     return tempVar;
 }
 
+/**
+ * @brief Destroy the Expr Unary:: Expr Unary object
+ * 
+ */
 ExprUnary::~ExprUnary() {
     delete (rExpr);
 }
 
-
+/**
+ * @brief Method which add a statements to the stack of statements
+ * 
+ * @param statement : statement to add
+ */
 void Block::addStatement(Statement *statement) {
     statements.push_back(statement);
 }
 
+/**
+ * @brief Method which linearize a block
+ * 
+ * @param cfg 
+ */
 void Block::linearize(CFG *cfg) {
     //CFG entering scope
     cfg->enteringScope();
+    //Linearize all the statements
     for (Statement *s: statements) {
         s->linearize(cfg);
     }
@@ -244,6 +357,10 @@ void Block::linearize(CFG *cfg) {
     cfg->exitingScope();
 }
 
+/**
+ * @brief Destroy the Block:: Block object
+ * 
+ */
 Block::~Block() {
     for (Statement *s: statements) {
         delete (s);
@@ -251,6 +368,12 @@ Block::~Block() {
     statements.clear();
 }
 
+/**
+ * @brief Method which linearize an affectation
+ * 
+ * @param cfg 
+ * @return string : the left expression linearized name
+ */
 string Affectation::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
@@ -271,11 +394,21 @@ string Affectation::linearize(CFG *cfg) {
     return var1;
 }
 
+/**
+ * @brief Destroy the Affectation:: Affectation object
+ * 
+ */
 Affectation::~Affectation() {
     delete (lExpr);
     delete (rExpr);
 }
 
+/**
+ * @brief Method which linearize an affectation expression
+ * 
+ * @param cfg 
+ * @return string : the left expression linearized name 
+ */
 string ExprAffectation::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
@@ -296,11 +429,21 @@ string ExprAffectation::linearize(CFG *cfg) {
     return var1;
 }
 
+/**
+ * @brief Destroy the Expr Affectation:: Expr Affectation object
+ * 
+ */
 ExprAffectation::~ExprAffectation() {
     delete (lExpr);
     delete (rExpr);
 }
 
+/**
+ * @brief Method which linearize an array expression
+ * 
+ * @param cfg 
+ * @return string /
+ */
 string ArrayAffectation::linearize(CFG *cfg){
     arrayD->linearize(cfg);
 
@@ -311,14 +454,28 @@ string ArrayAffectation::linearize(CFG *cfg){
     return "";
 }
 
+/**
+ * @brief Method which add a statement (values of the array)
+ * 
+ * @param statement : statement to add to the array
+ */
 void ArrayAffectation::addStatement(ExprAffectation * statement){
     array_values.push_back(statement);
 }
 
+/**
+ * @brief Method which set an array using another array
+ * 
+ * @param exprArray 
+ */
 void ArrayAffectation::setArray(ExprArray *exprArray){
     arrayD  = exprArray;
 }
 
+/**
+ * @brief Destroy the Array Affectation:: Array Affectation object
+ * 
+ */
 ArrayAffectation::~ArrayAffectation(){
     for(auto s : array_values){
         delete s;
@@ -327,17 +484,31 @@ ArrayAffectation::~ArrayAffectation(){
     delete arrayD;
 }
 
-
+/**
+ * @brief Method which linearize an declaration expression
+ * 
+ * @param cfg 
+ * @return string : the expression linearized name
+ */
 string ExprDeclaration::linearize(CFG *cfg) {
     string var = expr->linearize(cfg);
     return var;
 }
 
+/**
+ * @brief Destroy the Expr Declaration:: Expr Declaration object
+ * 
+ */
 ExprDeclaration::~ExprDeclaration(){
     delete expr;
 }
 
-
+/**
+ * @brief Method which linearize a declaration&affectation
+ * 
+ * @param cfg 
+ * @return string : the declaration linearized name
+ */
 string DecAffectation::linearize(CFG *cfg) {
     //cout << " DEF AFFECTATION L " << endl; debug
     string var1 = declaration->linearize(cfg);
@@ -362,20 +533,41 @@ string DecAffectation::linearize(CFG *cfg) {
     return var1;
 }
 
+/**
+ * @brief Destroy the Dec Affectation:: Dec Affectation object
+ * 
+ */
 DecAffectation::~DecAffectation() {
     delete (declaration);
     delete (rExpr);
 }
 
+/**
+ * @brief Method which linearize a declaration
+ * It add a symbol to the symbol table in the state DECLARED
+ * @param cfg 
+ * @return string : the name of the symbol
+ */
 string Declaration::linearize(CFG *cfg) {
     cfg->add_to_symbol_table(name, type, DECLARED);
     return name;
 }
 
+/**
+ * @brief Method which add a declarations in a series of declarations
+ * 
+ * @param declaration : to add
+ */
 void Declarations::addDeclaration(Declaration *declaration) {
     declarations.push_back(declaration);
 }
 
+/**
+ * @brief Method which linearize declarations
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string Declarations::linearize(CFG *cfg) {
     for (Declaration *d: declarations) {
         d->linearize(cfg);
@@ -383,6 +575,10 @@ string Declarations::linearize(CFG *cfg) {
     return "";
 }
 
+/**
+ * @brief Destroy the Declarations:: Declarations object
+ * 
+ */
 Declarations::~Declarations() {
     for (Declaration *d: declarations) {
         delete (d);
@@ -390,6 +586,12 @@ Declarations::~Declarations() {
     declarations.clear();
 }
 
+/**
+ * @brief Method which linearize a return
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string Return::linearize(CFG *cfg) {
     string var1 = expr->linearize(cfg);
 
@@ -400,16 +602,30 @@ string Return::linearize(CFG *cfg) {
     return var1;
 }
 
+/**
+ * @brief Destroy the Return:: Return object
+ * 
+ */
 Return::~Return() {
     delete (expr);
 }
 
+/**
+ * @brief Destroy the Instruction I F:: Instruction I F object
+ * 
+ */
 InstructionIF::~InstructionIF() {
     delete (test);
     delete (trueCodeBlock);
     delete (falseCodeBlock);
 }
 
+/**
+ * @brief Method which linearize a IF instruction
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string InstructionIF::linearize(CFG *cfg) {
 
     string testVar = test->linearize(cfg);
@@ -448,11 +664,21 @@ string InstructionIF::linearize(CFG *cfg) {
     return "";
 }
 
+/**
+ * @brief Destroy the Instruction While:: Instruction While object
+ * 
+ */
 InstructionWhile::~InstructionWhile() {
     delete (test);
     delete (block);
 }
 
+/**
+ * @brief Method which linearize a while instruction
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string InstructionWhile::linearize(CFG *cfg) {
 
     BasicBlock *beforeWhileBB = cfg->current_bb;
@@ -485,6 +711,10 @@ string InstructionWhile::linearize(CFG *cfg) {
     return "";
 }
 
+/**
+ * @brief Destroy the Instruction For:: Instruction For object
+ * 
+ */
 InstructionFor::~InstructionFor() {
     delete (block);
     delete (init);
@@ -492,6 +722,12 @@ InstructionFor::~InstructionFor() {
     delete (update);
 }
 
+/**
+ * @brief Method which linearize a for instruction
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string InstructionFor::linearize(CFG * cfg)
 {
     BasicBlock * beforeForBB = cfg->current_bb;
@@ -551,20 +787,43 @@ string InstructionFor::linearize(CFG * cfg)
     return "";
 }
 
+/**
+ * @brief Method which linearize a expression instruction
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string InstructionExpr::linearize(CFG *cfg) {
     string val = expr->linearize(cfg);
     return val;
 }
 
+/**
+ * @brief Method which linearize a parameter
+ * It adds a symbol in the symbol table of state PARAMETER
+ * @param cfg 
+ * @return string : the name of the symbol
+ */
 string Parameter::linearize(CFG *cfg) {
     cfg->add_to_symbol_table(name, type, PARAMETER);
     return name;
 }
 
+/**
+ * @brief Method which add a parameter in the stack of parameters
+ * 
+ * @param parameter : to add 
+ */
 void Parameters::addParameter(Parameter *parameter) {
     parameters.push_back(parameter);
 }
 
+/**
+ * @brief Method which linearize the parameters
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string Parameters::linearize(CFG *cfg) {
     int position = 1;
     for (Parameter *p: parameters) {
@@ -575,6 +834,10 @@ string Parameters::linearize(CFG *cfg) {
     return "";
 }
 
+/**
+ * @brief Destroy the Parameters:: Parameters object
+ * 
+ */
 Parameters::~Parameters() {
     for (Parameter *p: parameters) {
         delete (p);
@@ -582,11 +845,21 @@ Parameters::~Parameters() {
     parameters.clear();
 }
 
+/**
+ * @brief Destroy the Function:: Function object
+ * 
+ */
 Function::~Function() {
     delete (parameters);
     delete (block);
 }
 
+/**
+ * @brief Method which linearize a function
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string Function::linearize(CFG *cfg) {
     cfg->setCurrentFunction(name);
     cfg->add_to_symbol_table(name, type, FUNCTION);
@@ -615,6 +888,10 @@ string Function::linearize(CFG *cfg) {
     return "";
 }
 
+/**
+ * @brief Destroy the Expr Function:: Expr Function object
+ * 
+ */
 ExprFunction::~ExprFunction() {
     for (Expr *e : parameters) {
         delete (e);
@@ -622,10 +899,21 @@ ExprFunction::~ExprFunction() {
     parameters.clear();
 }
 
+/**
+ * @brief Method which add a parameter to an expression function
+ * 
+ * @param expr 
+ */
 void ExprFunction::addParameter(Expr *expr) {
     parameters.push_back(expr);
 }
 
+/**
+ * @brief Method which linearize an function expression
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string ExprFunction::linearize(CFG *cfg) {
     int position = 1;
     for (Expr *e : parameters) {
@@ -662,6 +950,11 @@ string ExprFunction::linearize(CFG *cfg) {
     return tempVar;
 }
 
+/**
+ * @brief Method which linearize Prog
+ * 
+ * @return vector<CFG *> : vector of CFG
+ */
 vector<CFG *> Prog::linearize() {
     auto *symbolTable = new SymbolTable();
 
@@ -688,6 +981,10 @@ vector<CFG *> Prog::linearize() {
     return cfgs;
 }
 
+/**
+ * @brief Destroy the Prog:: Prog object
+ * 
+ */
 Prog::~Prog() {
     for (Function *f : functions) {
         delete (f);
@@ -700,10 +997,21 @@ Prog::~Prog() {
     cfgs.clear();
 }
 
+/**
+ * @brief Method which add a function to the stack of functions
+ * 
+ * @param function : to add
+ */
 void Prog::addFunction(Function *function) {
     functions.push_back(function);
 }
 
+/**
+ * @brief Method which linearize a break instruction
+ * 
+ * @param cfg
+ * @return string
+ */
 string InstructionBreak::linearize(CFG * cfg){
     if(cfg->breakBBname.compare("")==0){
         cerr<<"ERROR: a Break statement can only be used in a loop" << endl;
@@ -714,6 +1022,12 @@ string InstructionBreak::linearize(CFG * cfg){
     return "";
 }
 
+/**
+ * @brief Method which linearize a continue instruction
+ * 
+ * @param cfg 
+ * @return string 
+ */
 string InstructionContinue::linearize(CFG * cfg){
     if(cfg->continueBBname.compare("")==0){
         cerr<<"ERROR: a Continue statement can only be used in a loop" << endl;
