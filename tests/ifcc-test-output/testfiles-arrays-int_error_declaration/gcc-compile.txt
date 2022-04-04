@@ -1,0 +1,10 @@
+input.c: In function ‘main’:
+input.c:2:9: error: expected identifier or ‘(’ before ‘[’ token
+    2 |     int [3] tab;
+      |         ^
+input.c:3:12: error: ‘tab’ undeclared (first use in this function)
+    3 |     return tab;
+      |            ^~~
+input.c:3:12: note: each undeclared identifier is reported only once for each function it appears in
+
+return code: 1

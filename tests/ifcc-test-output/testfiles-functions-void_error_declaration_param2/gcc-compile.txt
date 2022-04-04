@@ -1,0 +1,9 @@
+input.c: In function ‘main’:
+input.c:8:5: error: too many arguments to function ‘func’
+    8 |     func(a, b, c);
+      |     ^~~~
+input.c:1:6: note: declared here
+    1 | void func(int a, int b){}
+      |      ^~~~
+
+return code: 1

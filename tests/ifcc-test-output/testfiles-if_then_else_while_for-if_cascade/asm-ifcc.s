@@ -1,52 +1,82 @@
 .text
 .globl	main
  main: 
-.mainBB0:
-   #prologue
-   pushq %rbp
-   movq %rsp, %rbp
-  subq $48, %rsp
-   movl $1, -4(%rbp)
-   movl -4(%rbp), %eax
-   movl %eax, -40(%rbp)
-   movl $3, -8(%rbp)
-   movl -8(%rbp), %eax
-   movl %eax, -44(%rbp)
-   movl $1, -12(%rbp)
-   movl -40(%rbp), %eax
-   cmpl -12(%rbp), %eax
-    sete %al
-    movzbl %al, %eax
-   movl %eax, -16(%rbp)
-   cmpl    $0, -16(%rbp)
-   je  .mainBB3
-.mainBB2:
-   movl $3, -20(%rbp)
-   movl -44(%rbp), %eax
-   cmpl -20(%rbp), %eax
-    sete %al
-    movzbl %al, %eax
-   movl %eax, -24(%rbp)
-   cmpl    $0, -24(%rbp)
-   je  .mainBB6
-.mainBB4:
-   movl $5, -28(%rbp)
-   movl -28(%rbp), %eax
-   movl %eax, -40(%rbp)
-   jmp   .mainBB5
-.mainBB6:
-   movl $6, -32(%rbp)
-   movl -32(%rbp), %eax
-   movl %eax, -40(%rbp)
-   jmp   .mainBB5
-.mainBB5:
-   jmp   .mainBB3
-.mainBB3:
-   movl -40(%rbp), %eax
-   movl %eax, -36(%rbp)
-   jmp   .mainBB1
-.mainBB1:
-   movl -36(%rbp), %eax
-   #epilogue
-   leave
-   ret
+.main_0:
+	#prologue
+	pushq		%rbp
+	movq		%rsp, %rbp
+
+	#offset
+	subq		$48, %rsp
+
+	#ldconst
+	movl		$1, -4(%rbp)
+
+	#copy
+	movl		-4(%rbp), %eax
+	movl		%eax, -8(%rbp)
+
+	#ldconst
+	movl		$3, -12(%rbp)
+
+	#copy
+	movl		-12(%rbp), %eax
+	movl		%eax, -16(%rbp)
+
+	#ldconst
+	movl		$1, -20(%rbp)
+
+	#cmp_eq
+	movl		-8(%rbp), %eax
+	cmpl		-20(%rbp), %eax
+	sete		%al
+	movzbl		%al, %eax
+	movl		%eax, -24(%rbp)
+	cmpl		$0, -24(%rbp)
+	je			.main_3
+.main_2:
+
+	#ldconst
+	movl		$3, -28(%rbp)
+
+	#cmp_eq
+	movl		-16(%rbp), %eax
+	cmpl		-28(%rbp), %eax
+	sete		%al
+	movzbl		%al, %eax
+	movl		%eax, -32(%rbp)
+	cmpl		$0, -32(%rbp)
+	je			.main_6
+.main_4:
+
+	#ldconst
+	movl		$5, -36(%rbp)
+
+	#copy
+	movl		-36(%rbp), %eax
+	movl		%eax, -8(%rbp)
+	jmp			.main_5
+.main_6:
+
+	#ldconst
+	movl		$6, -40(%rbp)
+
+	#copy
+	movl		-40(%rbp), %eax
+	movl		%eax, -8(%rbp)
+	jmp			.main_5
+.main_5:
+	jmp			.main_3
+.main_3:
+
+	#ret
+	movl		-8(%rbp), %eax
+	movl		%eax, -44(%rbp)
+	jmp			.main_1
+.main_1:
+
+	#finret
+	movl		-44(%rbp), %eax
+	#epilogue
+	leave
+	ret

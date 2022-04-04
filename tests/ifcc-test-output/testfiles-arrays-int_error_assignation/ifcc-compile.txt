@@ -1,0 +1,4 @@
+The size of the table is not good
+Segmentation fault
+
+return code: 139

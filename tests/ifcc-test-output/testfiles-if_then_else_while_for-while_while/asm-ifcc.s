@@ -1,63 +1,101 @@
 .text
 .globl	main
  main: 
-.mainBB0:
-   #prologue
-   pushq %rbp
-   movq %rsp, %rbp
-  subq $64, %rsp
-   movl $1, -4(%rbp)
-   movl -4(%rbp), %eax
-   movl %eax, -52(%rbp)
-   movl $1, -8(%rbp)
-   movl -8(%rbp), %eax
-   movl %eax, -56(%rbp)
-   jmp   .mainBB3
-.mainBB3:
-   movl $5, -12(%rbp)
-   movl -52(%rbp), %eax
-   cmpl -12(%rbp), %eax
-    setne %al
-    movzbl %al, %eax
-   movl %eax, -16(%rbp)
-   cmpl    $0, -16(%rbp)
-   je  .mainBB4
-.mainBB2:
-   movl $1, -20(%rbp)
-   movl -52(%rbp), %eax
-   addl -20(%rbp), %eax
-   movl %eax, -24(%rbp)
-   movl -24(%rbp), %eax
-   movl %eax, -52(%rbp)
-   jmp   .mainBB6
-.mainBB6:
-   movl $5, -28(%rbp)
-   movl -56(%rbp), %eax
-   cmpl -28(%rbp), %eax
-    setne %al
-    movzbl %al, %eax
-   movl %eax, -32(%rbp)
-   cmpl    $0, -32(%rbp)
-   je  .mainBB7
-.mainBB5:
-   movl $1, -36(%rbp)
-   movl -56(%rbp), %eax
-   addl -36(%rbp), %eax
-   movl %eax, -40(%rbp)
-   movl -40(%rbp), %eax
-   movl %eax, -56(%rbp)
-   jmp   .mainBB6
-.mainBB7:
-   movl $1, -44(%rbp)
-   movl -44(%rbp), %eax
-   movl %eax, -56(%rbp)
-   jmp   .mainBB3
-.mainBB4:
-   movl -52(%rbp), %eax
-   movl %eax, -48(%rbp)
-   jmp   .mainBB1
-.mainBB1:
-   movl -48(%rbp), %eax
-   #epilogue
-   leave
-   ret
+.main_0:
+	#prologue
+	pushq		%rbp
+	movq		%rsp, %rbp
+
+	#offset
+	subq		$64, %rsp
+
+	#ldconst
+	movl		$1, -4(%rbp)
+
+	#copy
+	movl		-4(%rbp), %eax
+	movl		%eax, -8(%rbp)
+
+	#ldconst
+	movl		$1, -12(%rbp)
+
+	#copy
+	movl		-12(%rbp), %eax
+	movl		%eax, -16(%rbp)
+	jmp			.main_3
+.main_3:
+
+	#ldconst
+	movl		$5, -20(%rbp)
+
+	#cmp_neq
+	movl		-8(%rbp), %eax
+	cmpl		-20(%rbp), %eax
+	setne		%al
+	movzbl		%al, %eax
+	movl		%eax, -24(%rbp)
+	cmpl		$0, -24(%rbp)
+	je			.main_4
+.main_2:
+
+	#ldconst
+	movl		$1, -28(%rbp)
+
+	#add
+	movl		-8(%rbp), %eax
+	addl		-28(%rbp), %eax
+	movl		%eax, -32(%rbp)
+
+	#copy
+	movl		-32(%rbp), %eax
+	movl		%eax, -8(%rbp)
+	jmp			.main_6
+.main_6:
+
+	#ldconst
+	movl		$5, -36(%rbp)
+
+	#cmp_neq
+	movl		-16(%rbp), %eax
+	cmpl		-36(%rbp), %eax
+	setne		%al
+	movzbl		%al, %eax
+	movl		%eax, -40(%rbp)
+	cmpl		$0, -40(%rbp)
+	je			.main_7
+.main_5:
+
+	#ldconst
+	movl		$1, -44(%rbp)
+
+	#add
+	movl		-16(%rbp), %eax
+	addl		-44(%rbp), %eax
+	movl		%eax, -48(%rbp)
+
+	#copy
+	movl		-48(%rbp), %eax
+	movl		%eax, -16(%rbp)
+	jmp			.main_6
+.main_7:
+
+	#ldconst
+	movl		$1, -52(%rbp)
+
+	#copy
+	movl		-52(%rbp), %eax
+	movl		%eax, -16(%rbp)
+	jmp			.main_3
+.main_4:
+
+	#ret
+	movl		-8(%rbp), %eax
+	movl		%eax, -56(%rbp)
+	jmp			.main_1
+.main_1:
+
+	#finret
+	movl		-56(%rbp), %eax
+	#epilogue
+	leave
+	ret
