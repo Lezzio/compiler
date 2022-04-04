@@ -43,6 +43,12 @@ public:
 
     void setIndex(int index);
 
+    void setParameters(const vector<TypeSymbol> &parameters, int number);
+    
+    int getNumberParameters() const;
+
+    TypeSymbol getParameterType(int position) const;
+
 protected:
     string name;
     int index{};
@@ -51,6 +57,9 @@ protected:
     int additional{};
     StateSymbol stateSymbol;
     bool isConst{};
+
+    vector<TypeSymbol> parameters;
+    int number;
 };
 
 #endif // SYMBOL_H  

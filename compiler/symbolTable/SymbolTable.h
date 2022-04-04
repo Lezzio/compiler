@@ -40,6 +40,7 @@ public :
     void print_dictionary();
     int defFunction(const string& name, TypeSymbol typeSymbol);
     bool defParameter(const string& name, Scope *scope, TypeSymbol typeSymbol);
+    bool setFunctionParameters(const string &name, const vector<TypeSymbol> &parameters, int number);
 
     string current_function; //TODO Check usage, maybe not needed anymore
     static int staticIndex;

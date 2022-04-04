@@ -1,5 +1,6 @@
 #include "ast.h"
 
+
 string ExprVar::linearize(CFG *cfg) {
     return varName;
 }
@@ -579,10 +580,17 @@ string Function::linearize(CFG *cfg) {
     returnBlock->add_IRInstr(IRInstr::finret, INT, {"!retvalue"});
     cfg->return_bb = returnBlock;
 
+    vector<TypeSymbol> params;
+    int number =0;
     if (parameters != nullptr) {
         //cout << "About to L parameters" << endl; debug
+        for(Parameter *p: parameters->getParameters()) {
+            params.push_back(p->getType());
+            number++;
+        }
         parameters->linearize(cfg);
     }
+    cfg->setFunctionParameters(name, params, number);
 
     //cout << "About to L block" << endl; debug
     block->linearize(cfg);
@@ -617,6 +625,19 @@ string ExprFunction::linearize(CFG *cfg) {
     }
 
     TypeSymbol typeFunc = cfg->get_var_type(varName, &GLOBAL_SCOPE);
+
+    Symbol * function = cfg->getSymbolTable()->lookupSymbol(varName, &GLOBAL_SCOPE);
+    int inNumber = this->parameters.size();
+    if(inNumber > function->getNumberParameters()){
+        cerr << "error: too many arguments to function '" << varName <<"'"<< endl;
+        exit(1);
+    } else if(inNumber < function->getNumberParameters()){
+        cerr << "error: too few arguments to function '" << varName <<"'"<< endl;
+        exit(1);
+    }
+
+    //TODO: cast if necessarry using function->getParameterType(position)
+
     string tempVar = cfg->create_new_tempvar(typeFunc);
 
     cfg->addInstruction(IRInstr::call, typeFunc, {tempVar, varName});

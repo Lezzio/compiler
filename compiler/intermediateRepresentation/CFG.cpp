@@ -238,7 +238,11 @@ bool CFG::firstBB(BasicBlock *bb) {
 
 bool CFG::isSymbolAssigned(const string& name, Scope *scope) {
     Symbol *symbolReturned = this->symbolTable->lookupSymbol(name, scope);
-    return (symbolReturned->getStateSymbol() == ASSIGNED);
+    if(symbolReturned == nullptr){
+        symbolReturned= this->symbolTable->lookupSymbol(name+"_param", scope);
+    }
+
+    return (symbolReturned->getStateSymbol() == ASSIGNED || symbolReturned->getStateSymbol() == PARAMETER);
 }
 
 void CFG::setReturnSymbol(const string& name, Scope *scope) {
@@ -281,4 +285,8 @@ Scope *CFG::getCurrentScope() {
     auto *scope = new Scope(functionName);
     scope->levelContext = levelHistory; //Copy assign
     return scope;
+}
+
+bool CFG::setFunctionParameters(const string &name, const vector<TypeSymbol> &parameters, int number){
+    return symbolTable->setFunctionParameters(name, parameters, number);
 }

@@ -1,9 +1,11 @@
+int test(int a){
+    a = 2*a;
+    return a;
+}
+
+
 int main() {
-    int a = 1;
-    a = 10;
-    if(1){
-        int a = 2;
-        return a;
-    }
+    int b = 6;
+    return test();
 
 }
