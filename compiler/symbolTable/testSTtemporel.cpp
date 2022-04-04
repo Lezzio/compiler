@@ -21,9 +21,9 @@ bool Iassert(string expected, string returned){
 int main(int argn, const char **argv){
     auto * ST = new SymbolTable();
     //addSymbol(string symbolName, int levelSymbol, TypeSymbol typeSymbol, int additional, int state)
-    ST->addSymbol("a", "GLOBAL", INT, -1, ASSIGNED, 0);
-    ST->addSymbol("b", "GLOBAL", INT, 3, DECLARED, 1);
-    ST->addSymbol("a","GLOBAL", INT, -1, ASSIGNED, 0);
+    ST->addSymbol("a", "GLOBAL", INT, -1, ASSIGNED, 0, 0);
+    ST->addSymbol("b", "GLOBAL", INT, 3, DECLARED, 1, 0);
+    ST->addSymbol("a", "GLOBAL", INT, -1, ASSIGNED, 0, 0);
     //cout << "Doit retourner false : ";
     //cout << ST->addSymbol("a", "GLOBAL", INT, -1, ASSIGNED, 1) << endl;
     //ST->print_dictionary();

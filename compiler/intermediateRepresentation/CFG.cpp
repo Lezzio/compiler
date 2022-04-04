@@ -167,7 +167,7 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
 }
 
 // symbol symbolTable methods
-void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol) {
+void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, unsigned long symbolLine) {
     //cout << "--------------" << endl; debug
     //cout << "About to add symbol named = " << name << endl; debug
     if (stateSymbol == PARAMETER) {
@@ -175,9 +175,9 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
     } else if (stateSymbol == FUNCTION) {
         this->symbolTable->defFunction(name, t);
     } else if (stateSymbol == DECLARED) {
-        this->symbolTable->declareSymbol(name, getCurrentScope(), t, 0, DECLARED, false);
+        this->symbolTable->declareSymbol(name, getCurrentScope(), t, 0, DECLARED, false, symbolLine);
     } else {
-        symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false);
+        symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false, symbolLine);
     }
 }
 
@@ -195,7 +195,7 @@ string CFG::create_new_tempvar(TypeSymbol t) {
     string name = "!tmp" + to_string(nextTmpVarNumber);
     nextTmpVarNumber++;
 
-    symbolTable->addSymbol(name, getCurrentScope(), t, 0, ASSIGNED, false);
+    symbolTable->addSymbol(name, getCurrentScope(), t, 0, ASSIGNED, false, 0);
     return name;
 }
 
@@ -247,7 +247,7 @@ void CFG::setReturnSymbol(const string& name, Scope *scope) {
     scope->levelContext.push_back(0);
     //cout << " #setReturnSymbol - Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl; debug
     if (!symbolTable->doesSymbolExist(name, scope)) {
-        symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, false);
+        symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, false, 0);
     }
 }
 

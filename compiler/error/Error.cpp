@@ -4,6 +4,6 @@
 
 #include "Error.h"
 
-Error::Error() {
+#include <utility>
 
-}
+Error::Error(string message, unsigned long line) : message(std::move(message)), line(line) {}

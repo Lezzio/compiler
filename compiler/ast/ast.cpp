@@ -349,7 +349,7 @@ DecAffectation::~DecAffectation() {
 }
 
 string Declaration::linearize(CFG *cfg) {
-    cfg->add_to_symbol_table(name, type, DECLARED);
+    cfg->add_to_symbol_table(name, type, DECLARED, line);
     return name;
 }
 
@@ -538,7 +538,7 @@ string InstructionExpr::linearize(CFG *cfg) {
 }
 
 string Parameter::linearize(CFG *cfg) {
-    cfg->add_to_symbol_table(name, type, PARAMETER);
+    cfg->add_to_symbol_table(name, type, PARAMETER, 0);
     return name;
 }
 
@@ -570,7 +570,7 @@ Function::~Function() {
 
 string Function::linearize(CFG *cfg) {
     cfg->setCurrentFunction(name);
-    cfg->add_to_symbol_table(name, type, FUNCTION);
+    cfg->add_to_symbol_table(name, type, FUNCTION, 0);
 
     auto *bb = new BasicBlock(cfg, cfg->new_BB_name());
     cfg->add_bb(bb);
