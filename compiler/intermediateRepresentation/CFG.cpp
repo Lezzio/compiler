@@ -79,7 +79,7 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returnVal;
     }
-    symbolReturned = this->symbolTable->lookupParameter(reg, scope);
+    symbolReturned = this->symbolTable->lookupParameter(reg+"_param", scope);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
         return IR_reg_to_asm_param(position);
@@ -177,7 +177,7 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
 
 //TODO Feed scope to the set parameter position => now check if working
 void CFG::setParametersPosition(const string &name, int position, Scope *pScope) {
-    Symbol *symbol = symbolTable->lookupParameter(name, pScope);
+    Symbol *symbol = symbolTable->lookupParameter(name+"_param", pScope);
     symbol->setIndex(position);
 }
 
@@ -200,7 +200,7 @@ TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
     //cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl; debug
     Symbol *symbol = symbolTable->lookupSymbol(name, scope);
     if (symbol == nullptr) {
-        symbol = symbolTable->lookupParameter(name, scope);
+        symbol = symbolTable->lookupParameter(name+"_param", scope);
     }
     //TODO: check error
     return symbol->getTypeSymbol();

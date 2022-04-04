@@ -119,7 +119,7 @@ int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
 bool SymbolTable::defParameter(const string& name, Scope *scope, TypeSymbol typeSymbol) {
     auto *newSymbol = new Symbol(name, scope, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
     if (!doesSymbolExist(newSymbol, true)) {
-        this->symbolTable[newSymbol->getName()+"_"+scope->name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
+        this->symbolTable[newSymbol->getName()+"_"+"param"+"_"+scope->name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
         return true;
     }
     delete newSymbol;
