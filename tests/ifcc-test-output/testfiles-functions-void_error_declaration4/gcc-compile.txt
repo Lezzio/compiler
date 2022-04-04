@@ -1,0 +1,5 @@
+input.c:2:10: warning: ‘func’ defined but not used [-Wunused-function]
+    2 |     void func(){}
+      |          ^~~~
+
+return code: 0

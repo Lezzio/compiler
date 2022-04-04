@@ -1,0 +1,12 @@
+input.c: In function ‘func’:
+input.c:2:1: error: expected declaration specifiers before ‘}’ token
+    2 | }
+      | ^
+input.c:4:12: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘{’ token
+    4 | int main() {
+      |            ^
+input.c:7: error: expected ‘{’ at end of input
+    7 | }
+      | 
+
+return code: 1
