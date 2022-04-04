@@ -158,9 +158,8 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
 
 // symbol symbolTable methods
 void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol) {
-    cout << "About to add symbol functionName = " << name << endl;
-    cout << "Scope is " << getCurrentScope() << "|||" << endl;
-    symbolTable->print_dictionary();
+    cout << "--------------" << endl;
+    cout << "About to add symbol named = " << name << endl;
     if (stateSymbol == PARAMETER) {
         this->symbolTable->defParameter(name, getCurrentScope(), t);
     } else if (stateSymbol == FUNCTION) {
@@ -171,6 +170,8 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
         symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false);
     }
     cout << "Added symbol finished" << endl;
+    symbolTable->print_dictionary();
+    cout << "--------------" << endl;
 }
 
 //TODO Feed scope to the set parameter position
@@ -260,7 +261,7 @@ void CFG::exitingScope() {
 
 Scope *CFG::getCurrentScope() {
     int level = levelHistory.back();
-    cout << "| Current scope LEVEL is = " << level << " " + functionName + "_" + to_string(level) << endl;
+    cout << "| Current scope LEVEL is = " << level << " function name " + functionName << endl;
     auto *scope = new Scope(functionName);
     scope->levelContext = levelHistory; //Copy assign
     return scope;

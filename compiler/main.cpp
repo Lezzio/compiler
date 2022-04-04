@@ -86,7 +86,6 @@ int main(int argn, const char **argv) {
         } else {    //x86
             cfg->gen_asm_x86(cout);
         }
-
     }
     delete (syntaxErrorListener);
     delete (prog);
