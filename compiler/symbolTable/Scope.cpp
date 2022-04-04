@@ -3,6 +3,7 @@
 //
 
 #include "Scope.h"
+#include <iterator>
 
 int Scope::getCurrentLevel() {
     return levelContext.back();

@@ -10,10 +10,10 @@ void IRInstr::gen_asm_x86(ostream &o) {
     if (t == CHAR || t == INT8_T) {
         reg = "%al";
     }
-    cout << "op = " << op << endl;
+    //cout << "op = " << op << endl; debug
     switch (op) {
         case ldconst: {
-            cout << "BB scope = " << this->bb->scope << endl;
+            //cout << "BB scope = " << this->bb->scope << endl; debug
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string value = this->params[1];
             o << getMovInstr(value, destination);
@@ -34,26 +34,26 @@ void IRInstr::gen_asm_x86(ostream &o) {
             break;
         }
         case copy: {
-            cout << "COPY OPERATION" << endl;
-            cout << "COPY SCOPE = " << this->bb->scope << endl;
+            //cout << "COPY OPERATION" << endl; debug
+            //cout << "COPY SCOPE = " << this->bb->scope << endl; debug
             string destination;
             if (this->params[0] == "param_reg") {
-                cout << "BRANCH 1" << endl;
+                //cout << "BRANCH 1" << endl; debug
                 destination = this->bb->cfg->IR_reg_to_asm_param(stoi(this->params[2]));
             } else {
-                cout << "BRANCH 2" << endl;
+                //cout << "BRANCH 2" << endl; debug
                 if (!bb->cfg->isSymbolAssigned(this->params[0], this->bb->scope)) {
-                    cout << "BRANCH 2 - assignSymbol" << endl;
+                    //cout << "BRANCH 2 - assignSymbol" << endl; debug
                     this->bb->cfg->assignSymbol(this->params[0], this->bb->scope);
                 }
-                cout << "BRANCH 2 - destination" << endl;
+                //cout << "BRANCH 2 - destination" << endl; debug
                 destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             }
-            cout << "END ELIF" << endl;
+            //cout << "END ELIF" << endl; debug
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             o << getMovInstr(origin, reg);
             o << getMovInstr(reg, destination);
-            cout << "END COPY" << endl;
+            //cout << "END COPY" << endl; debug
             break;
         }
         case add: {
