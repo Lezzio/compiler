@@ -72,8 +72,8 @@ void CFG::gen_asm_ARM(ostream &o) {
 }
 
 string CFG::IR_reg_to_asm(const string &reg, const string &scope) {
-    cout << "IR reg to asm" << endl;
-    cout << "reg = " << reg << endl;
+    //cout << "IR reg to asm" << endl;
+    //cout << "reg = " << reg << endl;
     Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, scope);
     if (symbolReturned != nullptr) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
@@ -85,6 +85,8 @@ string CFG::IR_reg_to_asm(const string &reg, const string &scope) {
         return IR_reg_to_asm_param(position);
     }
     //ERROR
+    cout << "reg = " << reg << endl;
+    symbolTable->print_dictionary();
     cerr << "Error in IR_reg_to_asm" << endl;
     exit(1);
 }
@@ -159,8 +161,8 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
 
 // symbol table methods
 void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol) {
-    cout << "About to add symbol name = " << name << endl;
-    symbolTable->print_dictionary();
+    //cout << "About to add symbol name = " << name << endl;
+    //symbolTable->print_dictionary();
     if (stateSymbol == PARAMETER) {
         this->symbolTable->defParameter(name, getCurrentScope(), t);
     } else if (stateSymbol == FUNCTION) {
@@ -170,7 +172,11 @@ void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol
     } else {
         symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false);
     }
-    cout << "Added symbol finished" << endl;
+    //cout << "Added symbol finished" << endl;
+}
+
+void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol, int size){
+    symbolTable->addSymbol(name, getCurrentScope(), t, size, stateSymbol, false);
 }
 
 void CFG::setParametersPosition(string name, int position) {
@@ -207,7 +213,7 @@ TypeSymbol CFG::get_var_type(const string& name, const string& scope) {
  * .(function name)#(basic block number)
  */
 string CFG::new_BB_name() {
-    string name = "." + this->name + "#" + to_string(nextBBnumber);
+    string name = "." + this->name + "BB" + to_string(nextBBnumber);
     nextBBnumber++;
     return name;
 }
@@ -246,9 +252,9 @@ SymbolTable *CFG::getSymbolTable() {
 }
 
 void CFG::enteringScope() {
-    cout << "Entering scope" << endl;
+    //cout << "Entering scope" << endl;
     int level = highestLevel++;
-    cout << "Level = " << level;
+    //cout << "Level = " << level;
     levelHistory.push_back(level);
 }
 
@@ -258,6 +264,6 @@ void CFG::exitingScope() {
 
 string CFG::getCurrentScope() {
     int level = levelHistory.back();
-    cout << "Scope is = " << level << " " + name + "_" + to_string(level) << endl;
+    //cout << "Scope is = " << level << " " + name + "_" + to_string(level) << endl;
     return name + "_" + to_string(level);
 }

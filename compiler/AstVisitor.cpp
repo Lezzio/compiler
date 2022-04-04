@@ -99,6 +99,11 @@ antlrcpp::Any AstVisitor::visitStatement9(ifccParser::Statement9Context *context
     return (Statement *) instruction;
 }
 
+antlrcpp::Any AstVisitor::visitStatement10(ifccParser::Statement10Context *context)
+{
+    return (Statement *)visit(context->array());
+}
+
 antlrcpp::Any AstVisitor::visitParameters(ifccParser::ParametersContext *context)
 {
     auto * parameters = new Parameters();
@@ -166,6 +171,81 @@ antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *con
     Expr *expr = (Expr *) visit(context->expression());
     auto *affectation = new Affectation(exprVar, expr);
     return (Statement *) affectation;
+}
+
+antlrcpp::Any AstVisitor::visitAffectation3(ifccParser::Affectation3Context *context){
+    Expr *lexpr = (Expr *) visit(context->expression(0));
+    Expr *rexpr = (Expr *) visit(context->expression(1));
+
+    ExprRArray * exprTmp = dynamic_cast<ExprRArray *>(lexpr);
+    ExprLArray * exprLArray;
+    if(lexpr){
+        exprLArray = new ExprLArray(exprTmp->getName(), exprTmp->getType(), exprTmp->getPosition());
+    } else {
+        cerr << "Sorry, this compiler does not allow this functionality yet" << endl;
+        exit(1);
+    }
+
+    ExprAffectation * affectation = new ExprAffectation(exprLArray, rexpr);
+    return (Statement *) affectation;
+}
+
+antlrcpp::Any AstVisitor::visitDeclarationArray(ifccParser::DeclarationArrayContext *context){
+    int size = stoi(context->CONST()->getText()); 
+
+    string res = (string) visit(context->type()).as<string>();
+
+    TypeSymbol t = INT;
+    int offset = 8;
+    if (res == "char") {
+        cerr << "Sorry, this compiler does not allow this functionality yet" << endl;
+        exit(1);
+        t = CHAR;
+        offset = 1;
+    }
+
+    string name = context->IDENT()->getText();
+    ExprArray * arrayD = new ExprArray(name,t, size*offset);
+    return (Statement *) new ExprDeclaration(arrayD);
+}
+
+antlrcpp::Any AstVisitor::visitAffectationArray(ifccParser::AffectationArrayContext *context){
+    int size = 0;
+    if(context->CONST()){
+        size = stoi(context->CONST()->getText()); 
+
+        if(context->expression().size() != size){
+            cerr << "The size of the table is not good" << endl;
+        }  
+    }
+
+    string res = (string) visit(context->type()).as<string>();
+
+    TypeSymbol t = INT;
+    int offset = 8;
+    if (res == "char") {
+        cerr << "Sorry, this compiler does not allow this functionality yet" << endl;
+        exit(1);
+        t = CHAR;
+        offset = 1;
+    }
+
+    string name = context->IDENT()->getText();
+
+    ArrayAffectation * arrayAff = new ArrayAffectation();
+    size = 0;
+    for(const auto expr : context->expression()){
+        Expr * rValue = (Expr * ) visit(expr);
+        Expr * pos = (Expr *) new ExprConst("", size*offset);
+        Expr * lValue = (Expr *) new ExprLArray(name, t, pos); 
+        arrayAff->addStatement(new ExprAffectation(lValue, rValue));
+        size ++;
+    }
+
+    ExprArray * arrayD = new ExprArray(name,t, size*offset);
+    arrayAff->setArray(arrayD);
+
+    return (Statement *) arrayAff;
 }
 
 antlrcpp::Any AstVisitor::visitUnaryexpr(ifccParser::UnaryexprContext *context) {
@@ -414,6 +494,21 @@ antlrcpp::Any AstVisitor::visitEqualityexpr(ifccParser::EqualityexprContext *con
 
     ExprEqual *equal = new ExprEqual("", lExpr, rExpr, op);
     return (Expr *) equal;
+}
+
+antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context){
+    string varname = context->IDENT()->getText();
+
+    Expr * offset = (Expr *) visit(context->expression());
+    Expr * position;
+    if(checkConst(offset)){             //TODO: Handle char
+        position = (Expr *) new ExprConst("", 8*getConstValue(offset));
+    } else {
+        position = (Expr *) new ExprMult("", offset, new ExprConst("", 8), MULT);
+    }
+
+    ExprRArray * rArray = new ExprRArray(varname, INT64_T, position);
+    return (Expr *) rArray;
 }
 
 antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context) {

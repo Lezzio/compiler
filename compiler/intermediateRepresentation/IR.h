@@ -49,7 +49,8 @@ public:
         cmp_gt,
         cmp_ge,
         jmp,
-        offset
+        offset, 
+        cast
     } Operation;
 
     typedef enum {
@@ -92,6 +93,7 @@ private:
     string getGeInstr(const string& arg1, Arch arch = x86);
     string getJumpInstr(const string& arg1, Arch arch = x86);
     string getCallInstr(const string& arg1, Arch arch = x86);
+    string getCastInstr(const string &origine, const string &destination, Arch arch = x86);
 
 };
 
@@ -176,6 +178,7 @@ public:
 
     // symbol table methods
     void add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol);
+    void add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol, int size);
     string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
     TypeSymbol get_var_type(const string& name, const string& scope);

@@ -1,7 +1,8 @@
 int main(){
-    int a = 3;
-    if (1){
-        int b = 10;
-    }
-    return a;
+
+    
+    int a[2] = {7, 9};
+    int c = 1;
+    int b = a[c];
+    return b;
 }

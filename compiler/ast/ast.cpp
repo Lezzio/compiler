@@ -18,6 +18,53 @@ string ExprChar::linearize(CFG *cfg) {
     return tempVar;
 }
 
+string ExprArray::linearize(CFG *cfg) {
+    cfg->add_to_symbol_table(varName, type, DECLARED,size);
+    return varName;
+}
+
+string ExprLArray::linearize(CFG *cfg) {
+    string var1 = this->position->linearize(cfg);
+    int offset = -cfg->get_var_index(varName);
+    string tmpVar = cfg->create_new_tempvar(INT64_T);
+    
+    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    if(t1 != INT64_T){
+        cfg->addInstruction(IRInstr::cast, INT64_T, {var1});
+    }
+
+    cfg->addInstruction(IRInstr::ldconst, INT64_T, {tmpVar, "$"+to_string(offset)});
+    cfg->addInstruction(IRInstr::add, INT64_T, {tmpVar, "%rbp", tmpVar});
+    cfg->addInstruction(IRInstr::add, INT64_T, {tmpVar, var1, tmpVar});
+    return tmpVar;
+}
+
+ExprLArray::~ExprLArray(){
+    delete position;
+}
+
+string ExprRArray::linearize(CFG *cfg) {
+    string var1 = this->position->linearize(cfg);
+    int offset = -cfg->get_var_index(varName);
+    string tmpVar = cfg->create_new_tempvar(INT64_T);
+
+    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    if(t1 != INT64_T){
+        cfg->addInstruction(IRInstr::cast, INT64_T, {var1});
+    }
+    cfg->addInstruction(IRInstr::ldconst, INT64_T, {tmpVar, "$"+to_string(offset)});
+    cfg->addInstruction(IRInstr::add, INT64_T, {tmpVar, "%rbp", tmpVar});
+    cfg->addInstruction(IRInstr::add, INT64_T, {tmpVar, var1, tmpVar});
+
+    string tmpVar2 = cfg->create_new_tempvar(INT64_T);
+    cfg->addInstruction(IRInstr::rmem, INT64_T, {tmpVar2, tmpVar});
+    return tmpVar2;
+}
+
+ExprRArray::~ExprRArray(){
+    delete position;
+}
+
 string ExprMult::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
@@ -214,18 +261,70 @@ Affectation::~Affectation() {
     delete (rExpr);
 }
 
-string DecAffectation::linearize(CFG *cfg) {
-    cout << " DEF AFFECTATION L " << endl;
-    string var1 = declaration->linearize(cfg);
-    cout << " POINT #1 " << endl;
+string ExprAffectation::linearize(CFG *cfg) {
+    string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
-    cout << " POINT #2 " << endl;
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
-    cout << " POINT #3 " << endl;
+
+    cfg->addInstruction(IRInstr::wmem, INT64_T, {var2, var1}); //TODO:Verify
+    return var1;
+}
+
+ExprAffectation::~ExprAffectation() {
+    delete (lExpr);
+    delete (rExpr);
+}
+
+string ArrayAffectation::linearize(CFG *cfg){
+    arrayD->linearize(cfg);
+
+    for(auto s : array_values){
+        s->linearize(cfg);
+    }
+
+    return "";
+}
+
+void ArrayAffectation::addStatement(ExprAffectation * statement){
+    array_values.push_back(statement);
+}
+
+void ArrayAffectation::setArray(ExprArray *exprArray){
+    arrayD  = exprArray;
+}
+
+ArrayAffectation::~ArrayAffectation(){
+    for(auto s : array_values){
+        delete s;
+    }
+    array_values.clear();
+    delete arrayD;
+}
+
+
+string ExprDeclaration::linearize(CFG *cfg) {
+    string var = expr->linearize(cfg);
+    return var;
+}
+
+ExprDeclaration::~ExprDeclaration(){
+    delete expr;
+}
+
+
+string DecAffectation::linearize(CFG *cfg) {
+    //cout << " DEF AFFECTATION L " << endl;
+    string var1 = declaration->linearize(cfg);
+    //cout << " POINT #1 " << endl;
+    string var2 = rExpr->linearize(cfg);
+    //cout << " POINT #2 " << endl;
+
+    TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
+    //cout << " POINT #3 " << endl;
 
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
-    cout << " END DEF AFFECTATION L " << endl;
+    //cout << " END DEF AFFECTATION L " << endl;
     return var1;
 }
 
@@ -469,11 +568,11 @@ string Function::linearize(CFG *cfg) {
     cfg->return_bb = returnBlock;
 
     if (parameters != nullptr) {
-        cout << "About to L parameters" << endl;
+       //cout << "About to L parameters" << endl;
         parameters->linearize(cfg);
     }
 
-    cout << "About to L block" << endl;
+    //cout << "About to L block" << endl;
     block->linearize(cfg);
     //CFG exiting scope
     cfg->exitingScope();
@@ -519,9 +618,9 @@ vector<CFG *> Prog::linearize() {
 
     for (Function *f: functions) {
         CFG *cfg = new CFG(symbolTable, f->name);
-        cout << "going to L function :" << f->name << endl;
+       // cout << "going to L function :" << f->name << endl;
         f->linearize(cfg);
-        cout << "end L of function :" << f->name << endl;
+       // cout << "end L of function :" << f->name << endl;
         cfgs.push_back(cfg);
     }
 

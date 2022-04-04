@@ -17,6 +17,9 @@ SymbolTable::SymbolTable() {
 
 int SymbolTable::addSymbol(const string &symbolName, const string& symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst) {
     int index = staticIndex + getOffsetType(typeSymbol);
+    if(additional != 0){
+        index =staticIndex + additional;
+    }
     auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst);
     if (!doesSymbolExist(newSymbol)) {
         this->table.insert(pair<string, Symbol *>(newSymbol->getCode(), newSymbol));
@@ -139,13 +142,15 @@ bool SymbolTable::doesSymbolExist(string code) {
 
 int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
     switch (typeSymbol) {
+        case INT64_T:
+            return 8;
         case INT:
             return 4;
         case INT8_T:
         case CHAR :
             return 1;
         default:
-            cerr << "Error" << endl;
+            cerr << "Error in getOffsetType" << endl;
             exit(1);
     }
 }
@@ -160,21 +165,21 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  */
 Symbol *SymbolTable::returnSymbol(const string& name, const string& scope) {
     string code = Symbol::getAssociatedCode(name, scope);
-    print_dictionary();
-    cout << "code = " << code << endl;
+    //print_dictionary();
+    //cout << "code = " << code << endl;
     if (table.find(code) != table.end())
         return table.find(code)->second;
-    cout << "returnSymbol# THE SYMBOL IS NULL" << endl;
+    //cout << "returnSymbol# THE SYMBOL IS NULL" << endl;
     return nullptr;
 }
 
 Symbol *SymbolTable::returnParameter(const string& name, const string& scope) {
     string code = Symbol::getAssociatedCode(name, scope);
-    cout << "code = " << code << endl;
-    print_dictionary();
+    //cout << "code = " << code << endl;
+    //print_dictionary();
     if (table.find(code) != table.end())
         return table.find(code)->second;
-    cout << "THE SYMBOL IS NULL" << endl;
+    //cout << "THE SYMBOL IS NULL" << endl;
     return nullptr;
 }
 

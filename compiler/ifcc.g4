@@ -9,6 +9,7 @@ function : (type|'void') IDENT '(' parameters? ')' block ;
 block : '{' statement* '}' ; 
 
 statement : declaration ';' #statement1
+          | array ';' #statement10 
           | affectation ';' #statement2
           | retcode ';' #statement3 
           | ifBlock #statement4
@@ -24,12 +25,14 @@ parameters : parameter (',' parameter)* ;
 
 parameter : type IDENT ;
 
-declaration : type IDENT (',' IDENT)* ;
-    //        | VAR '(' declaration? ')' #functionexpr;
+declaration : type IDENT (',' IDENT)*;
 
 affectation : type IDENT '=' expression #affectation1
-            | IDENT '=' expression #affectation2; 
-          //  | VAR '[' expression ']' '=' expression #affectation3;
+            | IDENT '=' expression #affectation2
+            | expression '=' expression #affectation3; 
+
+array : type IDENT'[' CONST ']' #declarationArray 
+      | type IDENT'[' CONST? ']' '=' '{' expression (',' expression)* '}' #affectationArray;
 
 retcode : RETURN expression #ret1 ;
 
@@ -51,12 +54,10 @@ expression : IDENT #varexpr
            | expression op=('|' | '&' | '^') expression #bitsexpr
            | expression op=('<' | '<=' | '>=' | '>') expression #relationalexpr
            | expression op=('==' | '!=') expression #equalityexpr
-          // | expression op=('&&' | '||') expression #logicalexpr
            | op=('-' | '!') expression #unaryexpr
            | '(' expression ')' #bracketexpr 
-           | IDENT '(' (expression (',' expression)*)? ')' #functionexpr ;
-	  // | VAR '[' expression ']' #arrayexpr;
-	  // | ('-' | '!')? (CONST | CHAR | VAR)	#literalexpr;
+           | IDENT '(' (expression (',' expression)*)? ')' #functionexpr 
+	         | IDENT '[' expression ']' #arrayexpr; 
 
 type : INT | CHAR ;
 
@@ -69,7 +70,5 @@ INT : 'int' ;
 CHAR : 'char' ;
 BREAK : 'break';
 CONTINUE : 'continue' ;
-//LVALUE : VAR ;
-//VAR : [a-zA-Z_][a-zA-Z1-9_]* ;
 IDENT : [a-zA-Z_][a-zA-Z1-9_]* ;
 CHARACTER : '\'' .? '\'';
