@@ -385,9 +385,11 @@ string InstructionFor::linearize(CFG * cfg)
 
     if(init != nullptr) {
         beforeForBB->exit_true = initForBB;
+        //TODO Unit testing of the for loop init scope
+        cfg->enteringScope();
         cfg->add_bb(initForBB);
-        //TODO CFG entering & exiting scope
         init->linearize(cfg);
+        cfg->exitingScope();
         initForBB->exit_true = testBB;
     } else {
         beforeForBB->exit_true = testBB;

@@ -16,7 +16,7 @@ class SymbolTable
 {
 public :
 
-    //lookup 
+    //lookup
     //insert
     
     SymbolTable();

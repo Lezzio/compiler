@@ -124,6 +124,7 @@ bool SymbolTable::doesSymbolExist(Symbol *symbol, bool scopedCurrent) {
  * @return false else
  */
 bool SymbolTable::doesSymbolExist(const string& name, Scope *scope, bool scopedCurrent) {
+    //Create a new scope scoped to the current scope level instead of using the whole level context
     if (scopedCurrent) {
         vector<int> currentLevelScope;
         currentLevelScope.push_back(scope->getCurrentLevel());
