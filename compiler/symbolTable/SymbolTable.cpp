@@ -17,8 +17,19 @@ SymbolTable::SymbolTable() {
     highestIndex = 0;
 }
 
+/**
+ * @brief Method which creates and adds a symbol to the symbol table
+ * 
+ * @param symbolName : the name of the new symbol to add
+ * @param symbolScope : the scope of the new symbol
+ * @param typeSymbol : the type
+ * @param additional : additional information as for instance in case of a array the number of elements it contains
+ * @param state : DECLARED, ASSIGNED...
+ * @param isConst : bool, symbol is a const or not
+ * @return int : return the address of the new symbol 
+ */
 int SymbolTable::addSymbol(const string &symbolName, Scope * symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst) {
-    //cout << "ADD SYMBOL name = " << symbolName << " scope current level = " << symbolScope->getCurrentLevel() << endl; debug
+    
     int index = staticIndex + getOffsetType(typeSymbol);
     if(additional != 0){
         index =staticIndex + additional;
@@ -36,8 +47,20 @@ int SymbolTable::addSymbol(const string &symbolName, Scope * symbolScope, TypeSy
     return -1;
 }
 
+/**
+ * @brief Method which declares a symbol (save the memory space for the new symbol) 
+ * 
+ * @param symbolName : the name of the new symbol to add
+ * @param symbolScope : the scope of the new symbol
+ * @param typeSymbol : the type
+ * @param additional : additional information as for instance in case of a array the number of elements it contains
+ * @param state : DECLARED, ASSIGNED...
+ * @param isConst : bool, symbol is a const or not 
+ * @return true : if the symbol doesn't exists in the table (haven't been declared already)
+ * @return false : if the symbol exists already in the symbol table -> error case
+ */
 bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
-    //cout << "DECLARE SYMBOL name = " << symbolName << " scope current level = " << symbolScope->getCurrentLevel() << endl; debug
+    
     auto *newSymbol = new Symbol(symbolName, symbolScope, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst);
 
     if (!doesSymbolExist(newSymbol, true)) {
@@ -52,6 +75,12 @@ bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, Ty
     return false;
 }
 
+/**
+ * @brief Method which assigns a symbol in the symbol table which means it gives it an fixed address in the table
+ * 
+ * @param symbol : symbol to assign
+ * @return int : the symbol address
+ */
 int SymbolTable::assignSymbol(Symbol *symbol) {
     symbol->setStateSymbol(ASSIGNED);
     staticIndex += getOffsetType(symbol->getTypeSymbol());
@@ -60,8 +89,15 @@ int SymbolTable::assignSymbol(Symbol *symbol) {
     return symbol->getAddress();
 }
 
+/**
+ * @brief Method which creates a function in the symbol table  
+ * 
+ * @param name : name of the function
+ * @param typeSymbol : type of the return
+ * @return int : value which permits to know if the adding succeed or not
+ */
 int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
-    //cout << "DEF FUNCTION name = " << name << " global scope level = " << GLOBAL_SCOPE.getCurrentLevel() << endl; debug
+    
     auto *newSymbol = new Symbol(name, &GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
     if (!doesSymbolExist(newSymbol)) {
         this->symbolTable[newSymbol->getName()+"_"+GLOBAL_SCOPE.name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
@@ -71,6 +107,15 @@ int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
     return -1;
 }
 
+/**
+ * @brief Method which creates a parameter in the symbol table  
+ * 
+ * @param name : name of the parameter
+ * @param scope : scope of the parameter in the program
+ * @param typeSymbol : type of the parameter 
+ * @return true : adding succeed
+ * @return false : adding failed (symbol alreay exists in the symbol table)
+ */
 bool SymbolTable::defParameter(const string& name, Scope *scope, TypeSymbol typeSymbol) {
     auto *newSymbol = new Symbol(name, scope, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
     if (!doesSymbolExist(newSymbol, true)) {
@@ -81,7 +126,10 @@ bool SymbolTable::defParameter(const string& name, Scope *scope, TypeSymbol type
     return false;
 }
 
-
+/**
+ * @brief Method which permits to print the content of symbol table 
+ * 
+ */
 void SymbolTable::print_dictionary() {
     cout << endl << "***   Actual Symbol Table   ***" << endl;
     cout
@@ -109,22 +157,25 @@ void SymbolTable::print_dictionary() {
 }
 
 /**
- * @brief
- *
- * @param ident
- * @return true if symbol exists in the symbolTable
- * @return false else
+ * @brief Method which permits to know if a symbol exist or not at the time in the symbol table
+ * 
+ * @param symbol : symbol to check
+ * @param scopedCurrent : bool telling if the scope is current
+ * @return true : symbol exists in the symbol table
+ * @return false : symbol doesn't exist in the symbol table
  */
 bool SymbolTable::doesSymbolExist(Symbol *symbol, bool scopedCurrent) {
     return doesSymbolExist(symbol->getName(), symbol->getScope(), scopedCurrent);
 }
 
 /**
- * @brief
- *
- * @param name
- * @return true if symbol exists in the symbolTable
- * @return false else
+ * @brief Method which permits to know if a symbol exist or not at the time in the symbol table
+ * 
+ * @param name : name of the symbol to check
+ * @param scope : scope when the method is called
+ * @param scopedCurrent : bool telling if the scope is current
+ * @return true : symbol exists in the symbol table
+ * @return false : symbol doesn't exist in the symbol table
  */
 bool SymbolTable::doesSymbolExist(const string& name, Scope *scope, bool scopedCurrent) {
     //Create a new scope scoped to the current scope level instead of using the whole level context
@@ -137,6 +188,12 @@ bool SymbolTable::doesSymbolExist(const string& name, Scope *scope, bool scopedC
     return lookupSymbol(name, scope) != nullptr;
 }
 
+/**
+ * @brief Method which gives in function of a type the offset to apply on the address in the symbol table
+ * 
+ * @param typeSymbol : type we want to know the offset to apply
+ * @return int : the offset to apply
+ */
 int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
     switch (typeSymbol) {
         case INT64_T:
@@ -187,11 +244,22 @@ Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
     return nullptr;
 }
 
+/**
+ * @brief lookup function 
+ * 
+ * @param name : name of the symbol to lookup
+ * @param scope : scope when the method is called
+ * @return Symbol* 
+ */
 Symbol *SymbolTable::lookupParameter(const string& name, Scope *scope) {
     //cout << "LOOKING UP PARAMETER HENCE SYMBOL" << endl;
     return lookupSymbol(name, scope);
 }
 
+/**
+ * @brief Destroy the Symbol Table:: Symbol Table object
+ * 
+ */
 SymbolTable::~SymbolTable() {
     for (const auto& firstPair : symbolTable) {
         for (const auto secondPair: firstPair.second) {
