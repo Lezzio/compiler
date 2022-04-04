@@ -168,9 +168,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             o << "\n";
             o << "\t#neg\n";
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
-            string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
-            string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, reg);
+            string value = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
+            o << getMovInstr(value, reg);
             o << getNegInstr(reg);
             o << getMovInstr(reg, destination);
             break;
@@ -179,9 +178,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             o << "\n";
             o << "\t#not\n";
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
-            string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
-            string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, reg);
+            string value = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
+            o << getMovInstr(value, reg);
             o << getNotInstr(reg);
             o << getMovInstr("%edx", destination);
             break;
@@ -422,7 +420,7 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
             o << getMovInstr(rvalue, "r3", t, ARM);
-            o << getSubInstr("r3", "r2", ARM);
+            o << getSubInstr("r2", "r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
             break;
         }
@@ -484,18 +482,16 @@ void IRInstr::gen_asm_ARM(ostream &o) {
         }
         case neg: {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
-            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
-            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
-            o << getMovInstr(rvalue, "r3", t, ARM);
+            string value = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
+            o << getMovInstr(value, "r3", t, ARM);
             o << getNegInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
             break;
         }
         case not_: {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
-            string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
-            string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
-            o << getMovInstr(rvalue, "r3", t, ARM);
+            string value = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
+            o << getMovInstr(value, "r3", t, ARM);
             o << getNotInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
             break;
@@ -519,8 +515,12 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
-            o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getMovInstr(rvalue, "r3", t, ARM);
+
+            TypeSymbol ltype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[1], this->bb->scope)->getTypeSymbol();
+            TypeSymbol rtype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[2], this->bb->scope)->getTypeSymbol();
+
+            o << getMovInstr(lvalue, "r2", ltype, ARM);
+            o << getMovInstr(rvalue, "r3", rtype, ARM);
             o << getCompInstr("r2", "r3", ARM);
             o << getEqInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
@@ -530,8 +530,12 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
-            o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getMovInstr(rvalue, "r3", t, ARM);
+
+            TypeSymbol ltype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[1], this->bb->scope)->getTypeSymbol();
+            TypeSymbol rtype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[2], this->bb->scope)->getTypeSymbol();
+
+            o << getMovInstr(lvalue, "r2", ltype, ARM);
+            o << getMovInstr(rvalue, "r3", rtype, ARM);
             o << getCompInstr("r2", "r3", ARM);
             o << getNeqInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
@@ -541,8 +545,12 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
-            o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getMovInstr(rvalue, "r3", t, ARM);
+
+            TypeSymbol ltype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[1], this->bb->scope)->getTypeSymbol();
+            TypeSymbol rtype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[2], this->bb->scope)->getTypeSymbol();
+
+            o << getMovInstr(lvalue, "r2", ltype, ARM);
+            o << getMovInstr(rvalue, "r3", rtype, ARM);
             o << getCompInstr("r2", "r3", ARM);
             o << getLtInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
@@ -552,8 +560,12 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
-            o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getMovInstr(rvalue, "r3", t, ARM);
+
+            TypeSymbol ltype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[1], this->bb->scope)->getTypeSymbol();
+            TypeSymbol rtype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[2], this->bb->scope)->getTypeSymbol();
+
+            o << getMovInstr(lvalue, "r2", ltype, ARM);
+            o << getMovInstr(rvalue, "r3", rtype, ARM);
             o << getCompInstr("r2", "r3", ARM);
             o << getLeInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
@@ -563,8 +575,12 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
-            o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getMovInstr(rvalue, "r3", t, ARM);
+
+            TypeSymbol ltype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[1], this->bb->scope)->getTypeSymbol();
+            TypeSymbol rtype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[2], this->bb->scope)->getTypeSymbol();
+
+            o << getMovInstr(lvalue, "r2", ltype, ARM);
+            o << getMovInstr(rvalue, "r3", rtype, ARM);
             o << getCompInstr("r2", "r3", ARM);
             o << getGtInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
@@ -574,8 +590,12 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
-            o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getMovInstr(rvalue, "r3", t, ARM);
+
+            TypeSymbol ltype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[1], this->bb->scope)->getTypeSymbol();
+            TypeSymbol rtype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[2], this->bb->scope)->getTypeSymbol();
+
+            o << getMovInstr(lvalue, "r2", ltype, ARM);
+            o << getMovInstr(rvalue, "r3", rtype, ARM);
             o << getCompInstr("r2", "r3", ARM);
             o << getGeInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
@@ -599,13 +619,14 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             break;
         }
         case cast : {
+            /*
             o << "\n";
             o << "\t#cast\n";
             string source = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             TypeSymbol type_from = static_cast<TypeSymbol>(stoi(this->params[1]));
-            //o << getCastInstr(source, reg, type_from);
-            //o << getMovInstr(reg, source);
-            break;
+            o << getCastInstr(source, "r3", type_from, true, ARM);
+            o << getMovInstr("r3", source, type_from, ARM);
+            break;*/
         }
 
         default:
@@ -641,7 +662,6 @@ string IRInstr::getCastInstr(const string &origine, const string &destination, T
     // t := type_to
     string from, to, signed_;
     if (arch == x86) {
-
         if(type_from == CHAR || type_from == INT8_T){
             from = "b";
         } else if (type_from == INT){
@@ -669,7 +689,15 @@ string IRInstr::getCastInstr(const string &origine, const string &destination, T
         }
         return "\tmov" + signed_ + from + to + "\t\t" + origine + ", " + destination + "\n";
     } else {    //ARM
+        string type_b, action;
 
+        if (t == CHAR || t == INT8_T) {
+            type_b = "b";
+        }
+        if (destination[0] == 'r' && origine[0] != 'r') {
+            action = "\tldr" + type_b + "\t";
+        }
+        return action + destination + ", [r7, #" + origine + "]\n";
     }
     return "";
 }
