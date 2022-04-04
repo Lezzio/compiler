@@ -41,4 +41,12 @@ Notre compilateur est capable de détecter différentes erreurs. La détection d
 - détection des erreurs sémantiques simples
 
 ## Limites de notre compilateur
-TODO à compléter
+Notre compilateur est un projet universitaire. A ce titre, il ne réalise qu'une petite partie des fonctionnalités d'un vrai compilateur. Ainsi vous ne pouvez pas:
+- compiler un programme contenant plusieurs sources
+- utiliser les directives pré-processeur
+- utiliser les pointeurs
+- utiliser de la COO
+- utiliser des fonctions de plus de 6 arguments
+- utiliser des types de variables autres que int et char
+
+Si vous ne respectez pas les consignes ci-dessus, vous vous exposez à un comportement ératique du compilateur. Une erreur ne sera pas forcément levée car ces fonctionnalités n'ont pas été prises en considération dans la conception du projet.
