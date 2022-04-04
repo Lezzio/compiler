@@ -598,11 +598,11 @@ string ExprFunction::linearize(CFG *cfg) {
         position++;
     }
 
-    if (!cfg->doesSymbolExist(varName, cfg->getCurrentScope())) {
+    if (!cfg->doesSymbolExist(varName, &GLOBAL_SCOPE)) {
         varName = varName + "@PLT";
     }
 
-    TypeSymbol typeFunc = cfg->get_var_type(varName, cfg->getCurrentScope());
+    TypeSymbol typeFunc = cfg->get_var_type(varName, &GLOBAL_SCOPE);
     string tempVar = cfg->create_new_tempvar(typeFunc);
 
     cfg->addInstruction(IRInstr::call, typeFunc, {tempVar, varName});
