@@ -5,11 +5,23 @@
 using namespace std;
 using namespace antlr4;
 
+/**
+ * @brief 
+ * 
+ * @param ctx 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
     //throw antlr4::RecognitionException("okokok", recognizer, recognizer->getInputStream(), recognizer->getContext(), recognizer->getCurrentToken());
     return visit(ctx->prog());
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitProg(ifccParser::ProgContext *context) {
     Prog *prog = new Prog();
     for (const auto f : context->function()) {
@@ -19,6 +31,12 @@ antlrcpp::Any AstVisitor::visitProg(ifccParser::ProgContext *context) {
     return prog;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
     string name = context->IDENT()->getText();
   // string functionName = "main";
@@ -44,6 +62,12 @@ antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
     return (Function * ) function;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context) {
     auto *block = new Block();
     for (const auto s : context->statement()) {
@@ -53,33 +77,75 @@ antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context) {
     return (Block *) block;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement1(ifccParser::Statement1Context *context) {
     return (Statement *) visit(context->declaration());
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement2(ifccParser::Statement2Context *context) {
     return (Statement *) visit(context->affectation());
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement3(ifccParser::Statement3Context *context) {
     return (Statement *) visit(context->retcode());
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement4(ifccParser::Statement4Context *context)
 {
     return (Statement *)visit(context->ifBlock());
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement5(ifccParser::Statement5Context *context)
 {
     return (Statement *)visit(context->whileBlock());
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement6(ifccParser::Statement6Context *context)
 {
     return (Statement *)visit(context->forBlock());
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement7(ifccParser::Statement7Context *context)
 {
     Expr * expr = (Expr *)visit(context->expression());
@@ -87,23 +153,47 @@ antlrcpp::Any AstVisitor::visitStatement7(ifccParser::Statement7Context *context
     return (Statement *) inst;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement8(ifccParser::Statement8Context *context)
 {
     InstructionBreak * instructionBreak = new InstructionBreak();
     return (Statement *) instructionBreak;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement9(ifccParser::Statement9Context *context)
 {
     InstructionContinue * instruction = new InstructionContinue();
     return (Statement *) instruction;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitStatement10(ifccParser::Statement10Context *context)
 {
     return (Statement *)visit(context->array());
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitParameters(ifccParser::ParametersContext *context)
 {
     auto * parameters = new Parameters();
@@ -116,6 +206,12 @@ antlrcpp::Any AstVisitor::visitParameters(ifccParser::ParametersContext *context
     return (Parameters *) parameters;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitParameter(ifccParser::ParameterContext *context)
 {
     string res = (string) visit(context->type()).as<string>();
@@ -129,6 +225,12 @@ antlrcpp::Any AstVisitor::visitParameter(ifccParser::ParameterContext *context)
     return (Parameter *) parameter;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *context)
 {
     auto * declarations = new Declarations();
@@ -145,13 +247,24 @@ antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *conte
     return (Statement *) declarations;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitRet1(ifccParser::Ret1Context *context) {
     Expr *expr = (Expr *) visit(context->expression());
     Return *ret = new Return(expr);
     return (Statement *) ret;
 }
 
-
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *context) {
     string res = (string) visit(context->type()).as<string>();
 
@@ -166,6 +279,12 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
     return (Statement *) decAffectation;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
     auto *exprVar = new ExprVar(context->IDENT()->getText());
     Expr *expr = (Expr *) visit(context->expression());
@@ -173,6 +292,12 @@ antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *con
     return (Statement *) affectation;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitAffectation3(ifccParser::Affectation3Context *context){
     Expr *lexpr = (Expr *) visit(context->expression(0));
     Expr *rexpr = (Expr *) visit(context->expression(1));
@@ -190,6 +315,12 @@ antlrcpp::Any AstVisitor::visitAffectation3(ifccParser::Affectation3Context *con
     return (Statement *) affectation;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitDeclarationArray(ifccParser::DeclarationArrayContext *context){
     int size = stoi(context->CONST()->getText()); 
 
@@ -209,6 +340,12 @@ antlrcpp::Any AstVisitor::visitDeclarationArray(ifccParser::DeclarationArrayCont
     return (Statement *) new ExprDeclaration(arrayD);
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitAffectationArray(ifccParser::AffectationArrayContext *context){
     int size = 0;
     if(context->CONST()){
@@ -248,6 +385,12 @@ antlrcpp::Any AstVisitor::visitAffectationArray(ifccParser::AffectationArrayCont
     return (Statement *) arrayAff;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitUnaryexpr(ifccParser::UnaryexprContext *context) {
     Expr *expr = (Expr *) visit(context->expression());
     Operator op;
@@ -260,6 +403,12 @@ antlrcpp::Any AstVisitor::visitUnaryexpr(ifccParser::UnaryexprContext *context) 
     return (Expr *) unary;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitCharexpr(ifccParser::CharexprContext *context) {
     string variable = context->CHARACTER()->getText();
     char character = variable.substr(1, 2)[0];
@@ -269,6 +418,12 @@ antlrcpp::Any AstVisitor::visitCharexpr(ifccParser::CharexprContext *context) {
     return (Expr *) expr;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitRelationalexpr(ifccParser::RelationalexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
     Expr *rExpr = (Expr *) visit(context->expression(1));
@@ -312,15 +467,33 @@ antlrcpp::Any AstVisitor::visitRelationalexpr(ifccParser::RelationalexprContext 
     return (Expr *) rel;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitBracketexpr(ifccParser::BracketexprContext *context) {
     return (Expr *) visit(context->expression());
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitVarexpr(ifccParser::VarexprContext *context) {
     ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
     return (Expr *) exprVar;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitMultplicationexpr(ifccParser::MultplicationexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
     Expr *rExpr = (Expr *) visit(context->expression(1));
@@ -370,6 +543,12 @@ antlrcpp::Any AstVisitor::visitMultplicationexpr(ifccParser::MultplicationexprCo
     return (Expr *) mul;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
     Expr *rExpr = (Expr *) visit(context->expression(1));
@@ -416,6 +595,12 @@ antlrcpp::Any AstVisitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *con
     return (Expr *) add;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitBitsexpr(ifccParser::BitsexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
     Expr *rExpr = (Expr *) visit(context->expression(1));
@@ -455,12 +640,24 @@ antlrcpp::Any AstVisitor::visitBitsexpr(ifccParser::BitsexprContext *context) {
     return (Expr *) bits;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitConstexpr(ifccParser::ConstexprContext *context) {
     int value = stoi(context->CONST()->getText());
     ExprConst *expr = new ExprConst("", value);
     return (Expr *) expr;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitEqualityexpr(ifccParser::EqualityexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
     Expr *rExpr = (Expr *) visit(context->expression(1));
@@ -496,6 +693,12 @@ antlrcpp::Any AstVisitor::visitEqualityexpr(ifccParser::EqualityexprContext *con
     return (Expr *) equal;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context){
     string varname = context->IDENT()->getText();
 
@@ -511,11 +714,23 @@ antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context){
     return (Expr *) rArray;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context) {
     string type = context->getText();
     return type;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context)
 {
     Expr* test = (Expr*)visit(context->expression());
@@ -538,6 +753,12 @@ antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context)
     return (Statement *) instrIF;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitElseBlock(ifccParser::ElseBlockContext *context) 
 {
     Block* elseBlock = nullptr;
@@ -556,6 +777,12 @@ antlrcpp::Any AstVisitor::visitElseBlock(ifccParser::ElseBlockContext *context)
     return (Block *) elseBlock;
 }
 
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitWhileBlock(ifccParser::WhileBlockContext *context){
     Expr* test = (Expr*)visit(context->expression());
 
@@ -572,7 +799,12 @@ antlrcpp::Any AstVisitor::visitWhileBlock(ifccParser::WhileBlockContext *context
     return (Statement *) instrWhile;
 }
 
-
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitForBlock(ifccParser::ForBlockContext *context) {
     Statement * init = nullptr;
     Statement * update = nullptr;
@@ -598,7 +830,12 @@ antlrcpp::Any AstVisitor::visitForBlock(ifccParser::ForBlockContext *context) {
     return (Statement *) instrFor;
 }
 
-
+/**
+ * @brief 
+ * 
+ * @param context 
+ * @return antlrcpp::Any 
+ */
 antlrcpp::Any AstVisitor::visitFunctionexpr(ifccParser::FunctionexprContext *context){
     string name = context->IDENT()->getText();
     ExprFunction * function = new ExprFunction(name);
@@ -610,7 +847,13 @@ antlrcpp::Any AstVisitor::visitFunctionexpr(ifccParser::FunctionexprContext *con
     return (Expr *) function;
 }
 
-
+/**
+ * @brief 
+ * 
+ * @param expr 
+ * @return true 
+ * @return false 
+ */
 bool AstVisitor::checkConst(Expr * expr){
     ExprConst * exprConst = dynamic_cast<ExprConst *>(expr);
     
@@ -627,6 +870,12 @@ bool AstVisitor::checkConst(Expr * expr){
     return false; 
 }
 
+/**
+ * @brief 
+ * 
+ * @param expr 
+ * @return int 
+ */
 int AstVisitor::getConstValue(Expr * expr){
     ExprConst * exprConst = dynamic_cast<ExprConst *>(expr);
     
