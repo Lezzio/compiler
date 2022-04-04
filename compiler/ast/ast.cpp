@@ -234,9 +234,13 @@ void Block::addStatement(Statement *statement) {
 }
 
 void Block::linearize(CFG *cfg) {
+    //CFG entering scope
+    cfg->enteringScope();
     for (Statement *s: statements) {
         s->linearize(cfg);
     }
+    //CFG exiting scope
+    cfg->exitingScope();
 }
 
 Block::~Block() {
@@ -314,17 +318,17 @@ ExprDeclaration::~ExprDeclaration(){
 
 
 string DecAffectation::linearize(CFG *cfg) {
-    //cout << " DEF AFFECTATION L " << endl;
+    //cout << " DEF AFFECTATION L " << endl; debug
     string var1 = declaration->linearize(cfg);
-    //cout << " POINT #1 " << endl;
+    //cout << " POINT #1 " << endl; debug
     string var2 = rExpr->linearize(cfg);
-    //cout << " POINT #2 " << endl;
+    //cout << " POINT #2 " << endl; debug
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
-    //cout << " POINT #3 " << endl;
+    //cout << " POINT #3 " << endl; debug
 
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
-    //cout << " END DEF AFFECTATION L " << endl;
+    //cout << " END DEF AFFECTATION L " << endl; debug
     return var1;
 }
 
@@ -401,6 +405,7 @@ string InstructionIF::linearize(CFG *cfg) {
     cfg->current_bb->exit_true = endIfBB;
 
     trueCodeBlock->linearize(cfg);
+    //cout << "BB scope is " << cfg->current_bb->scope << endl; debug
 
     if (falseCodeBlock != nullptr) {
         cfg->add_bb(elseBB);
@@ -441,7 +446,7 @@ string InstructionWhile::linearize(CFG *cfg) {
     cfg->add_bb(bodyBB);
     bodyBB->exit_true = testBB;
     bodyBB->exit_false = nullptr;
-    block->linearize(cfg);
+    block->linearize(cfg); //1
 
     cfg->add_bb(afterWhileBB);
     cfg->breakBBname = "";
@@ -461,7 +466,7 @@ string InstructionFor::linearize(CFG * cfg)
 {
     BasicBlock * beforeForBB = cfg->current_bb;
 
-    auto * initForBB = new BasicBlock(cfg, cfg->new_BB_name());
+    auto * initForBB = new BasicBlock(cfg, cfg->new_BB_name()); //getCurrentScope
     auto * testBB = new BasicBlock(cfg, cfg->new_BB_name());
     auto * updateBB = new BasicBlock(cfg, cfg->new_BB_name());
     auto * forBB = new BasicBlock(cfg, cfg->new_BB_name());
@@ -477,15 +482,14 @@ string InstructionFor::linearize(CFG * cfg)
     endforBB->exit_true = beforeForBB->exit_true;
     endforBB->exit_false = beforeForBB->exit_false;
 
-    if(init != nullptr){
-        //CFG entering scope
-        //cfg->enteringScope();
+    if(init != nullptr) {
         beforeForBB->exit_true = initForBB;
+        //TODO Unit testing of the for loop init scope
+        cfg->enteringScope();
         cfg->add_bb(initForBB);
         init->linearize(cfg);
+        cfg->exitingScope();
         initForBB->exit_true = testBB;
-        //CFG exiting scope
-        //cfg->exitingScope();
     } else {
         beforeForBB->exit_true = testBB;
     }
@@ -535,7 +539,7 @@ string Parameters::linearize(CFG *cfg) {
     int position = 1;
     for (Parameter *p: parameters) {
         string name = p->linearize(cfg);
-        cfg->setParametersPosition(name, position);
+        cfg->setParametersPosition(name, position, cfg->getCurrentScope());
         position++;
     }
     return "";
@@ -554,9 +558,6 @@ Function::~Function() {
 }
 
 string Function::linearize(CFG *cfg) {
-    //CFG entering scope
-    cfg->enteringScope();
-
     cfg->setCurrentFunction(name);
     cfg->add_to_symbol_table(name, type, FUNCTION);
 
@@ -568,14 +569,12 @@ string Function::linearize(CFG *cfg) {
     cfg->return_bb = returnBlock;
 
     if (parameters != nullptr) {
-       //cout << "About to L parameters" << endl;
+        //cout << "About to L parameters" << endl; debug
         parameters->linearize(cfg);
     }
 
-    //cout << "About to L block" << endl;
+    //cout << "About to L block" << endl; debug
     block->linearize(cfg);
-    //CFG exiting scope
-    cfg->exitingScope();
     return "";
 }
 
@@ -618,9 +617,9 @@ vector<CFG *> Prog::linearize() {
 
     for (Function *f: functions) {
         CFG *cfg = new CFG(symbolTable, f->name);
-       // cout << "going to L function :" << f->name << endl;
+        //cout << "going to L function :" << f->name << endl; debug
         f->linearize(cfg);
-       // cout << "end L of function :" << f->name << endl;
+        //cout << "end L of function :" << f->name << endl; debug
         cfgs.push_back(cfg);
     }
 

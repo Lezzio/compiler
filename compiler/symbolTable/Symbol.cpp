@@ -5,9 +5,9 @@
 
 Symbol::Symbol() {}
 
-Symbol::Symbol(string name, string scope, int index, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
+Symbol::Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
     this->name = std::move(name);
-    this->scope = std::move(scope);
+    this->scope = scope;
     this->index = index;
     this->typeSymbol = typeSymbol;
     this->additional = additional;
@@ -37,7 +37,7 @@ string Symbol::getName() {
     return this->name;
 }
 
-string Symbol::getScope() {
+Scope *Symbol::getScope() {
     return this->scope;
 }
 
@@ -61,18 +61,10 @@ int Symbol::getAddress() const {
     return -getIndex();
 }
 
-string Symbol::getCode() {
-    return getAssociatedCode(name, scope);
-}
-
 int Symbol::getIndex() const {
     return index;
 }
 
 void Symbol::setIndex(int index) {
     this->index = index;
-}
-
-string Symbol::getAssociatedCode(const string& name, const string& scope) {
-    return scope + "_" + name;
 }

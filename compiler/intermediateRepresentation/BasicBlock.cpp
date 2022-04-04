@@ -5,7 +5,9 @@ using namespace std;
 
 BasicBlock::BasicBlock(CFG *cfg, string entry_label)
     : cfg(cfg), label(entry_label), exit_true(nullptr), exit_false(nullptr), scope(cfg->getCurrentScope())
-{}
+{
+    //cout << "BB scope is = " << cfg->getCurrentScope() << endl; debug
+}
 
 BasicBlock::~BasicBlock()
 {
@@ -48,7 +50,7 @@ void BasicBlock::gen_asm_86(ostream &o)
         }
     cout << "----------------" << endl;    */
 
-
+    //cout << "Generating bb with label " << this->label << " and scope = " << this->scope << endl; debug
 
     o << label << ":" << "\n";
     if(cfg->firstBB(this)){

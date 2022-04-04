@@ -37,7 +37,7 @@ public:
         orbit,
         andbit,
         xorbit,
-        neg, 
+        neg,
         not_,
         rmem,
         wmem,
@@ -140,16 +140,16 @@ public:
     string label;             /**< label of the BB, also will be the label in the generated code */
     CFG *cfg;                 /** < the CFG where this block belongs */
     vector<IRInstr *> instructions; /** < the instructions themselves. */
-    string test_var_name;     /** < when generating IR code for an if(expr) or while(expr) etc, store here the name of the variable that holds the value of expr */
-    string scope;
+    string test_var_name;     /** < when generating IR code for an if(expr) or while(expr) etc, store here the functionName of the variable that holds the value of expr */
+    Scope *scope;
 protected:
 };
 
-/** The class for the control flow graph, also includes the symbol table */
+/** The class for the control flow graph, also includes the symbol symbolTable */
 
 /*
     A few important comments:
-     The entry block is the one with the same label as the AST function name.
+     The entry block is the one with the same label as the AST function functionName.
        (it could be the first of bbs, or it could be defined by an attribute value)
      The exit block is the one with both exit pointers equal to nullptr.
      (again it could be identified in a more explicit way)
@@ -167,9 +167,9 @@ public:
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream &o);
-    string IR_reg_to_asm(const string &reg, const string &scope); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
-    string IR_reg_to_asm_param(int position);
-    void gen_asm_prologue_x86(ostream &o);
+    string IR_reg_to_asm(const string &reg, Scope *scope); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
+    static string IR_reg_to_asm_param(int position);
+    static void gen_asm_prologue_x86(ostream &o);
     void gen_asm_epilogue_x86(ostream &o);
 
     void gen_asm_ARM(ostream &o);
@@ -181,13 +181,13 @@ public:
     void add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol, int size);
     string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
-    TypeSymbol get_var_type(const string& name, const string& scope);
-    void assignSymbol(string name);
-    bool isSymbolAssigned(const string& name, const string& scope);
-    void setReturnSymbol(const string& name, const string& scope);
+    TypeSymbol get_var_type(const string& name, Scope *scope);
+    void assignSymbol(const string& name, Scope *scope);
+    bool isSymbolAssigned(const string& name, Scope *scope);
+    void setReturnSymbol(const string& name, Scope *scope);
     void setCurrentFunction(string name) { symbolTable->current_function = name; }
-    void setParametersPosition(string name, int position);
-    bool doesSymbolExist(string name, string scope);
+    void setParametersPosition(const string &name, int position, Scope *pScope);
+    bool doesSymbolExist(const string& name, Scope *scope);
     string getOffset();
     SymbolTable * getSymbolTable();
 
@@ -202,15 +202,15 @@ public:
 
     void enteringScope();
     void exitingScope();
-    string getCurrentScope();
+    Scope *getCurrentScope();
 
 protected:
-    string name;
+    string functionName;
     int highestLevel;
     vector<int> levelHistory;
     SymbolTable * symbolTable;
     int nextTmpVarNumber;
-    //int nextFreeSymbolIndex;      /**< to allocate new symbols in the symbol table */
+    //int nextFreeSymbolIndex;      /**< to allocate new symbols in the symbol symbolTable */
     int nextBBnumber;             /**< just for naming */
 
     vector<BasicBlock *> bbs; /**< all the basic blocks of this CFG*/

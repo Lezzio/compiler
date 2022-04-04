@@ -4,6 +4,7 @@
 #include "typeSymbol.h"
 #include "stateSymbol.h"
 #include <string>
+#include "Scope.h"
 
 using namespace std;
 
@@ -11,7 +12,7 @@ class Symbol {
 public:
     Symbol();
 
-    Symbol(string name, string scope, int index, TypeSymbol typeSymbol, int additional,
+    Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int additional,
            StateSymbol stateSymbol, bool isConst);
 
     ~Symbol();
@@ -26,7 +27,7 @@ public:
 
     string getName();
 
-    string getScope();
+    Scope *getScope();
 
     TypeSymbol getTypeSymbol();
 
@@ -38,18 +39,14 @@ public:
 
     int getAddress() const;
 
-    string getCode();
-
     int getIndex() const;
 
     void setIndex(int index);
 
-    static string getAssociatedCode(const string& name, const string& scope);
-
 protected:
     string name;
     int index{};
-    string scope;
+    Scope *scope;
     TypeSymbol typeSymbol;
     int additional{};
     StateSymbol stateSymbol;

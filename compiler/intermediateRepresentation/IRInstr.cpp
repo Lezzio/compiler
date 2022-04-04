@@ -12,11 +12,18 @@ void IRInstr::gen_asm_x86(ostream &o) {
     } else if(t== INT64_T){
         reg = "%rax";
     }
+<<<<<<< HEAD
     //cout << "op = " << op << endl;
     switch (op) {
         case ldconst: {
             o << "\n";
             o << "\t#ldconst\n";
+=======
+    //cout << "op = " << op << endl; debug
+    switch (op) {
+        case ldconst: {
+            //cout << "BB scope = " << this->bb->scope << endl; debug
+>>>>>>> 31890d3689b716173009da9eab3a21c7624eb27b
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string value = this->params[1];
             o << getMovInstr(value, destination);
@@ -51,13 +58,17 @@ void IRInstr::gen_asm_x86(ostream &o) {
             } else {
              //   cout << "BRANCH 2" << endl;
                 if (!bb->cfg->isSymbolAssigned(this->params[0], this->bb->scope)) {
-                    this->bb->cfg->assignSymbol(this->params[0]);
+                    //cout << "BRANCH 2 - assignSymbol" << endl; debug
+                    this->bb->cfg->assignSymbol(this->params[0], this->bb->scope);
                 }
+                //cout << "BRANCH 2 - destination" << endl; debug
                 destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             }
+            //cout << "END ELIF" << endl; debug
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             o << getMovInstr(origin, reg);
             o << getMovInstr(reg, destination);
+            //cout << "END COPY" << endl; debug
             break;
         }
         case add: {
@@ -373,7 +384,7 @@ void IRInstr::gen_asm_ARM(ostream &o) {
         }
         case copy: {
             if (!bb->cfg->isSymbolAssigned(this->params[0], this->bb->scope)) {
-                this->bb->cfg->assignSymbol(this->params[0]);
+                this->bb->cfg->assignSymbol(this->params[0], this->bb->scope);
             }
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             string origin = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
@@ -554,7 +565,7 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             int value = stoi(this->params[0]);
             value = value / 4;
             value = value * 4 + 8;
-            string offset = "#" + to_string(value);
+            string offset = "_" + to_string(value);
             if (this->params[1] == "start") {
                 o << getSubInstr("sp", offset, ARM, "sp");
                 o << getAddInstr("sp", "#0", ARM, "r7");

@@ -21,8 +21,8 @@ antlrcpp::Any AstVisitor::visitProg(ifccParser::ProgContext *context) {
 
 antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
     string name = context->IDENT()->getText();
-  // string name = "main";
-  //  string name = (string) visit(context->nameFunction()).as<string>();
+  // string functionName = "main";
+  //  string functionName = (string) visit(context->nameFunction()).as<string>();
     string res;
     TypeSymbol t = INT;
     if(context->type() != nullptr) {
