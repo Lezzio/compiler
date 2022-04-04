@@ -160,26 +160,6 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  * @param name 
  * @return SYMBOL 
  */
-<<<<<<< HEAD
-Symbol *SymbolTable::returnSymbol(const string& name, const string& scope) {
-    string code = Symbol::getAssociatedCode(name, scope);
-    //print_dictionary();
-    //cout << "code = " << code << endl;
-    if (table.find(code) != table.end())
-        return table.find(code)->second;
-    //cout << "returnSymbol# THE SYMBOL IS NULL" << endl;
-    return nullptr;
-}
-
-Symbol *SymbolTable::returnParameter(const string& name, const string& scope) {
-    string code = Symbol::getAssociatedCode(name, scope);
-    //cout << "code = " << code << endl;
-    //print_dictionary();
-    if (table.find(code) != table.end())
-        return table.find(code)->second;
-    //cout << "THE SYMBOL IS NULL" << endl;
-    return nullptr;
-=======
 Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
     //cout << "SYMBOL LOOK UP name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
     auto matchedMap = symbolTable.find(name);
@@ -210,7 +190,6 @@ Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
 Symbol *SymbolTable::lookupParameter(const string& name, Scope *scope) {
     //cout << "LOOKING UP PARAMETER HENCE SYMBOL" << endl;
     return lookupSymbol(name, scope);
->>>>>>> 31890d3689b716173009da9eab3a21c7624eb27b
 }
 
 SymbolTable::~SymbolTable() {

@@ -602,7 +602,9 @@ string ExprFunction::linearize(CFG *cfg) {
         varName = varName + "@PLT";
     }
 
+    cout << "ici1" << endl;
     TypeSymbol typeFunc = cfg->get_var_type(varName, cfg->getCurrentScope());
+        cout << "ici2" << endl;
     string tempVar = cfg->create_new_tempvar(typeFunc);
 
     cfg->addInstruction(IRInstr::call, typeFunc, {tempVar, varName});

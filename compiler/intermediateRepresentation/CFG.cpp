@@ -71,17 +71,10 @@ void CFG::gen_asm_ARM(ostream &o) {
     gen_asm_epilogue_ARM(o);
 }
 
-<<<<<<< HEAD
-string CFG::IR_reg_to_asm(const string &reg, const string &scope) {
-    //cout << "IR reg to asm" << endl;
-    //cout << "reg = " << reg << endl;
-    Symbol *symbolReturned = this->symbolTable->returnSymbol(reg, scope);
-=======
 string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
     //cout << "IR reg to asm" << endl; debug
     //cout << "reg = " << reg << " | scope = " << scope << endl; debug
     Symbol *symbolReturned = this->symbolTable->lookupSymbol(reg, scope);
->>>>>>> 31890d3689b716173009da9eab3a21c7624eb27b
     if (symbolReturned != nullptr) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returnVal;
@@ -163,18 +156,10 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
     //o << "\tbx\tlr" << endl;
 }
 
-<<<<<<< HEAD
-
-// symbol table methods
-void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol) {
-    //cout << "About to add symbol name = " << name << endl;
-    //symbolTable->print_dictionary();
-=======
 // symbol symbolTable methods
 void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol) {
     //cout << "--------------" << endl; debug
     //cout << "About to add symbol named = " << name << endl; debug
->>>>>>> 31890d3689b716173009da9eab3a21c7624eb27b
     if (stateSymbol == PARAMETER) {
         this->symbolTable->defParameter(name, getCurrentScope(), t);
     } else if (stateSymbol == FUNCTION) {
@@ -184,17 +169,10 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
     } else {
         symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false);
     }
-<<<<<<< HEAD
-    //cout << "Added symbol finished" << endl;
 }
 
-void CFG::add_to_symbol_table(string name, TypeSymbol t, StateSymbol stateSymbol, int size){
+void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, int size){
     symbolTable->addSymbol(name, getCurrentScope(), t, size, stateSymbol, false);
-=======
-    //cout << "Added symbol finished" << endl; debug
-    //symbolTable->print_dictionary(); debug
-    //cout << "--------------" << endl; debug
->>>>>>> 31890d3689b716173009da9eab3a21c7624eb27b
 }
 
 //TODO Feed scope to the set parameter position => now check if working
@@ -228,16 +206,13 @@ TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
     return symbol->getTypeSymbol();
 }
 
+
 /**
  * @return a newly generated functionName for a basic block following the format :
  * .(function functionName)#(basic block number)
  */
 string CFG::new_BB_name() {
-<<<<<<< HEAD
-    string name = "." + this->name + "BB" + to_string(nextBBnumber);
-=======
     string name = "." + this->functionName + "_" + to_string(nextBBnumber);
->>>>>>> 31890d3689b716173009da9eab3a21c7624eb27b
     nextBBnumber++;
     return name;
 }
@@ -275,15 +250,9 @@ SymbolTable *CFG::getSymbolTable() {
 }
 
 void CFG::enteringScope() {
-<<<<<<< HEAD
-    //cout << "Entering scope" << endl;
-    int level = highestLevel++;
-    //cout << "Level = " << level;
-=======
     //cout << "Entering scope" << endl; debug
     int level = highestLevel++;
     //cout << "Level = " << level; debug
->>>>>>> 31890d3689b716173009da9eab3a21c7624eb27b
     levelHistory.push_back(level);
     current_bb->scope = getCurrentScope(); //Update the current basic block to be aligned with the new scope
 }
@@ -294,13 +263,8 @@ void CFG::exitingScope() {
 
 Scope *CFG::getCurrentScope() {
     int level = levelHistory.back();
-<<<<<<< HEAD
-    //cout << "Scope is = " << level << " " + name + "_" + to_string(level) << endl;
-    return name + "_" + to_string(level);
-=======
     //cout << "| Current scope LEVEL is = " << level << " function name " + functionName << endl; debug
     auto *scope = new Scope(functionName);
     scope->levelContext = levelHistory; //Copy assign
     return scope;
->>>>>>> 31890d3689b716173009da9eab3a21c7624eb27b
 }
