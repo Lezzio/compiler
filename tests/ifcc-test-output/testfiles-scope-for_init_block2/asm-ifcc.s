@@ -14,7 +14,7 @@
 
 	#copy
 	movl		-4(%rbp), %eax
-	movl		%eax, -16(%rbp)
+	movl		%eax, -8(%rbp)
 	jmp			.main_2
 .main_2:
 

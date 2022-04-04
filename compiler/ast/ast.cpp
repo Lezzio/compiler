@@ -60,7 +60,7 @@ string ExprLArray::linearize(CFG *cfg) {
     
     TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
     if(t1 != INT64_T){
-        cfg->addInstruction(IRInstr::cast, INT64_T, {var1});
+        cfg->addInstruction(IRInstr::cast, INT64_T, {var1, to_string(t1)});
     }
 
     cfg->addInstruction(IRInstr::ldconst, INT64_T, {tmpVar, "$"+to_string(offset)});
@@ -90,7 +90,9 @@ string ExprRArray::linearize(CFG *cfg) {
 
     TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
     if(t1 != INT64_T){
-        cfg->addInstruction(IRInstr::cast, INT64_T, {var1});
+        string var2 = cfg->create_new_tempvar(INT64_T);
+        cfg->addInstruction(IRInstr::cast, INT64_T, {var1, to_string(t1), var2});
+        var1 = var2;
     }
     cfg->addInstruction(IRInstr::ldconst, INT64_T, {tmpVar, "$"+to_string(offset)});
     cfg->addInstruction(IRInstr::add, INT64_T, {tmpVar, "%rbp", tmpVar});
@@ -609,9 +611,13 @@ string Return::linearize(CFG *cfg) {
     string var1 = expr->linearize(cfg);
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
-    cfg->setReturnSymbol("!retvalue", cfg->getCurrentScope()); //TODO Return symbol
+    if(cfg->get_var_type(cfg->functionName, &GLOBAL_SCOPE) == VOID){
+        cout << "warning: ‘return’ with a value, in function returning void [-Wreturn-type]" << endl;
+    } else {
+        cfg->setReturnSymbol("!retvalue", cfg->getCurrentScope()); //TODO Return symbol
+        cfg->addInstruction(IRInstr::ret, typeTmp, {"!retvalue", var1});
+    }
 
-    cfg->addInstruction(IRInstr::ret, typeTmp, {"!retvalue", var1});
     return var1;
 }
 
@@ -764,8 +770,8 @@ string InstructionFor::linearize(CFG * cfg)
     if(init != nullptr) {
         beforeForBB->exit_true = initForBB;
         //TODO Unit testing of the for loop init scope
-        cfg->enteringScope();
         cfg->add_bb(initForBB);
+        cfg->enteringScope();
         init->linearize(cfg);
         initForBB->exit_true = testBB;
     } else {
@@ -880,9 +886,11 @@ string Function::linearize(CFG *cfg) {
     auto *bb = new BasicBlock(cfg, cfg->new_BB_name());
     cfg->add_bb(bb);
 
-    auto *returnBlock = new BasicBlock(cfg, cfg->new_BB_name());
-    returnBlock->add_IRInstr(IRInstr::finret, INT, {"!retvalue"});
-    cfg->return_bb = returnBlock;
+    if(type != VOID){
+        auto *returnBlock = new BasicBlock(cfg, cfg->new_BB_name());
+        returnBlock->add_IRInstr(IRInstr::finret, INT, {"!retvalue"});
+        cfg->return_bb = returnBlock;
+    }
 
     vector<TypeSymbol> params;
     int number =0;
@@ -893,6 +901,10 @@ string Function::linearize(CFG *cfg) {
             number++;
         }
         parameters->linearize(cfg);
+    }
+    if(number > 6){
+        cerr << "Sorry, ifcc does'nt handle function with more than 6 parameters" << endl;
+        exit(1);
     }
     cfg->setFunctionParameters(name, params, number);
 

@@ -1,6 +1,2 @@
-input.c: In function ‘main’:
-input.c:3:12: warning: returning ‘int *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-    3 |     return tab;
-      |            ^~~
 
 return code: 0

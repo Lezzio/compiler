@@ -13,6 +13,3 @@
 	movl		%edi, %eax
 	addl		%esi, %eax
 	movl		%eax, -4(%rbp)
-.func_1:
-
-	#finret

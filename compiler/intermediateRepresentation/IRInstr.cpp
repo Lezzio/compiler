@@ -52,7 +52,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination;
             if (this->params[0] == "param_reg") {
              //  cout << "BRANCH 1" << endl;
-                destination = this->bb->cfg->IR_reg_to_asm_param(stoi(this->params[2]));
+                destination = this->bb->cfg->IR_reg_to_asm_param(stoi(this->params[2]), t);
             } else {
              //   cout << "BRANCH 2" << endl;
              /*
@@ -195,7 +195,6 @@ void IRInstr::gen_asm_x86(ostream &o) {
             }
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
-            cout << "#readMem" << endl;
             o << getMovInstr(origin, reg);
             o << getMovInstr("(" + reg + ")", "%r10");
             o << getMovInstr("%r10", destination);
@@ -338,8 +337,12 @@ void IRInstr::gen_asm_x86(ostream &o) {
             o << "\t#cast\n";
             string source = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             TypeSymbol type_from = static_cast<TypeSymbol>(stoi(this->params[1]));
+            string destination = source;
+            if(this->params.size()==3){
+                destination = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
+            }
             o << getCastInstr(source, reg, type_from);
-            o << getMovInstr(reg, source);
+            o << getMovInstr(reg, destination);
             break;
         }
         default:

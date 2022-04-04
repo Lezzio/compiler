@@ -15,7 +15,7 @@ main:
 	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
-	leaq	-20(%rbp), %rax
+	movl	-20(%rbp), %eax
 	movq	-8(%rbp), %rdx
 	xorq	%fs:40, %rdx
 	je	.L3
@@ -27,7 +27,7 @@ main:
 	.cfi_endproc
 .LFE0:
 	.size	main, .-main
-	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04) 9.4.0"
+	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
 	.align 8

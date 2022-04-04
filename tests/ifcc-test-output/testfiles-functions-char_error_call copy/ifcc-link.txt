@@ -1,5 +1,2 @@
-asm-ifcc.s: Assembler messages:
-asm-ifcc.s:13: Error: unsupported instruction `mov'
-asm-ifcc.s:43: Error: unsupported instruction `mov'
 
-return code: 1
+return code: 0

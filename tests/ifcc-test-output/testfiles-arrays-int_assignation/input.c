@@ -3,5 +3,5 @@ int main() {
     tab[0] = 0;
     tab[1] = 1;
     tab[2] = 2;
-    return tab;
+    return tab[2]+tab[1]+tab[0];
 }

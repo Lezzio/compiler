@@ -8,6 +8,21 @@
 
 	#offset
 	subq		$16, %rsp
-.func_1:
+	#epilogue
+	nop
+	leave
+	ret
+.text
+.globl	main
+ main: 
+.main_0:
+	#prologue
+	pushq		%rbp
+	movq		%rsp, %rbp
 
-	#finret
+	#offset
+	subq		$16, %rsp
+	movl		$0, %eax
+	#epilogue
+	leave
+	ret
