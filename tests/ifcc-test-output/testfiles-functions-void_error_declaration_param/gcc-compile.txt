@@ -1,0 +1,9 @@
+input.c: In function ‘func’:
+input.c:2:13: warning: ‘return’ with a value, in function returning void [-Wreturn-type]
+    2 |     return a+b;
+      |            ~^~
+input.c:1:6: note: declared here
+    1 | void func(int a, int b){
+      |      ^~~~
+
+return code: 0

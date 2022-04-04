@@ -1,0 +1,3 @@
+Error in IR_reg_to_asm
+
+return code: 1

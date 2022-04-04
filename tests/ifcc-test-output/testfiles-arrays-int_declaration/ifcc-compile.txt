@@ -1,0 +1,6 @@
+line 2:11 token recognition error at: '['
+line 2:13 token recognition error at: ']'
+line 2:12 no viable alternative at input 'int tab3'
+error: syntax error during parsing
+
+return code: 1

@@ -1,0 +1,7 @@
+line 2:8 token recognition error at: '['
+line 2:10 token recognition error at: ']'
+line 2:9 no viable alternative at input 'int 3'
+line 2:12 extraneous input 'tab' expecting ';'
+error: syntax error during parsing
+
+return code: 1

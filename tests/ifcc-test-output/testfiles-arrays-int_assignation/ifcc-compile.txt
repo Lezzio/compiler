@@ -1,0 +1,18 @@
+line 2:11 token recognition error at: '['
+line 2:13 token recognition error at: ']'
+line 3:7 token recognition error at: '['
+line 3:9 token recognition error at: ']'
+line 4:7 token recognition error at: '['
+line 4:9 token recognition error at: ']'
+line 5:7 token recognition error at: '['
+line 5:9 token recognition error at: ']'
+line 2:12 no viable alternative at input 'int tab3'
+line 3:8 no viable alternative at input 'tab0'
+line 3:11 mismatched input '=' expecting ';'
+line 4:8 no viable alternative at input 'tab1'
+line 4:11 mismatched input '=' expecting ';'
+line 5:8 no viable alternative at input 'tab2'
+line 5:11 mismatched input '=' expecting ';'
+error: syntax error during parsing
+
+return code: 1
