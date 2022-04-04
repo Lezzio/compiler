@@ -133,7 +133,6 @@ void CFG::gen_asm_epilogue_x86(ostream &o) {
             "   ret\n";
 }
 
-
 void CFG::gen_asm_prologue_ARM(ostream &o) {
     o << "\tpush\t{r7, lr}" << endl;
     o << "\tsub\tsp, sp, #space_needed" << endl;
@@ -155,7 +154,6 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
     //o << "\tbx\tlr" << endl;
 }
 
-
 // symbol symbolTable methods
 void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol) {
     cout << "--------------" << endl;
@@ -174,9 +172,9 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
     cout << "--------------" << endl;
 }
 
-//TODO Feed scope to the set parameter position
-void CFG::setParametersPosition(const string& name, int position) {
-    Symbol *symbol = symbolTable->lookupParameter(name, 0);
+//TODO Feed scope to the set parameter position => now check if working
+void CFG::setParametersPosition(const string &name, int position, Scope *pScope) {
+    Symbol *symbol = symbolTable->lookupParameter(name, pScope);
     symbol->setIndex(position);
 }
 
@@ -235,7 +233,7 @@ void CFG::setReturnSymbol(const string& name, Scope *scope) {
     }
 }
 
-bool CFG::doesSymbolExist(string name, Scope *scope) {
+bool CFG::doesSymbolExist(const string& name, Scope *scope) {
     return symbolTable->doesSymbolExist(name, scope);
 }
 

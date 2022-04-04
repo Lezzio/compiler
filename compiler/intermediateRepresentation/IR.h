@@ -183,8 +183,8 @@ public:
     bool isSymbolAssigned(const string& name, Scope *scope);
     void setReturnSymbol(const string& name, Scope *scope);
     void setCurrentFunction(string name) { symbolTable->current_function = name; }
-    void setParametersPosition(const string& name, int position);
-    bool doesSymbolExist(string name, Scope *scope);
+    void setParametersPosition(const string &name, int position, Scope *pScope);
+    bool doesSymbolExist(const string& name, Scope *scope);
     string getOffset();
     SymbolTable * getSymbolTable();
 

@@ -438,7 +438,7 @@ string Parameters::linearize(CFG *cfg) {
     int position = 1;
     for (Parameter *p: parameters) {
         string name = p->linearize(cfg);
-        cfg->setParametersPosition(name, position);
+        cfg->setParametersPosition(name, position, cfg->getCurrentScope());
         position++;
     }
     return "";
