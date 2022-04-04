@@ -38,6 +38,8 @@ Le code du projet est organisé de la manière suivante :
 ## Utilisation
 Dans un premier temps, allez dans le dossier `compiler/` puis entrez la commande `make` pour compiler le projet. Ensuite, entrez la commande `ifcc FICHIER` ou FICHIER est le nom du fichier .c que vous souhaitez compiler. Notre compilateur va lire votre fichier et générer l'exécutable correspondant, à moins qu'une erreur soit détectée, auxquel cas il affichera l'erreur décetctée et la ligne où se trouve le problème.
 
+Pour pouvoir utiliser le projet sur les machines du département (distribution fedora), lancer le fichier `compiler/runmake_fedora.sh`. Ce script définit les bons paths pour les variables antlr liés à cette distribution. 
+
 Pour lancer les tests, allez dans le dossier `compiler/` et entrez la commande `ifcc-test.py testfiles/`.
 
 ## Fonctionnalités implémentées

@@ -1,4 +1,4 @@
-# PLD compilateur: documentation développeur
+# PLD compilateur: documentation utilisateur
 
 ## Introduction
 Ce répertoire contient le code source d'un projet étudiant (4A INSA Lyon) visant à créer un compilateur pour un sous-ensemble simple du langage C. L'exécutable peut être produit pour 2 architectures différentes : x86 (par défaut) et arm. Ce projet est réalisé en C++, suivant la méthodologie du Test Driven Development et utilise le framework antlr4. 
@@ -22,6 +22,8 @@ Normalement, l'installation et le lancement du projet ne diffère pas selon votr
 
 ## Utilisation
 Dans un premier temps, allez dans le dossier `compiler/` puis entrez la commande `make` pour compiler le projet. Ensuite, entrez la commande `ifcc FICHIER` ou FICHIER est le nom du fichier .c que vous souhaitez compiler. Notre compilateur va lire votre fichier et générer l'exécutable correspondant, à moins qu'une erreur soit détectée, auxquel cas il affichera l'erreur décetctée et la ligne où se trouve le problème.
+
+Pour pouvoir utiliser le projet sur les machines du département (distribution fedora), lancer le fichier `compiler/runmake_fedora.sh`. Ce script définit les bons paths pour les variables antlr liés à cette distribution. 
 
 ## Fonctionnalités implémentées
 Notre compilateur est capable de comprendre un programme C composé :
