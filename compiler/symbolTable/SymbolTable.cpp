@@ -25,7 +25,7 @@ int SymbolTable::addSymbol(const string &symbolName, Scope * symbolScope, TypeSy
     }
     auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst);
     if (!doesSymbolExist(newSymbol, true)) {
-        this->symbolTable[newSymbol->getName()][symbolScope->getCurrentLevel()] = newSymbol;
+        this->symbolTable[newSymbol->getName()+"_"+symbolScope->name][symbolScope->getCurrentLevel()] = newSymbol;
         staticIndex = index;
         highestIndex = index;
         return newSymbol->getAddress();
@@ -41,7 +41,7 @@ bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, Ty
     auto *newSymbol = new Symbol(symbolName, symbolScope, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst);
 
     if (!doesSymbolExist(newSymbol, true)) {
-        this->symbolTable[newSymbol->getName()][symbolScope->getCurrentLevel()] = newSymbol;
+        this->symbolTable[newSymbol->getName()+"_"+symbolScope->name][symbolScope->getCurrentLevel()] = newSymbol;
         return true;
     } else {
         //Error, can't declare a symbol twice
@@ -64,7 +64,7 @@ int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
     //cout << "DEF FUNCTION name = " << name << " global scope level = " << GLOBAL_SCOPE.getCurrentLevel() << endl; debug
     auto *newSymbol = new Symbol(name, &GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
     if (!doesSymbolExist(newSymbol)) {
-        this->symbolTable[newSymbol->getName()][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
+        this->symbolTable[newSymbol->getName()+"_"+GLOBAL_SCOPE.name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
         return 0;
     }
     delete newSymbol;
@@ -74,7 +74,7 @@ int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
 bool SymbolTable::defParameter(const string& name, Scope *scope, TypeSymbol typeSymbol) {
     auto *newSymbol = new Symbol(name, scope, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
     if (!doesSymbolExist(newSymbol, true)) {
-        this->symbolTable[newSymbol->getName()][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
+        this->symbolTable[newSymbol->getName()+"_"+scope->name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
         return true;
     }
     delete newSymbol;
@@ -162,7 +162,7 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  */
 Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
     //cout << "SYMBOL LOOK UP name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
-    auto matchedMap = symbolTable.find(name);
+    auto matchedMap = symbolTable.find(name+"_"+scope->name);
     //cout << "lookup point #1" << endl;
     if (matchedMap != symbolTable.end()) {
         auto levelContext = scope->levelContext;

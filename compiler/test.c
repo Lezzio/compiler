@@ -1,8 +1,6 @@
-int test(){
-    return 5;
-}
+int main() {
+    int a = 1;
+    a = 10;
+    return a;
 
-int main(){
-
-    return test();
 }
