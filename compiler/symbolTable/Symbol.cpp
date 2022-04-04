@@ -28,6 +28,8 @@ Symbol::Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int 
     this->additional = additional;
     this->stateSymbol = stateSymbol;
     this->isConst = isConst;
+
+    this->number = 0;
 }
 
 /**
@@ -153,3 +155,26 @@ int Symbol::getIndex() const {
 void Symbol::setIndex(int index) {
     this->index = index;
 }
+
+void Symbol::setParameters(const vector<TypeSymbol> &parameters, int number) {
+    if(stateSymbol == FUNCTION) {
+        this->parameters = parameters;
+        this->number = number;
+    }
+}
+
+int Symbol::getNumberParameters() const {
+    if(stateSymbol == FUNCTION) {
+        return number;
+    }
+    return -1;
+}
+
+TypeSymbol Symbol::getParameterType(int position) const {
+    if(stateSymbol == FUNCTION) {
+        return parameters[position];
+    }
+    return VOID;
+}
+
+
