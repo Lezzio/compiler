@@ -1,4 +1,4 @@
-# PLD compilateur: documentation développeur
+# PLD compilateur: documentation utilisateur
 
 ## Introduction
 Ce répertoire contient le code source d'un projet étudiant (4A INSA Lyon) visant à créer un compilateur pour un sous-ensemble simple du langage C. L'exécutable peut être produit pour 2 architectures différentes : x86 (par défaut) et arm. Ce projet est réalisé en C++, suivant la méthodologie du Test Driven Development et utilise le framework antlr4. 
