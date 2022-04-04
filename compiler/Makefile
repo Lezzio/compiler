@@ -1,20 +1,29 @@
 # You can override these from the command-line, as illustrated by the various `runmake_*.sh` scripts
 ANTLRJAR=../antlr/jar/antlr-4.9.2-complete.jar
-ANTLRINC=../antlr/include
-ANTLRLIB=../antlr/lib/libantlr4-runtime.a
-#ANTLRINC=/usr/include/antlr4-runtime
-#ANTLRLIB=/usr/lib/x86_64-linux-gnu/libantlr4-runtime.a
+#ANTLRINC=../antlr/include
+#ANTLRLIB=../antlr/lib/libantlr4-runtime.a
+ANTLRINC=/usr/include/antlr4-runtime
+ANTLRLIB=/usr/lib/x86_64-linux-gnu/libantlr4-runtime.a
 
 CC=g++
 CCFLAGS=-g -c -std=c++11 -I$(ANTLRINC) -Wno-attributes # -Wno-defaulted-function-deleted -Wno-unknown-warning-option
 LDFLAGS=-g
+SYMBOLTABLE=build/SymbolTable.o build/Symbol.o
+IFCC-LEXER-VISITOR-PARSER=build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o
+IRINSTR=build/IRInstr.o
+CFG=build/CFG.o
+BB=build/BasicBlock.o
+AST=build/ast.o build/AstVisitor.o 
+ERRORMANAGEMENT=build/SyntaxErrorListener.o build/Error.o build/ErrorManager.o build/ErrorStrategy.o
+SCOPE=build/Scope.o
+MAIN=build/main.o
 
 default: all
 all: ifcc
 
 ##########################################
 # link together all pieces of our compiler
-OBJECTS=build/SymbolTable.o build/Symbol.o build/ifccBaseVisitor.o build/ifccLexer.o build/ifccVisitor.o build/ifccParser.o build/IRInstr.o build/CFG.o build/BasicBlock.o build/ast.o build/SyntaxErrorListener.o build/Error.o build/ErrorManager.o build/ErrorStrategy.o build/AstVisitor.o build/Scope.o build/main.o
+OBJECTS=$(SYMBOLTABLE) $(IFCC-LEXER-VISITOR-PARSER) $(IRINSTR) $(CFG) $(BB) $(AST) $(ERRORMANAGEMENT) $(SCOPE) $(MAIN) 
 
 ifcc: $(OBJECTS)
 	@mkdir -p build
@@ -59,7 +68,7 @@ build/ast.o: ast/ast.cpp
 	@mkdir -p build
 	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
-build/IRInstr.o: intermediateRepresentation/IRinstr.cpp
+build/IRInstr.o: intermediateRepresentation/IRInstr.cpp
 	@mkdir -p build
 	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
