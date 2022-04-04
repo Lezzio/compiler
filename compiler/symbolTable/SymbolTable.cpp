@@ -29,20 +29,21 @@ SymbolTable::SymbolTable() {
  * @return int : return the address of the new symbol 
  */
 int SymbolTable::addSymbol(const string &symbolName, Scope * symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst) {
-    
     int index = staticIndex + getOffsetType(typeSymbol);
     if(additional != 0){
-        index =staticIndex + additional;
+        index = staticIndex + additional;
     }
     auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst);
     if (!doesSymbolExist(newSymbol, true)) {
-        this->symbolTable[newSymbol->getName()+"_"+symbolScope->name][symbolScope->getCurrentLevel()] = newSymbol;
+        this->symbolTable[newSymbol->getName() + "_" + symbolScope->name][symbolScope->getCurrentLevel()] = newSymbol;
         staticIndex = index;
         highestIndex = index;
         return newSymbol->getAddress();
     } else {
         //cout << "Error detected can't declare symbol twice ADD_SYMBOL" << endl; debug
     }
+    print_dictionary();
+    cout << "===========" << endl;
     delete newSymbol;
     return -1;
 }

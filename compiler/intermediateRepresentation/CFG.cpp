@@ -72,8 +72,9 @@ void CFG::gen_asm_ARM(ostream &o) {
 }
 
 string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
-    //cout << "IR reg to asm" << endl; debug
-    //cout << "reg = " << reg << " | scope = " << scope << endl; debug
+    cout << "IR reg to asm" << endl;
+    cout << "reg = " << reg << " | scope = " << scope << endl;
+    cout << " Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl;
     Symbol *symbolReturned = this->symbolTable->lookupSymbol(reg, scope);
     if (symbolReturned != nullptr) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
@@ -232,6 +233,10 @@ bool CFG::isSymbolAssigned(const string& name, Scope *scope) {
 }
 
 void CFG::setReturnSymbol(const string& name, Scope *scope) {
+    //Return symbol scope is always on the level 0 to be accessed anywhere within the scope (name)
+    scope->levelContext.clear();
+    scope->levelContext.push_back(0);
+    cout << " #setReturnSymbol - Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl;
     if (!symbolTable->doesSymbolExist(name, scope)) {
         symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, false);
     }
