@@ -92,14 +92,19 @@ void CFG::gen_asm_ARM(ostream &o) {
     cout << ".globl	main\n"
             " main: \n";
 #endif
+    gen_asm_prologue_ARM(o);
+    auto *ir_start = new IRInstr(bbs.back(), IRInstr::offset, INT64_T, {to_string(symbolTable->highestIndex), "start"});
+    ir_start->gen_asm_ARM(o);
+    delete (ir_start);
+
     //gen_asm_prologue_ARM(o);
     for (auto &bb : bbs) {
         bb->gen_asm_ARM(o);
     }
 
-    IRInstr *ir = new IRInstr(bbs.back(), IRInstr::offset, INT64_T, {"124", "end"});
-    ir->gen_asm_ARM(o);
-    delete (ir);
+    IRInstr *ir_end = new IRInstr(bbs.back(), IRInstr::offset, INT64_T, {to_string(symbolTable->highestIndex), "end"});
+    ir_end->gen_asm_ARM(o);
+    delete (ir_end);
     gen_asm_epilogue_ARM(o);
 }
 
@@ -111,21 +116,26 @@ void CFG::gen_asm_ARM(ostream &o) {
  * @return le registre associe au symbole 
  */
 string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
-    //cout << "IR reg to asm" << endl; debug
-    //cout << "reg = " << reg << " | scope = " << scope << endl; debug
+    /* debug
+    cout << "IR reg to asm" << endl;
+    cout << "reg = " << reg << " | scope = " << scope << endl;
+    cout << " Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl;
+     */
     Symbol *symbolReturned = this->symbolTable->lookupSymbol(reg, scope);
     if (symbolReturned != nullptr) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returnVal;
     }
-    symbolReturned = this->symbolTable->lookupParameter(reg, scope);
+    symbolReturned = this->symbolTable->lookupParameter(reg+"_param", scope);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
         return IR_reg_to_asm_param(position);
     }
+    //debug
+    //cout << "reg = " << reg << endl;
+    //symbolTable->print_dictionary();
+
     //ERROR
-    cout << "reg = " << reg << endl;
-    symbolTable->print_dictionary();
     cerr << "Error in IR_reg_to_asm" << endl;
     exit(1);
 }
@@ -197,8 +207,8 @@ void CFG::gen_asm_epilogue_x86(ostream &o) {
  */
 void CFG::gen_asm_prologue_ARM(ostream &o) {
     o << "\tpush\t{r7, lr}" << endl;
-    o << "\tsub\tsp, sp, #space_needed" << endl;
-    o << "\tadd\tr7, sp, #0" << endl;
+    //o << "\tsub\tsp, sp, #space_needed" << endl;
+    //o << "\tadd\tr7, sp, #0" << endl;
     //TODO : gerer le sp et r7
 }
 
@@ -208,7 +218,7 @@ void CFG::gen_asm_prologue_ARM(ostream &o) {
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_epilogue_ARM(ostream &o) {
-    o << "\tadds\tr7, r7, #space_needed" << endl;
+    //o << "\tadds\tr7, r7, #space_needed" << endl;
     o << "\tmov\tsp, r7" << endl;
     o << "\tpop\t{r7, pc}" << endl;
     //o << "\tldr\tr7, [sp], #4" << endl;
@@ -257,7 +267,7 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
  * @param pScope : the scope of the parameters
  */
 void CFG::setParametersPosition(const string &name, int position, Scope *pScope) {
-    Symbol *symbol = symbolTable->lookupParameter(name, pScope);
+    Symbol *symbol = symbolTable->lookupParameter(name+"_param", pScope);
     symbol->setIndex(position);
 }
 
@@ -299,7 +309,7 @@ TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
     //cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl; debug
     Symbol *symbol = symbolTable->lookupSymbol(name, scope);
     if (symbol == nullptr) {
-        symbol = symbolTable->lookupParameter(name, scope);
+        symbol = symbolTable->lookupParameter(name+"_param", scope);
     }
     //TODO: check error
     return symbol->getTypeSymbol();
@@ -358,6 +368,10 @@ bool CFG::isSymbolAssigned(const string& name, Scope *scope) {
  * @param scope : le scope du symbole
  */
 void CFG::setReturnSymbol(const string& name, Scope *scope) {
+    //Return symbol scope is always on the level 0 to be accessed anywhere within the scope (name)
+    scope->levelContext.clear();
+    scope->levelContext.push_back(0);
+    //cout << " #setReturnSymbol - Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl; debug
     if (!symbolTable->doesSymbolExist(name, scope)) {
         symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, false);
     }

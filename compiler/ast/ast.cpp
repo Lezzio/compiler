@@ -379,6 +379,10 @@ string Affectation::linearize(CFG *cfg) {
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
 
+    if (!cfg->isSymbolAssigned(var1, cfg->getCurrentScope())) {
+        cfg->assignSymbol(var1, cfg->getCurrentScope());
+    }
+
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
     return var1;
 }
@@ -403,6 +407,10 @@ string ExprAffectation::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
+
+    if (!cfg->isSymbolAssigned(var1, cfg->getCurrentScope())) {
+        cfg->assignSymbol(var1, cfg->getCurrentScope());
+    }
 
     cfg->addInstruction(IRInstr::wmem, INT64_T, {var2, var1}); //TODO:Verify
     return var1;
@@ -498,6 +506,9 @@ string DecAffectation::linearize(CFG *cfg) {
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
     //cout << " POINT #3 " << endl; debug
 
+    if (!cfg->isSymbolAssigned(var1, cfg->getCurrentScope())) {
+        cfg->assignSymbol(var1, cfg->getCurrentScope());
+    }
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
     //cout << " END DEF AFFECTATION L " << endl; debug
     return var1;
@@ -882,17 +893,18 @@ string ExprFunction::linearize(CFG *cfg) {
     for (Expr *e : parameters) {
         string var = e->linearize(cfg);
         TypeSymbol typeTmp = cfg->get_var_type(var, cfg->getCurrentScope());
+        if (!cfg->isSymbolAssigned(var, cfg->getCurrentScope())) {
+            cfg->assignSymbol(var, cfg->getCurrentScope());
+        }
         cfg->addInstruction(IRInstr::copy, typeTmp, {"param_reg", var, to_string(position)});
         position++;
     }
 
-    if (!cfg->doesSymbolExist(varName, cfg->getCurrentScope())) {
+    if (!cfg->doesSymbolExist(varName, &GLOBAL_SCOPE)) {
         varName = varName + "@PLT";
     }
 
-    cout << "ici1" << endl;
-    TypeSymbol typeFunc = cfg->get_var_type(varName, cfg->getCurrentScope());
-        cout << "ici2" << endl;
+    TypeSymbol typeFunc = cfg->get_var_type(varName, &GLOBAL_SCOPE);
     string tempVar = cfg->create_new_tempvar(typeFunc);
 
     cfg->addInstruction(IRInstr::call, typeFunc, {tempVar, varName});
