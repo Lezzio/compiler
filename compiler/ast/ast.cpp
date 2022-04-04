@@ -754,7 +754,6 @@ string InstructionFor::linearize(CFG * cfg)
         cfg->enteringScope();
         cfg->add_bb(initForBB);
         init->linearize(cfg);
-        cfg->exitingScope();
         initForBB->exit_true = testBB;
     } else {
         beforeForBB->exit_true = testBB;
@@ -779,6 +778,7 @@ string InstructionFor::linearize(CFG * cfg)
         cfg->add_bb(updateBB);
         update->linearize(cfg);
     }
+    cfg->exitingScope();
 
     cfg->add_bb(endforBB);
     cfg->breakBBname = "";

@@ -34,9 +34,12 @@ CFG::~CFG() {
  * 
  * @param bb : le basic bloc a ajouter
  */
-void CFG::add_bb(BasicBlock *bb) {
+void CFG::add_bb(BasicBlock *bb, bool updateScope) {
     current_bb = bb;
     bbs.push_back(bb);
+    if(updateScope){
+        current_bb->scope = getCurrentScope();
+    }
 }
 
 /**
@@ -133,6 +136,7 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
     }
     //debug
     //cout << "reg = " << reg << endl;
+    //cout << "reg = " << reg << " | scope = " << scope->getLevelContextAsString() << endl;
     //symbolTable->print_dictionary();
 
     //ERROR
@@ -306,7 +310,7 @@ int CFG::get_var_index(string name) {
  * @return TypeSymbol : le type de la variable trouvee
  */
 TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
-    //cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl; debug
+    //cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl; 
     Symbol *symbol = symbolTable->lookupSymbol(name, scope);
     if (symbol == nullptr) {
         symbol = symbolTable->lookupParameter(name+"_param", scope);

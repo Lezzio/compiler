@@ -160,7 +160,7 @@ public:
     CFG(SymbolTable * symbolTable, string name);
     virtual ~CFG();
 
-    void add_bb(BasicBlock *bb);
+    void add_bb(BasicBlock *bb, bool updateScope = true);
     void addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> params);
 
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
