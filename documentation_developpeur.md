@@ -55,7 +55,7 @@ Voici un schéma qui montre le fonctionnement de notre compilateur:
 
 ![compilo](https://user-images.githubusercontent.com/60465886/161430328-6be66813-1a00-4dde-ac61-59142bc7cdec.png)
 
-Dans un premier temps, le fichier .c est parsé et l'AST est construit à partir du parsing. Si une erreur est détectée à ce stade, la compilation échoue et l'utilisateur est averti. Chaque symbole est stocké dans la table des symboles, et cette table est utilisée par toutes les briques de base du programme. Enfin, le Backend construit l'exécutable demandé (x86 ou arm). 
+Dans un premier temps, le fichier .c est parsé et l'AST est construit à partir du parsing. Si une erreur est détectée à ce stade, la compilation échoue et l'utilisateur est averti. Chaque symbole est stocké dans la table des symboles, et cette table est utilisée par toutes les briques de base du programme. Enfin, le Backend construit l'exécutable demandé (x86 ou arm).
 
 ## Gestion des erreurs
 Notre compilateur est capable de détecter différentes erreurs. La détection des erreurs suivantes a été implémentée :

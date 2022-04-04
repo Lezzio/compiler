@@ -159,29 +159,14 @@ Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
         }
         for (const auto& firstPair : levelContext) {
             cout << "Scope level context : " << firstPair << endl;
-            auto symbol = matchedMap->second.find(firstPair);
-            if (symbol != matchedMap->second.end()) {
-                //return symbol->second;
-            }
         }
-        //for(; i >= 0; i--) {
-          //  cout << "LOOKUP..." << endl;
-            //cout << "Lookup for " << name << " iteration for level = " << level;
-            //auto symbol = matchedMap->second.find(level);
-            //return symbol->second;
-        //}
         for (auto it = levelContext.rbegin(); it != levelContext.rend(); ++it) {
-            cout << "LOOKUP..." << endl;
             int level = *it;
-            cout << "level = " << level << endl;
+            cout << "Lookup for " << name << " iteration for level = " << level;
             auto symbolIt = matchedMap->second.find(level);
             if (symbolIt != matchedMap->second.end()) {
                 return symbolIt->second;
             }
-            //cout << "Lookup for " << name << " iteration for level = " << level;
-            //auto symbol = matchedMap->second.find(level);
-            //return symbol->second;
-            //}
         }
     }
     cout << "lookupSymbol # THE SYMBOL IS NULL" << endl;
