@@ -1,0 +1,6 @@
+input.c: In function ‘main’:
+input.c:2:9: warning: unused variable ‘a’ [-Wunused-variable]
+    2 |     int a = 5;
+      |         ^
+
+return code: 0

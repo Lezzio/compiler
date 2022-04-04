@@ -1,0 +1,27 @@
+input.c: In function ‘func’:
+input.c:3:16: error: ‘b’ undeclared (first use in this function)
+    3 |     return a + b;
+      |                ^
+input.c:3:16: note: each undeclared identifier is reported only once for each function it appears in
+input.c:2:9: warning: unused variable ‘g’ [-Wunused-variable]
+    2 |     int g = 5;
+      |         ^
+input.c: In function ‘main’:
+input.c:13:23: error: ‘g’ undeclared (first use in this function)
+   13 |     int e = func(a) + g;
+      |                       ^
+input.c:11:9: warning: unused variable ‘d’ [-Wunused-variable]
+   11 |     int d = 4;
+      |         ^
+input.c:10:9: warning: unused variable ‘c’ [-Wunused-variable]
+   10 |     int c = 3;
+      |         ^
+input.c:9:9: warning: unused variable ‘b’ [-Wunused-variable]
+    9 |     int b = 2;
+      |         ^
+input.c: In function ‘func’:
+input.c:4:1: warning: control reaches end of non-void function [-Wreturn-type]
+    4 | }
+      | ^
+
+return code: 1

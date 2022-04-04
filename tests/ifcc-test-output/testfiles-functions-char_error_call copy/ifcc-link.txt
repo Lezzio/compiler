@@ -1,0 +1,4 @@
+asm-ifcc.s: Assembler messages:
+asm-ifcc.s:43: Error: unsupported instruction `mov'
+
+return code: 1

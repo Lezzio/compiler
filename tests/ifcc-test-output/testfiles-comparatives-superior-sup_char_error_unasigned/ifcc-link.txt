@@ -1,0 +1,5 @@
+asm-ifcc.s: Assembler messages:
+asm-ifcc.s:20: Error: `%eax' not allowed with `movb'
+asm-ifcc.s:21: Error: `%eax' not allowed with `cmpb'
+
+return code: 1

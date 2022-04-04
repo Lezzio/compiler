@@ -1,38 +1,58 @@
 .text
 .globl	main
  main: 
-.mainBB0:
-   #prologue
-   pushq %rbp
-   movq %rsp, %rbp
-  subq $32, %rsp
-   movl $1, -4(%rbp)
-   movl -4(%rbp), %eax
-   movl %eax, -28(%rbp)
-   jmp   .mainBB3
-.mainBB3:
-   movl $5, -8(%rbp)
-   movl -28(%rbp), %eax
-   cmpl -8(%rbp), %eax
-    setne %al
-    movzbl %al, %eax
-   movl %eax, -12(%rbp)
-   cmpl    $0, -12(%rbp)
-   je  .mainBB4
-.mainBB2:
-   movl $1, -16(%rbp)
-   movl -28(%rbp), %eax
-   addl -16(%rbp), %eax
-   movl %eax, -20(%rbp)
-   movl -20(%rbp), %eax
-   movl %eax, -28(%rbp)
-   jmp   .mainBB3
-.mainBB4:
-   movl -28(%rbp), %eax
-   movl %eax, -24(%rbp)
-   jmp   .mainBB1
-.mainBB1:
-   movl -24(%rbp), %eax
-   #epilogue
-   leave
-   ret
+.main_0:
+	#prologue
+	pushq		%rbp
+	movq		%rsp, %rbp
+
+	#offset
+	subq		$32, %rsp
+
+	#ldconst
+	movl		$1, -4(%rbp)
+
+	#copy
+	movl		-4(%rbp), %eax
+	movl		%eax, -28(%rbp)
+	jmp			.main_3
+.main_3:
+
+	#ldconst
+	movl		$5, -8(%rbp)
+
+	#cmp_neq
+	movl		-28(%rbp), %eax
+	cmpl		-8(%rbp), %eax
+	setne		%al
+	movzbl		%al, %eax
+	movl		%eax, -12(%rbp)
+	cmpl		$0, -12(%rbp)
+	je			.main_4
+.main_2:
+
+	#ldconst
+	movl		$1, -16(%rbp)
+
+	#add
+	movl		-28(%rbp), %eax
+	addl		-16(%rbp), %eax
+	movl		%eax, -20(%rbp)
+
+	#copy
+	movl		-20(%rbp), %eax
+	movl		%eax, -28(%rbp)
+	jmp			.main_3
+.main_4:
+
+	#ret
+	movl		-28(%rbp), %eax
+	movl		%eax, -24(%rbp)
+	jmp			.main_1
+.main_1:
+
+	#finret
+	movl		-24(%rbp), %eax
+	#epilogue
+	leave
+	ret
