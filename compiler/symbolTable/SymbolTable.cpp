@@ -127,6 +127,15 @@ bool SymbolTable::defParameter(const string& name, Scope *scope, TypeSymbol type
     return false;
 }
 
+bool SymbolTable::setFunctionParameters(const string &name, const vector<TypeSymbol> &parameters, int number){
+    Symbol * function = lookupSymbol(name, &GLOBAL_SCOPE);
+    if(function==nullptr){
+        return false;
+    }
+    function->setParameters(parameters, number);
+    return true;
+}
+
 /**
  * @brief Method which permits to print the content of symbol table 
  * 
@@ -204,6 +213,8 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
         case INT8_T:
         case CHAR :
             return 1;
+        case VOID :
+            return 0;    
         default:
             cerr << "Error in getOffsetType" << endl;
             exit(1);
@@ -256,6 +267,8 @@ Symbol *SymbolTable::lookupParameter(const string& name, Scope *scope) {
     //cout << "LOOKING UP PARAMETER HENCE SYMBOL" << endl;
     return lookupSymbol(name, scope);
 }
+
+
 
 /**
  * @brief Destroy the Symbol Table:: Symbol Table object

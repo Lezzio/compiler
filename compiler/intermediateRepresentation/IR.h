@@ -185,6 +185,7 @@ public:
     void setReturnSymbol(const string& name, Scope *scope);
     void setCurrentFunction(string name) { symbolTable->current_function = name; }
     void setParametersPosition(const string &name, int position, Scope *pScope);
+    bool setFunctionParameters(const string &name, const vector<TypeSymbol> &parameters, int number);
     bool doesSymbolExist(const string& name, Scope *scope);
     string getOffset();
     SymbolTable * getSymbolTable();

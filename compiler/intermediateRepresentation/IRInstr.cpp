@@ -5,6 +5,11 @@ using namespace std;
 
 #include "IR.h"
 
+/**
+ * @brief Method which generate/assemble in x86
+ *
+ * @param o the output stream
+ */
 void IRInstr::gen_asm_x86(ostream &o) {
     string reg = "%eax";
     if (t == CHAR || t == INT8_T) {
@@ -342,6 +347,12 @@ void IRInstr::gen_asm_x86(ostream &o) {
     }
 }
 
+/**
+ * @brief Method which shrink asm x86 to ARM
+ *
+ * @param str_x86 the input string
+ * @return string the output string
+ */
 string shrink_x86_to_ARM(string str_x86) {
     if (str_x86[0] == '$') { //constant à charger
         return str_x86.substr(1);
@@ -351,6 +362,11 @@ string shrink_x86_to_ARM(string str_x86) {
     }
 }
 
+/**
+ * @brief Method which generate/assemble in ARM
+ *
+ * @param o the output stream
+ */
 void IRInstr::gen_asm_ARM(ostream &o) {
 
     switch (op) {
@@ -597,10 +613,29 @@ void IRInstr::gen_asm_ARM(ostream &o) {
     }
 }
 
+/**
+ * @brief Construct a new IRInstr::IRInstr object
+ *
+ * @param bb_
+ * @param op
+ * @param t
+ * @param params
+ */
 IRInstr::IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> params)
         : bb(bb_), op(op), t(t), params(std::move(params)) {
 }
 
+/******************************************* Instructions ******************************************************/
+/**
+ * @brief Get the mov instruction asm code
+ *
+ * @param origine : origin register name
+ * @param destination : destination register name
+ * @param arch : architecture used x86 or ARM
+ * @param type : type of the symbol
+ * @param cst : bool const or not
+ * @return string
+ */
 string IRInstr::getCastInstr(const string &origine, const string &destination, TypeSymbol type_from, bool sign, Arch arch)
 {
     // t := type_to
@@ -640,7 +675,6 @@ string IRInstr::getCastInstr(const string &origine, const string &destination, T
 }
 
 
-/** Instructions */
 string IRInstr::getMovInstr(const string &origine, const string &destination, TypeSymbol type, Arch arch, bool cst) {
     if (arch == x86) {
         if (type == INT) {
@@ -689,6 +723,15 @@ string IRInstr::getMovInstr(const string &origine, const string &destination, Ty
     }
 }
 
+/**
+ * @brief Get the add instruction asm code
+ *
+ * @param arg1 : register content to add
+ * @param arg2 : register in which the content is added
+ * @param arch : architecture used x86 or ARM
+ * @param dest : destination register (ARM)
+ * @return string
+ */
 string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
     if (arch == x86) {
         string action = "\taddl\t\t";
@@ -706,7 +749,15 @@ string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch, c
     }
 }
 
-
+/**
+ * @brief Get the substraction instruction asm code
+ *
+ * @param arg1 : register content to substract
+ * @param arg2 : register in which the content is substracted
+ * @param arch : architecture used x86 or ARM
+ * @param dest : destination register (ARM)
+ * @return string
+ */
 string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
     if (arch == x86) {
         string action = "\tsubl\t\t";
@@ -723,6 +774,14 @@ string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch, c
     }
 }
 
+/**
+ * @brief Get the multiplication instruction asm code
+ *
+ * @param arg1 : register content to multiply
+ * @param arg2 : register in which the content is multiplied
+ * @param arch : architecture used x86 or ARM
+ * @return string
+ */
 string IRInstr::getMulInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
         string action = "\timull\t\t";
@@ -736,6 +795,15 @@ string IRInstr::getMulInstr(const string &arg1, const string &arg2, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the division instruction asm code
+ *
+ * @param arg1 : register content to divide
+ * @param arg2 : register in which the content is divided
+ * @param arch : architecture used x86 or ARM
+ * @param modulo
+ * @return string
+ */
 string IRInstr::getDivInstr(const string &arg1, const string &arg2, Arch arch, bool modulo) {
     if (arch == x86) {
         string action = "\tidivl\t\t";
@@ -785,6 +853,15 @@ string IRInstr::getDivInstr(const string &arg1, const string &arg2, Arch arch, b
 	bl	__aeabi_idivmod(PLT)
 	mov	r3, r1
  */
+
+/**
+ * @brief Get the or instruction asm code
+ *
+ * @param arg1 : register which will contain the bool result
+ * @param arg2 : register bool operation result
+ * @param arch : architecture used x86 or ARM
+ * @return string
+ */
 string IRInstr::getOrInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
         string action = "\torl\t\t";
@@ -798,6 +875,14 @@ string IRInstr::getOrInstr(const string &arg1, const string &arg2, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the and instruction asm code
+ *
+ * @param arg1 : register which will contain the bool result
+ * @param arg2 : register bool operation result
+ * @param arch : architecture used x86 or ARM
+ * @return string
+ */
 string IRInstr::getAndInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
         string action = "\tandl\t\t";
@@ -812,6 +897,14 @@ string IRInstr::getAndInstr(const string &arg1, const string &arg2, Arch arch) {
     }
 }
 
+/**
+ * @brief
+ *
+ * @param arg1
+ * @param arg2
+ * @param arch
+ * @return string
+ */
 string IRInstr::getXorInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
         string action = "\txorl\t\t";
@@ -826,6 +919,14 @@ string IRInstr::getXorInstr(const string &arg1, const string &arg2, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the xor instruction asm code
+ *
+ * @param arg1 : register which will contain the bool result
+ * @param arg2 : register bool operation result
+ * @param arch : architecture used x86 or ARM
+ * @return string
+ */
 string IRInstr::getCompInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
         string action = "\tcmpl\t\t";
@@ -840,6 +941,13 @@ string IRInstr::getCompInstr(const string &arg1, const string &arg2, Arch arch) 
     }
 }
 
+/**
+ * @brief Get the not instruction asm code
+ *
+ * @param arg1 : register which will contain the bool result
+ * @param arch : architecture used x86 or ARM
+ * @return string
+ */
 string IRInstr::getNotInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         string action = "\tnotl\t\t";
@@ -854,6 +962,13 @@ string IRInstr::getNotInstr(const string &arg1, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the neg instruction asm code
+ *
+ * @param arg1 : register which will contain the result
+ * @param arch : architecture used x86 or ARM
+ * @return string
+ */
 string IRInstr::getNegInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         string action = "\tnegl\t\t";
@@ -867,6 +982,12 @@ string IRInstr::getNegInstr(const string &arg1, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the eq instruction asm code
+ *
+ * @param arg1 : register which will contain the flag result
+ * @param arch : architecture used x86 or ARM
+ */
 string IRInstr::getEqInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         return "\tsete\t\t" + arg1 + "\n";
@@ -878,6 +999,12 @@ string IRInstr::getEqInstr(const string &arg1, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the neq instruction asm code
+ *
+ * @param arg1 : register which will contain the flag result
+ * @param arch : architecture used x86 or ARM
+ */
 string IRInstr::getNeqInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         return "\tsetne\t\t" + arg1 + "\n";
@@ -889,6 +1016,12 @@ string IRInstr::getNeqInstr(const string &arg1, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the Lt instruction asm code
+ *
+ * @param arg1 : register which will contain the flag result
+ * @param arch : architecture used x86 or ARM
+ */
 string IRInstr::getLtInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         return "\tsetl\t\t" + arg1 + "\n";
@@ -910,6 +1043,12 @@ string IRInstr::getLtInstr(const string &arg1, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the Le instruction asm code
+ *
+ * @param arg1 : register which will contain the flag result
+ * @param arch : architecture used x86 or ARM
+ */
 string IRInstr::getLeInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         return "\tsetle\t\t" + arg1 + "\n";
@@ -931,6 +1070,12 @@ string IRInstr::getLeInstr(const string &arg1, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the Gt instruction asm code
+ *
+ * @param arg1 : register which will contain the flag result
+ * @param arch : architecture used x86 or ARM
+ */
 string IRInstr::getGtInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         return "\tsetg\t\t" + arg1 + "\n";
@@ -952,6 +1097,12 @@ string IRInstr::getGtInstr(const string &arg1, Arch arch) {
     }
 }
 
+/**
+ * @brief Get the Ge instruction asm code
+ *
+ * @param arg1 : register which will contain the flag result
+ * @param arch : architecture used x86 or ARM
+ */
 string IRInstr::getGeInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         return "\tsetge\t\t" + arg1 + "\n";
@@ -1011,11 +1162,24 @@ string IRInstr::getGeInstr(const string &arg1, Arch arch) {
  * On mov r7 dans sp
  */
 
-
+/**
+ * @brief Get the jump instruction asm code
+ *
+ * @param arg1 : register to where the jump will be done
+ * @param arch : architecture used x86 or ARM
+ * @return string
+ */
 string IRInstr::getJumpInstr(const string &arg1, Arch arch) {
     return "\tjmp\t\t\t" + arg1 + "\n";
 }
 
+/**
+ * @brief Get the call instruction asm code
+ *
+ * @param arg1 : register called
+ * @param arch : architecture used x86 or ARM
+ * @return string
+ */
 string IRInstr::getCallInstr(const string &arg1, Arch arch) {
     return "\tcall\t\t" + arg1 + "\n";
 }

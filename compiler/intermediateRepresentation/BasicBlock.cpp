@@ -3,12 +3,22 @@ using namespace std;
 
 #include "IR.h"
 
+/**
+ * @brief Construct a new Basic Block:: Basic Block object
+ * 
+ * @param cfg : la control flow graphe
+ * @param entry_label : le label du bloc
+ */
 BasicBlock::BasicBlock(CFG *cfg, string entry_label)
     : cfg(cfg), label(entry_label), exit_true(nullptr), exit_false(nullptr), scope(cfg->getCurrentScope())
 {
     //cout << "BB scope is = " << cfg->getCurrentScope() << endl; debug
 }
 
+/**
+ * @brief Destroy the Basic Block:: Basic Block object
+ * 
+ */
 BasicBlock::~BasicBlock()
 {
     for (IRInstr * instr : this->instructions) {
@@ -16,6 +26,13 @@ BasicBlock::~BasicBlock()
     }
 }
 
+/**
+ * @brief Ajoute une instruction à la liste des instructions possibles
+ * 
+ * @param op : l'operation executable 
+ * @param t : le type du symbole
+ * @param params : les parametres liés à l'instruction
+ */
 void BasicBlock::add_IRInstr(IRInstr::Operation op, TypeSymbol t, vector<string> params)
 {
     instructions.push_back(new IRInstr(this, op, t, params));
@@ -34,6 +51,12 @@ void BasicBlock::add_IRInstr(IRInstr::Operation op, TypeSymbol t, vector<string>
                     followed by an unconditional branch to the exit_true branch
      The attribute test_var_name itself is defined when converting
   the if, while, etc of the AST  to IR. */
+
+/**
+ * @brief génére l'executable pour les architectures x86
+ * 
+ * @param o : le flux de sortie
+ */
 void BasicBlock::gen_asm_86(ostream &o)
 {
     /*cout << "----------------" << endl;
@@ -83,7 +106,11 @@ void BasicBlock::gen_asm_86(ostream &o)
     }
 }
 
-
+/**
+ * @brief génère l'exécutable pour les architectures arm
+ * 
+ * @param o : le flux de sortie
+ */
 void BasicBlock::gen_asm_ARM(ostream &o)
 {
     o << label << ":" << "\n";

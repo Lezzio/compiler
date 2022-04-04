@@ -383,6 +383,7 @@ class Parameter : public ASTNode
         Parameter(string name, TypeSymbol type) :
             name(name),type(type){};
         virtual ~Parameter()= default;
+        TypeSymbol getType() {return type;};
     protected :
         string name;
         TypeSymbol type;
@@ -396,6 +397,7 @@ class Parameters : public Statement
         Parameters() :
                 Statement(){};
             virtual ~Parameters();
+        vector<Parameter *> getParameters() {return parameters;}; 
     protected :
         vector<Parameter *> parameters;
 };
@@ -422,6 +424,7 @@ class ExprFunction : public Expr
         ExprFunction(string varName) :
             Expr(varName){};
         virtual ~ExprFunction();
+        string getName() const {return varName;};
     protected : 
         vector<Expr *> parameters;
 };
