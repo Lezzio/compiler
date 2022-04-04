@@ -516,13 +516,13 @@ IRInstr::IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> par
 string IRInstr::getMovInstr(const string &origine, const string &destination, TypeSymbol type, Arch arch, bool cst) {
     if (arch == x86) {
         if (type == INT) {
-            string action = "   movl ";
+            string action = "\tmovl\t\t";
             if (t == CHAR) {
-                action = "  movb ";
+                action = "\tmovb\t\t";
             }
             return action + origine + ", " + destination + "\n";
         } else if (type == INT8_T) {
-            return "    movzbl " + origine + ", " + destination + "\n";
+            return "\tmovzbl\t\t" + origine + ", " + destination + "\n";
         } else {
             return "";
         }
@@ -560,9 +560,9 @@ string IRInstr::getMovInstr(const string &origine, const string &destination, Ty
 
 string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
     if (arch == x86) {
-        string action = "   addl ";
+        string action = "\taddl\t\t";
         if (t == CHAR) {
-            action = "  addb ";
+            action = "\taddb\t\t";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
@@ -575,12 +575,12 @@ string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch, c
 
 string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
     if (arch == x86) {
-        string action = "   subl ";
+        string action = "\tsubl\t\t";
         if (t == CHAR) {
-            action = "  subb ";
+            action = "\tsubb\t\t";
         }
         if (t == INT64_T) {
-            action = "  subq ";
+            action = "\tsubq\t\t";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
@@ -591,9 +591,9 @@ string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch, c
 
 string IRInstr::getMulInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
-        string action = "   imull ";
+        string action = "\timull\t\t";
         if (t == CHAR) {
-            action = "  imulb ";
+            action = "\timulb\t\t";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
@@ -604,9 +604,9 @@ string IRInstr::getMulInstr(const string &arg1, const string &arg2, Arch arch) {
 
 string IRInstr::getDivInstr(const string &arg1, const string &arg2, Arch arch, bool modulo) {
     if (arch == x86) {
-        string action = "   idivl ";
+        string action = "\tidivl\t\t";
         if (t == CHAR) {
-            action = "  idivb ";
+            action = "\tidivb\t\t";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
@@ -653,9 +653,9 @@ string IRInstr::getDivInstr(const string &arg1, const string &arg2, Arch arch, b
  */
 string IRInstr::getOrInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
-        string action = "   orl ";
+        string action = "\torl\t\t";
         if (t == CHAR) {
-            action = "  orb ";
+            action = "\torb\t\t";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
@@ -666,9 +666,9 @@ string IRInstr::getOrInstr(const string &arg1, const string &arg2, Arch arch) {
 
 string IRInstr::getAndInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
-        string action = "   andl ";
+        string action = "\tandl\t\t";
         if (t == CHAR) {
-            action = "  andb ";
+            action = "\tandb\t\t";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
@@ -680,11 +680,11 @@ string IRInstr::getAndInstr(const string &arg1, const string &arg2, Arch arch) {
 
 string IRInstr::getXorInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
-        string action = "   xorl ";
+        string action = "\txorl\t\t";
         if (t == CHAR) {
-            action = "  xorb ";
+            action = "\txorb\t\t";
         }
-        return "    xorl " + arg1 + ", " + arg2 + "\n";
+        return action + arg1 + ", " + arg2 + "\n";
     } else {
         string action = "   eors r3, ";
         return action + arg1 + ", " + arg2 + "\n";
@@ -694,9 +694,9 @@ string IRInstr::getXorInstr(const string &arg1, const string &arg2, Arch arch) {
 
 string IRInstr::getCompInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
-        string action = "   cmpl ";
+        string action = "\tcmpl\t\t";
         if (t == CHAR) {
-            action = "  cmpb ";
+            action = "\tcmpb\t\t";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
@@ -708,9 +708,9 @@ string IRInstr::getCompInstr(const string &arg1, const string &arg2, Arch arch) 
 
 string IRInstr::getNotInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
-        string action = "   notl ";
+        string action = "\tnotl\t\t";
         if (t == CHAR) {
-            action = "  notb ";
+            action = "\tnotb\t\t";
         }
         return action + arg1 + "\n";
     } else {
@@ -722,9 +722,9 @@ string IRInstr::getNotInstr(const string &arg1, Arch arch) {
 
 string IRInstr::getNegInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
-        string action = "   negl ";
+        string action = "\tnegl\t\t";
         if (t == CHAR) {
-            action = "  negb ";
+            action = "\tnegb\t\t";
         }
         return action + arg1 + "\n";
     } else {
@@ -735,7 +735,7 @@ string IRInstr::getNegInstr(const string &arg1, Arch arch) {
 
 string IRInstr::getEqInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
-        return "    sete " + arg1 + "\n";
+        return "\tsete\t\t" + arg1 + "\n";
     } else {
         string action = "   ite eq\n";
         string action_true = "  moveq\t" + arg1 + ", #1\n";
@@ -746,7 +746,7 @@ string IRInstr::getEqInstr(const string &arg1, Arch arch) {
 
 string IRInstr::getNeqInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
-        return "    setne " + arg1 + "\n";
+        return "\tsetne\t\t" + arg1 + "\n";
     } else {
         string ite = "   ite ne\n";
         string action_true = " movne\t" + arg1 + ", #1\n";
@@ -757,7 +757,7 @@ string IRInstr::getNeqInstr(const string &arg1, Arch arch) {
 
 string IRInstr::getLtInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
-        return "    setl " + arg1 + "\n";
+        return "\tsetl\t\t" + arg1 + "\n";
     } else {
         string cond, cond_inv;
 
@@ -778,7 +778,7 @@ string IRInstr::getLtInstr(const string &arg1, Arch arch) {
 
 string IRInstr::getLeInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
-        return "    setle " + arg1 + "\n";
+        return "\tsetle\t\t" + arg1 + "\n";
     } else {
         string cond, cond_inv;
 
@@ -799,7 +799,7 @@ string IRInstr::getLeInstr(const string &arg1, Arch arch) {
 
 string IRInstr::getGtInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
-        return "    setg " + arg1 + "\n";
+        return "\tsetg\t\t" + arg1 + "\n";
     } else {
         string cond, cond_inv;
 
@@ -820,7 +820,7 @@ string IRInstr::getGtInstr(const string &arg1, Arch arch) {
 
 string IRInstr::getGeInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
-        return "    setge " + arg1 + "\n";
+        return "\tsetge\t\t" + arg1 + "\n";
     } else {
         string cond, cond_inv;
 
@@ -879,9 +879,9 @@ string IRInstr::getGeInstr(const string &arg1, Arch arch) {
 
 
 string IRInstr::getJumpInstr(const string &arg1, Arch arch) {
-    return "   jmp   " + arg1 + "\n";
+    return "\tjmp\t\t\t" + arg1 + "\n";
 }
 
 string IRInstr::getCallInstr(const string &arg1, Arch arch) {
-    return "   call " + arg1 + "\n";
+    return "\tcall\t\t" + arg1 + "\n";
 }

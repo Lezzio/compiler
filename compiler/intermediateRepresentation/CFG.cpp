@@ -118,19 +118,19 @@ string CFG::IR_reg_to_asm_param(int position) {
 }
 
 void CFG::gen_asm_prologue_x86(ostream &o) {
-    o << "   #prologue\n"
-         "   pushq %rbp\n"
-         "   movq %rsp, %rbp\n";
+    o << "\t#prologue\n"
+         "\tpushq\t\t%rbp\n"
+         "\tmovq\t\t%rsp, %rbp\n";
 }
 
 void CFG::gen_asm_epilogue_x86(ostream &o) {
-    cout << "   #epilogue\n";
+    cout << "\t#epilogue\n";
     if (get_var_type(functionName, &GLOBAL_SCOPE) == VOID) {
-        cout << "   nop\n";
+        cout << "\tnop\n";
     }
     //     "   popq %rbp\n"
-    cout << "   leave\n"
-            "   ret\n";
+    cout << "\tleave\n"
+            "\tret\n";
 }
 
 

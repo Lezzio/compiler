@@ -69,17 +69,17 @@ void BasicBlock::gen_asm_86(ostream &o)
        //this->cfg->gen_asm_epilogue_x86(o);
     } else if(exit_false == nullptr)
     {
-        o << "   jmp   " << exit_true->label << "\n";
+        o << "\tjmp\t\t\t" << exit_true->label << "\n";
     } else {
         string address = cfg->IR_reg_to_asm(test_var_name, this->scope);
         TypeSymbol t = cfg->get_var_type(test_var_name, this->scope);
 
-        string action = "   cmpl";
+        string action = "\tcmpl";
         if (t == CHAR) {
-            action = "  cmpb";
+            action = "\tcmpb";
         }
-       o << action << "    $0, " << address << "\n";
-       o << "   je  " << exit_false->label << "\n"; 
+       o << action << "\t\t$0, " << address << "\n";
+       o << "\tje\t\t\t" << exit_false->label << "\n"; 
     }
 }
 
