@@ -1,5 +1,5 @@
 int main() {
     char a = 'a';
     char b = 'b';
-    return b<a;
+    return b<=a;
 }

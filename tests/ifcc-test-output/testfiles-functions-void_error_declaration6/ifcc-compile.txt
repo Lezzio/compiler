@@ -1,0 +1,5 @@
+line 1:12 extraneous input ';' expecting {'(', '}', 'if', 'while', 'for', '-', '!', 'return', CONST, 'int', 'char', 'break', 'continue', IDENT, CHARACTER}
+line 3:8 no viable alternative at input 'int main('
+error: syntax error during parsing
+
+return code: 1

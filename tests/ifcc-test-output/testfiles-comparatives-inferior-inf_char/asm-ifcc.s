@@ -23,10 +23,10 @@
 	movb		-3(%rbp), %al
 	movb		%al, -4(%rbp)
 
-	#cmp_lt
+	#cmp_le
 	movb		-2(%rbp), %al
 	cmpb		-4(%rbp), %al
-	setl		%al
+	setle		%al
 	movb		%al, -5(%rbp)
 
 	#ret

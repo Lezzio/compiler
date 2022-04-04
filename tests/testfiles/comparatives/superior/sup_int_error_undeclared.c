@@ -1,4 +1,4 @@
 int main() {
     int b = 1;
-    return b>a;
+    return b>=a;
 }

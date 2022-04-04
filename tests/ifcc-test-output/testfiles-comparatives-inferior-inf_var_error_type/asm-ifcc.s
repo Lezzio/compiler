@@ -27,10 +27,10 @@
 	movsbl		-13(%rbp), %eax
 	movl		%eax, -13(%rbp)
 
-	#cmp_lt
+	#cmp_le
 	movl		-8(%rbp), %eax
 	cmpl		-13(%rbp), %eax
-	setl		%al
+	setle		%al
 	movzbl		%al, %eax
 	movl		%eax, -17(%rbp)
 
