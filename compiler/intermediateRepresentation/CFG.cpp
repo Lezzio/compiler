@@ -72,8 +72,8 @@ void CFG::gen_asm_ARM(ostream &o) {
 }
 
 string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
-    cout << "IR reg to asm" << endl;
-    cout << "reg = " << reg << " | scope = " << scope << endl;
+    //cout << "IR reg to asm" << endl; debug
+    //cout << "reg = " << reg << " | scope = " << scope << endl; debug
     Symbol *symbolReturned = this->symbolTable->lookupSymbol(reg, scope);
     if (symbolReturned != nullptr) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
@@ -158,8 +158,8 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
 
 // symbol symbolTable methods
 void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol) {
-    cout << "--------------" << endl;
-    cout << "About to add symbol named = " << name << endl;
+    //cout << "--------------" << endl; debug
+    //cout << "About to add symbol named = " << name << endl; debug
     if (stateSymbol == PARAMETER) {
         this->symbolTable->defParameter(name, getCurrentScope(), t);
     } else if (stateSymbol == FUNCTION) {
@@ -169,9 +169,9 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
     } else {
         symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false);
     }
-    cout << "Added symbol finished" << endl;
-    symbolTable->print_dictionary();
-    cout << "--------------" << endl;
+    //cout << "Added symbol finished" << endl; debug
+    //symbolTable->print_dictionary(); debug
+    //cout << "--------------" << endl; debug
 }
 
 //TODO Feed scope to the set parameter position
@@ -196,7 +196,7 @@ int CFG::get_var_index(string name) {
 }
 
 TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
-    cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
+    //cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl; debug
     Symbol *symbol = symbolTable->lookupSymbol(name, scope);
     if (symbol == nullptr) {
         symbol = symbolTable->lookupParameter(name, scope);
@@ -248,9 +248,9 @@ SymbolTable *CFG::getSymbolTable() {
 }
 
 void CFG::enteringScope() {
-    cout << "Entering scope" << endl;
+    //cout << "Entering scope" << endl; debug
     int level = highestLevel++;
-    cout << "Level = " << level;
+    //cout << "Level = " << level; debug
     levelHistory.push_back(level);
     current_bb->scope = getCurrentScope(); //Update the current basic block to be aligned with the new scope
 }
@@ -261,7 +261,7 @@ void CFG::exitingScope() {
 
 Scope *CFG::getCurrentScope() {
     int level = levelHistory.back();
-    cout << "| Current scope LEVEL is = " << level << " function name " + functionName << endl;
+    //cout << "| Current scope LEVEL is = " << level << " function name " + functionName << endl; debug
     auto *scope = new Scope(functionName);
     scope->levelContext = levelHistory; //Copy assign
     return scope;

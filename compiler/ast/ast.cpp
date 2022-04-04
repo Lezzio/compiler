@@ -219,17 +219,17 @@ Affectation::~Affectation() {
 }
 
 string DecAffectation::linearize(CFG *cfg) {
-    cout << " DEF AFFECTATION L " << endl;
+    //cout << " DEF AFFECTATION L " << endl; debug
     string var1 = declaration->linearize(cfg);
-    cout << " POINT #1 " << endl;
+    //cout << " POINT #1 " << endl; debug
     string var2 = rExpr->linearize(cfg);
-    cout << " POINT #2 " << endl;
+    //cout << " POINT #2 " << endl; debug
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
-    cout << " POINT #3 " << endl;
+    //cout << " POINT #3 " << endl; debug
 
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
-    cout << " END DEF AFFECTATION L " << endl;
+    //cout << " END DEF AFFECTATION L " << endl; debug
     return var1;
 }
 
@@ -306,7 +306,7 @@ string InstructionIF::linearize(CFG *cfg) {
     cfg->current_bb->exit_true = endIfBB;
 
     trueCodeBlock->linearize(cfg);
-    cout << "BB scope is " << cfg->current_bb->scope << endl;
+    //cout << "BB scope is " << cfg->current_bb->scope << endl; debug
 
     if (falseCodeBlock != nullptr) {
         cfg->add_bb(elseBB);
@@ -468,11 +468,11 @@ string Function::linearize(CFG *cfg) {
     cfg->return_bb = returnBlock;
 
     if (parameters != nullptr) {
-        cout << "About to L parameters" << endl;
+        //cout << "About to L parameters" << endl; debug
         parameters->linearize(cfg);
     }
 
-    cout << "About to L block" << endl;
+    //cout << "About to L block" << endl; debug
     block->linearize(cfg);
     return "";
 }
@@ -516,9 +516,9 @@ vector<CFG *> Prog::linearize() {
 
     for (Function *f: functions) {
         CFG *cfg = new CFG(symbolTable, f->name);
-        cout << "going to L function :" << f->name << endl;
+        //cout << "going to L function :" << f->name << endl; debug
         f->linearize(cfg);
-        cout << "end L of function :" << f->name << endl;
+        //cout << "end L of function :" << f->name << endl; debug
         cfgs.push_back(cfg);
     }
 

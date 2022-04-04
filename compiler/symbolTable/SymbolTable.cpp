@@ -1,6 +1,7 @@
 #include "SymbolTable.h"
 #include <iostream>
 #include <string>
+#include <iterator>
 
 #define DECLARATION_INDEX 1
 
@@ -17,7 +18,7 @@ SymbolTable::SymbolTable() {
 }
 
 int SymbolTable::addSymbol(const string &symbolName, Scope * symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst) {
-    cout << "ADD SYMBOL name = " << symbolName << " scope current level = " << symbolScope->getCurrentLevel() << endl;
+    //cout << "ADD SYMBOL name = " << symbolName << " scope current level = " << symbolScope->getCurrentLevel() << endl; debug
     int index = staticIndex + getOffsetType(typeSymbol);
     auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst);
     if (!doesSymbolExist(newSymbol)) {
@@ -26,14 +27,14 @@ int SymbolTable::addSymbol(const string &symbolName, Scope * symbolScope, TypeSy
         highestIndex = index;
         return newSymbol->getAddress();
     } else {
-        cout << "Error detected can't declare symbol twice ADD_SYMBOL" << endl;
+        //cout << "Error detected can't declare symbol twice ADD_SYMBOL" << endl; debug
     }
     delete newSymbol;
     return -1;
 }
 
 bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
-    cout << "DECLARE SYMBOL name = " << symbolName << " scope current level = " << symbolScope->getCurrentLevel() << endl;
+    //cout << "DECLARE SYMBOL name = " << symbolName << " scope current level = " << symbolScope->getCurrentLevel() << endl; debug
     auto *newSymbol = new Symbol(symbolName, symbolScope, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst);
 
     if (!doesSymbolExist(newSymbol)) {
@@ -42,7 +43,7 @@ bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, Ty
     } else {
         //Error, can't declare a symbol twice
         //ErrorManager::getInstance()->addError(new Error());
-        cout << "Error detected can't declare symbol twice DECLARE_SYMBOL" << endl;
+        //cout << "Error detected can't declare symbol twice DECLARE_SYMBOL" << endl; debug
     }
     delete newSymbol;
     return false;
@@ -57,7 +58,7 @@ int SymbolTable::assignSymbol(Symbol *symbol) {
 }
 
 int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
-    cout << "DEF FUNCTION name = " << name << " global scope level = " << GLOBAL_SCOPE.getCurrentLevel() << endl;
+    //cout << "DEF FUNCTION name = " << name << " global scope level = " << GLOBAL_SCOPE.getCurrentLevel() << endl; debug
     auto *newSymbol = new Symbol(name, &GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
     if (!doesSymbolExist(newSymbol)) {
         this->symbolTable[newSymbol->getName()][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
@@ -148,33 +149,34 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  * @return SYMBOL 
  */
 Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
-    cout << "SYMBOL LOOK UP name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
+    //cout << "SYMBOL LOOK UP name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
     auto matchedMap = symbolTable.find(name);
-    cout << "lookup point #1" << endl;
+    //cout << "lookup point #1" << endl;
     if (matchedMap != symbolTable.end()) {
         auto levelContext = scope->levelContext;
-        cout << "lookup point #2" << endl;
+        //cout << "lookup point #2" << endl;
+        /*
         for (const auto& pair : matchedMap->second) {
             cout << "Registered scope level : " << pair.first << endl;
         }
         for (const auto& firstPair : levelContext) {
             cout << "Scope level context : " << firstPair << endl;
-        }
+        }*/
         for (auto it = levelContext.rbegin(); it != levelContext.rend(); ++it) {
             int level = *it;
-            cout << "Lookup for " << name << " iteration for level = " << level;
+            //cout << "Lookup for " << name << " iteration for level = " << level;
             auto symbolIt = matchedMap->second.find(level);
             if (symbolIt != matchedMap->second.end()) {
                 return symbolIt->second;
             }
         }
     }
-    cout << "lookupSymbol # THE SYMBOL IS NULL" << endl;
+    //cout << "lookupSymbol # THE SYMBOL IS NULL" << endl;
     return nullptr;
 }
 
 Symbol *SymbolTable::lookupParameter(const string& name, Scope *scope) {
-    cout << "LOOKING UP PARAMETER HENCE SYMBOL" << endl;
+    //cout << "LOOKING UP PARAMETER HENCE SYMBOL" << endl;
     return lookupSymbol(name, scope);
 }
 
