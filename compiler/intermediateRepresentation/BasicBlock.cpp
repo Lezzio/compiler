@@ -87,32 +87,15 @@ void BasicBlock::gen_asm_86(ostream &o)
 void BasicBlock::gen_asm_ARM(ostream &o)
 {
     o << label << ":" << "\n";
+    /*
     if(cfg->firstBB(this)){
         this->cfg->gen_asm_prologue_ARM(o);
         IRInstr * ir = new IRInstr(this,IRInstr::offset, INT64_T, {"124", "start"});
         ir->gen_asm_ARM(o);
         delete (ir);
-    }
+    }*/
     for(auto & instr : instructions)
     {
         instr->gen_asm_ARM(o);
-    }
-
-    if(exit_true == nullptr)
-    {
-        //this->cfg->gen_asm_epilogue_x86(o);
-    } else if(exit_false == nullptr)
-    {
-        o << "   jmp   " << exit_true->label << "\n";
-    } else {
-        string address = cfg->IR_reg_to_asm(test_var_name, this->scope);
-        TypeSymbol t = cfg->get_var_type(test_var_name, this->scope);
-
-        string action = "   cmpl";
-        if (t == CHAR) {
-            action = "  cmpb";
-        }
-        o << action << "    $0, " << address << "\n";
-        o << "   je  " << exit_false->label << "\n";
     }
 }

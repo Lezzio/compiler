@@ -50,10 +50,11 @@ void IRInstr::gen_asm_x86(ostream &o) {
                 destination = this->bb->cfg->IR_reg_to_asm_param(stoi(this->params[2]));
             } else {
              //   cout << "BRANCH 2" << endl;
+             /*
                 if (!bb->cfg->isSymbolAssigned(this->params[0], this->bb->scope)) {
                     //cout << "BRANCH 2 - assignSymbol" << endl; debug
                     this->bb->cfg->assignSymbol(this->params[0], this->bb->scope);
-                }
+                }*/
                 //cout << "BRANCH 2 - destination" << endl; debug
                 destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             }
@@ -198,9 +199,10 @@ void IRInstr::gen_asm_x86(ostream &o) {
         case wmem: {
             o << "\n";
             o << "\t#wmem\n";
+            /*
             if (!bb->cfg->isSymbolAssigned(this->params[0], this->bb->scope)) {
                     this->bb->cfg->assignSymbol(this->params[0], this->bb->scope);
-            }
+            }*/
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             o << getMovInstr(origin, reg);
@@ -376,9 +378,10 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             break;
         }
         case copy: {
+            /*
             if (!bb->cfg->isSymbolAssigned(this->params[0], this->bb->scope)) {
                 this->bb->cfg->assignSymbol(this->params[0], this->bb->scope);
-            }
+            }*/
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             string origin = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             o << getMovInstr(origin, "r3", t, ARM);
@@ -499,7 +502,8 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getCompInstr(rvalue, "r3", ARM);
+            o << getMovInstr(rvalue, "r3", t, ARM);
+            o << getCompInstr("r2", "r3", ARM);
             o << getEqInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
             break;
@@ -509,7 +513,8 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getCompInstr(rvalue, "r3", ARM);
+            o << getMovInstr(rvalue, "r3", t, ARM);
+            o << getCompInstr("r2", "r3", ARM);
             o << getNeqInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
             break;
@@ -519,7 +524,8 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getCompInstr(rvalue, "r3", ARM);
+            o << getMovInstr(rvalue, "r3", t, ARM);
+            o << getCompInstr("r2", "r3", ARM);
             o << getLtInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
             break;
@@ -529,7 +535,8 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getCompInstr(rvalue, "r3", ARM);
+            o << getMovInstr(rvalue, "r3", t, ARM);
+            o << getCompInstr("r2", "r3", ARM);
             o << getLeInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
             break;
@@ -539,7 +546,8 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getCompInstr(rvalue, "r3", ARM);
+            o << getMovInstr(rvalue, "r3", t, ARM);
+            o << getCompInstr("r2", "r3", ARM);
             o << getGtInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
             break;
@@ -549,7 +557,8 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             string lvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             string rvalue = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope));
             o << getMovInstr(lvalue, "r2", t, ARM);
-            o << getCompInstr(rvalue, "r3", ARM);
+            o << getMovInstr(rvalue, "r3", t, ARM);
+            o << getCompInstr("r2", "r3", ARM);
             o << getGeInstr("r3", ARM);
             o << getMovInstr("r3", destination, t, ARM);
             break;
@@ -558,7 +567,7 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             int value = stoi(this->params[0]);
             value = value / 4;
             value = value * 4 + 8;
-            string offset = "_" + to_string(value);
+            string offset = "#" + to_string(value);
             if (this->params[1] == "start") {
                 o << getSubInstr("sp", offset, ARM, "sp");
                 o << getAddInstr("sp", "#0", ARM, "r7");
@@ -746,7 +755,7 @@ string IRInstr::getOrInstr(const string &arg1, const string &arg2, Arch arch) {
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
-        string action = "   orrs r3, ";
+        string action = "\torrs r3, ";
         return action + arg1 + ", " + arg2 + "\n";
     }
 }
@@ -759,7 +768,7 @@ string IRInstr::getAndInstr(const string &arg1, const string &arg2, Arch arch) {
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
-        string action = "   ands r3, ";
+        string action = "\tands r3, ";
         return action + arg1 + ", " + arg2 + "\n";
         //return string(__FUNCTION__) + " not implemented for ARM\n";
     }
@@ -773,7 +782,7 @@ string IRInstr::getXorInstr(const string &arg1, const string &arg2, Arch arch) {
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
-        string action = "   eors r3, ";
+        string action = "\teors r3, ";
         return action + arg1 + ", " + arg2 + "\n";
         //return string(__FUNCTION__) + " not implemented for ARM\n";
     }
@@ -787,7 +796,7 @@ string IRInstr::getCompInstr(const string &arg1, const string &arg2, Arch arch) 
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
-        string action = "   cmp ";
+        string action = "\tcmp ";
         return action + arg1 + ", " + arg2 + "\n";
         //return string(__FUNCTION__) + " not implemented for ARM\n";
     }
@@ -815,7 +824,7 @@ string IRInstr::getNegInstr(const string &arg1, Arch arch) {
         }
         return action + arg1 + "\n";
     } else {
-        string action = "   rsbs r3, ";
+        string action = "\trsbs r3, ";
         return action + arg1 + ", #0\n";
     }
 }
@@ -824,10 +833,10 @@ string IRInstr::getEqInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         return "\tsete\t\t" + arg1 + "\n";
     } else {
-        string action = "   ite eq\n";
-        string action_true = "  moveq\t" + arg1 + ", #1\n";
-        string action_false = " movne\t" + arg1 + ", #0\n";
-        return action + action_true + action_false + "uxtb\tr3, r3";
+        string action = "\tite eq\n";
+        string action_true = "\tmoveq\t" + arg1 + ", #1\n";
+        string action_false = "\tmovne\t" + arg1 + ", #0\n";
+        return action + action_true + action_false + "\tuxtb\tr3, r3\n";
     }
 }
 
@@ -835,10 +844,10 @@ string IRInstr::getNeqInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
         return "\tsetne\t\t" + arg1 + "\n";
     } else {
-        string ite = "   ite ne\n";
-        string action_true = " movne\t" + arg1 + ", #1\n";
-        string action_false = "  moveq\t" + arg1 + ", #0\n";
-        return ite + action_true + action_false + "uxtb\tr3, r3";
+        string ite = "\tite ne\n";
+        string action_true = "\tmovne\t" + arg1 + ", #1\n";
+        string action_false = "\tmoveq\t" + arg1 + ", #0\n";
+        return ite + action_true + action_false + "\tuxtb\tr3, r3\n";
     }
 }
 
@@ -856,10 +865,10 @@ string IRInstr::getLtInstr(const string &arg1, Arch arch) {
             cond_inv = "ge";
         }
 
-        string ite = "   ite " + cond + "\n";
-        string action_true = "  mov" + cond + " " + arg1 + ", #1\n";
-        string action_false = "  mov" + cond_inv + " " + arg1 + ", #1\n";
-        return ite + action_true + action_false + "uxtb\tr3, r3";
+        string ite = "\tite " + cond + "\n";
+        string action_true = "\tmov" + cond + " " + arg1 + ", #1\n";
+        string action_false = "\tmov" + cond_inv + " " + arg1 + ", #0\n";
+        return ite + action_true + action_false + "\tuxtb\tr3, r3\n";
     }
 }
 
@@ -877,10 +886,10 @@ string IRInstr::getLeInstr(const string &arg1, Arch arch) {
             cond_inv = "gt";
         }
 
-        string ite = "   ite " + cond + "\n";
-        string action_true = "  mov" + cond + " " + arg1 + ", #1\n";
-        string action_false = "  mov" + cond_inv + " " + arg1 + ", #1\n";
-        return ite + action_true + action_false + "uxtb\tr3, r3";
+        string ite = "\tite " + cond + "\n";
+        string action_true = "\tmov" + cond + " " + arg1 + ", #1\n";
+        string action_false = "\tmov" + cond_inv + " " + arg1 + ", #0\n";
+        return ite + action_true + action_false + "\tuxtb\tr3, r3\n";
     }
 }
 
@@ -898,10 +907,10 @@ string IRInstr::getGtInstr(const string &arg1, Arch arch) {
             cond_inv = "le";
         }
 
-        string ite = "   ite " + cond + "\n";
-        string action_true = "  mov" + cond + " " + arg1 + ", #1\n";
-        string action_false = "  mov" + cond_inv + " " + arg1 + ", #1\n";
-        return ite + action_true + action_false + "uxtb\tr3, r3";
+        string ite = "\tite " + cond + "\n";
+        string action_true = "\tmov" + cond + " " + arg1 + ", #1\n";
+        string action_false = "\tmov" + cond_inv + " " + arg1 + ", #0\n";
+        return ite + action_true + action_false + "\tuxtb\tr3, r3\n";
     }
 }
 
@@ -919,10 +928,10 @@ string IRInstr::getGeInstr(const string &arg1, Arch arch) {
             cond_inv = "lt";
         }
 
-        string ite = "   ite " + cond + "\n";
-        string action_true = "  mov" + cond + " " + arg1 + ", #1\n";
-        string action_false = "  mov" + cond_inv + " " + arg1 + ", #1\n";
-        return ite + action_true + action_false + "uxtb\tr3, r3";
+        string ite = "\tite " + cond + "\n";
+        string action_true = "\tmov" + cond + " " + arg1 + ", #1\n";
+        string action_false = "\tmov" + cond_inv + " " + arg1 + ", #0\n";
+        return ite + action_true + action_false + "\tuxtb\tr3, r3\n";
     }
 }
 

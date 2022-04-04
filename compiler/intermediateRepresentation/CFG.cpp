@@ -60,21 +60,28 @@ void CFG::gen_asm_ARM(ostream &o) {
     cout << ".globl	main\n"
             " main: \n";
 #endif
+    gen_asm_prologue_ARM(o);
+    auto *ir_start = new IRInstr(bbs.back(), IRInstr::offset, INT64_T, {to_string(symbolTable->highestIndex), "start"});
+    ir_start->gen_asm_ARM(o);
+    delete (ir_start);
+
     //gen_asm_prologue_ARM(o);
     for (auto &bb : bbs) {
         bb->gen_asm_ARM(o);
     }
 
-    IRInstr *ir = new IRInstr(bbs.back(), IRInstr::offset, INT64_T, {"124", "end"});
-    ir->gen_asm_ARM(o);
-    delete (ir);
+    IRInstr *ir_end = new IRInstr(bbs.back(), IRInstr::offset, INT64_T, {to_string(symbolTable->highestIndex), "end"});
+    ir_end->gen_asm_ARM(o);
+    delete (ir_end);
     gen_asm_epilogue_ARM(o);
 }
 
 string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
+    /* debug
     cout << "IR reg to asm" << endl;
     cout << "reg = " << reg << " | scope = " << scope << endl;
     cout << " Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl;
+     */
     Symbol *symbolReturned = this->symbolTable->lookupSymbol(reg, scope);
     if (symbolReturned != nullptr) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
@@ -85,9 +92,11 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
         int position = symbolReturned->getIndex();
         return IR_reg_to_asm_param(position);
     }
+    //debug
+    //cout << "reg = " << reg << endl;
+    //symbolTable->print_dictionary();
+
     //ERROR
-    cout << "reg = " << reg << endl;
-    symbolTable->print_dictionary();
     cerr << "Error in IR_reg_to_asm" << endl;
     exit(1);
 }
@@ -138,8 +147,8 @@ void CFG::gen_asm_epilogue_x86(ostream &o) {
 
 void CFG::gen_asm_prologue_ARM(ostream &o) {
     o << "\tpush\t{r7, lr}" << endl;
-    o << "\tsub\tsp, sp, #space_needed" << endl;
-    o << "\tadd\tr7, sp, #0" << endl;
+    //o << "\tsub\tsp, sp, #space_needed" << endl;
+    //o << "\tadd\tr7, sp, #0" << endl;
     //TODO : gerer le sp et r7
 }
 
@@ -150,7 +159,7 @@ void CFG::gen_asm_prologue_ARM(ostream &o) {
  */
 
 void CFG::gen_asm_epilogue_ARM(ostream &o) {
-    o << "\tadds\tr7, r7, #space_needed" << endl;
+    //o << "\tadds\tr7, r7, #space_needed" << endl;
     o << "\tmov\tsp, r7" << endl;
     o << "\tpop\t{r7, pc}" << endl;
     //o << "\tldr\tr7, [sp], #4" << endl;
@@ -236,7 +245,7 @@ void CFG::setReturnSymbol(const string& name, Scope *scope) {
     //Return symbol scope is always on the level 0 to be accessed anywhere within the scope (name)
     scope->levelContext.clear();
     scope->levelContext.push_back(0);
-    cout << " #setReturnSymbol - Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl;
+    //cout << " #setReturnSymbol - Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl; debug
     if (!symbolTable->doesSymbolExist(name, scope)) {
         symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, false);
     }
