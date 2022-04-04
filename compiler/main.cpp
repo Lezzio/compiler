@@ -63,19 +63,7 @@ int main(int argn, const char **argv) {
         exit(1);
     }
 
-    /*SymbolTable *symbolTable = new SymbolTable();
-    ErrorManager *errorManager = new ErrorManager();
-    //CodeGenVisitor v;
-    Visitor *visitor = new Visitor(symbolTable, errorManager);
-    visitor->visit(tree);
-    //symbolTable->print_dictionary();
-    delete symbolTable;
-
-    cout << endl;
-    cout << endl;*/
-
     AstVisitor v;
-
 
     Prog * prog = v.visit(tree);
     vector<CFG *> cfgs;

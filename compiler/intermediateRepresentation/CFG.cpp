@@ -104,11 +104,11 @@ void CFG::gen_asm_ARM(ostream &o) {
 }
 
 /**
- * @brief TODO
+ * @brief Recupere le symbople associe au regsitre dans la symbolTable
  * 
- * @param reg 
- * @param scope 
- * @return string 
+ * @param reg : le registre considere
+ * @param scope : le scope du registre
+ * @return le registre associe au symbole 
  */
 string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
     //cout << "IR reg to asm" << endl; debug
@@ -131,7 +131,7 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
 }
 
 /**
- * @brief selectionne le bon regsitre en fonction de la position
+ * @brief selectionne le bon registre en fonction de la position
  * 
  * @param position : la position
  * @return string : le registre a mettre dans l'assembleur
@@ -250,11 +250,11 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
 }
 
 /**
- * @brief TODO
+ * @brief Method which set the parameters position a function named by name  
  * 
- * @param name 
- * @param position 
- * @param pScope 
+ * @param name : name of the function containing the parameters
+ * @param position : position to put for symbol
+ * @param pScope : the scope of the parameters
  */
 void CFG::setParametersPosition(const string &name, int position, Scope *pScope) {
     Symbol *symbol = symbolTable->lookupParameter(name, pScope);
@@ -317,10 +317,10 @@ string CFG::new_BB_name() {
 }
 
 /**
- * @brief TODO
+ * @brief Method which assigns an address to a symbol named in the parameter in the symbol table
  * 
- * @param name 
- * @param scope 
+ * @param name : name of the symbol to assign
+ * @param scope : current scope
  */
 void CFG::assignSymbol(const string& name, Scope *scope) {
     Symbol *symbolReturned = this->symbolTable->lookupSymbol(name, scope);
@@ -394,7 +394,7 @@ SymbolTable *CFG::getSymbolTable() {
 }
 
 /**
- * @brief TODO
+ * @brief Method which permits to change the current scope 
  * 
  */
 void CFG::enteringScope() {
@@ -406,7 +406,7 @@ void CFG::enteringScope() {
 }
 
 /**
- * @brief TODO
+ * @brief Method which permits to jump off the lastest scope 
  * 
  */
 void CFG::exitingScope() {
@@ -414,7 +414,7 @@ void CFG::exitingScope() {
 }
 
 /**
- * @brief recupere le socpe actuel
+ * @brief recupere le scope actuel
  * 
  * @return Scope* 
  */

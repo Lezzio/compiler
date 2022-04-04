@@ -6,9 +6,9 @@ using namespace std;
 using namespace antlr4;
 
 /**
- * @brief 
+ * @brief Visit an axiom
  * 
- * @param ctx 
+ * @param ctx : context of the axiom
  * @return antlrcpp::Any 
  */
 antlrcpp::Any AstVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
@@ -17,10 +17,10 @@ antlrcpp::Any AstVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
 }
 
 /**
- * @brief 
+ * @brief Visit each fonctions of a program and create the program
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the program
+ * @return : a pointer on the program
  */
 antlrcpp::Any AstVisitor::visitProg(ifccParser::ProgContext *context) {
     Prog *prog = new Prog();
@@ -32,10 +32,10 @@ antlrcpp::Any AstVisitor::visitProg(ifccParser::ProgContext *context) {
 }
 
 /**
- * @brief 
+ * @brief : Visit a fonction: read the name of the function and the type it returns
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the function
+ * @return : a pointer on the function
  */
 antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
     string name = context->IDENT()->getText();
@@ -63,9 +63,9 @@ antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
 }
 
 /**
- * @brief 
+ * @brief Visit each statement of a block
  * 
- * @param context 
+ * @param context : context of the block
  * @return antlrcpp::Any 
  */
 antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context) {
