@@ -69,4 +69,12 @@ Ce projet a été développé selon la méthodologie du Test Driven Development 
 Les tests, placés dans le répertoire `tests/`, fonctionnent de la manière suivante. Notre compilateur essaye de compiler différents fichiers .c créés spécifiquement pour les tests. Les mêmes fichiers sont compilés en parallèle avec gcc, le compilateur officiel du langage c, et les résultats obtenus sont alors comparés. Cette gestion des tests nous permet de contrôler le fait que tout nouveau développement n'entraîne pas de changements néfastes au niveau des exécutables produits par notre compilateur.
 
 ## Limites du compilateur
-TODO : ajouter les limites du compilateur
+Notre compilateur est un projet universitaire. A ce titre, il ne réalise qu'une petite partie des fonctionnalités d'un vrai compilateur. Ainsi vous ne pouvez pas:
+- compiler un programme contenant plusieurs sources
+- utiliser les directives pré-processeur
+- utiliser les pointeurs
+- utiliser de la COO
+- utiliser des fonctions de plus de 6 arguments
+- utiliser des types de variables autres que int et char
+
+Si vous ne respectez pas les consignes ci-dessus, vous vous exposez à un comportement ératique du compilateur. Une erreur ne sera pas forcément levée car ces fonctionnalités n'ont pas été prises en considération dans la conception du projet.
