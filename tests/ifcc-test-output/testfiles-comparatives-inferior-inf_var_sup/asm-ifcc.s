@@ -10,23 +10,23 @@
 	subq		$32, %rsp
 
 	#ldconst
-	movl		$1, -4(%rbp)
+	movl		$3, -4(%rbp)
 
 	#copy
 	movl		-4(%rbp), %eax
 	movl		%eax, -8(%rbp)
 
 	#ldconst
-	movl		$3, -12(%rbp)
+	movl		$1, -12(%rbp)
 
 	#copy
 	movl		-12(%rbp), %eax
 	movl		%eax, -16(%rbp)
 
-	#cmp_lt
+	#cmp_le
 	movl		-8(%rbp), %eax
 	cmpl		-16(%rbp), %eax
-	setl		%al
+	setle		%al
 	movzbl		%al, %eax
 	movl		%eax, -20(%rbp)
 
