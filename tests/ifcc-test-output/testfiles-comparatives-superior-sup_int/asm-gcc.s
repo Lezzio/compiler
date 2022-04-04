@@ -15,7 +15,7 @@ main:
 	movl	$3, -4(%rbp)
 	movl	-4(%rbp), %eax
 	cmpl	-8(%rbp), %eax
-	setg	%al
+	setge	%al
 	movzbl	%al, %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8

@@ -19,10 +19,10 @@
 	#ldconst
 	movl		$1, -12(%rbp)
 
-	#cmp_lt
+	#cmp_le
 	movl		-8(%rbp), %eax
 	cmpl		-12(%rbp), %eax
-	setl		%al
+	setle		%al
 	movzbl		%al, %eax
 	movl		%eax, -16(%rbp)
 

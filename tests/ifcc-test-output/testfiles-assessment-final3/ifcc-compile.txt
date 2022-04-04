@@ -1,0 +1,5 @@
+terminate called after throwing an instance of 'std::logic_error'
+  what():  basic_string::_M_construct null not valid
+/mnt/c/Users/Benoi/OneDrive/Bureau/Cours/4A/PLDcomp/tp/compiler/tests/ifcc-wrapper.sh: line 21:  3095 Aborted                 $(dirname $0)/../compiler/ifcc $SOURCENAME > $DESTNAME
+
+return code: 134

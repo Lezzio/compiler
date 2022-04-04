@@ -1,143 +1,86 @@
-.text
-.globl	main
- main: 
-.main_0:
-	#prologue
-	pushq		%rbp
-	movq		%rsp, %rbp
-
-	#offset
-	subq		$128, %rsp
-
-	#ldconst
-	movl		$0, -20(%rbp)
-
-	#cast
-	movslq		-20(%rbp), %rax
-  movq %rax, -20(%rbp)
-
-	#ldconst
-  movq $-16, -28(%rbp)
-
-	#add
-    movq %rbp, %rax
-  addq -28(%rbp), %rax
-  movq %rax, -28(%rbp)
-
-	#add
-  movq -20(%rbp), %rax
-  addq -28(%rbp), %rax
-  movq %rax, -28(%rbp)
-
-	#ldconst
-	movl		$1, -32(%rbp)
-
-	#wmem
-  movq -28(%rbp), %rax
-  movq -32(%rbp), %r10
-  movq %r10, (%rax)
-
-	#ldconst
-	movl		$8, -36(%rbp)
-
-	#cast
-	movslq		-36(%rbp), %rax
-  movq %rax, -36(%rbp)
-
-	#ldconst
-  movq $-16, -44(%rbp)
-
-	#add
-    movq %rbp, %rax
-  addq -44(%rbp), %rax
-  movq %rax, -44(%rbp)
-
-	#add
-  movq -36(%rbp), %rax
-  addq -44(%rbp), %rax
-  movq %rax, -44(%rbp)
-
-	#ldconst
-	movl		$2, -48(%rbp)
-
-	#wmem
-  movq -44(%rbp), %rax
-  movq -48(%rbp), %r10
-  movq %r10, (%rax)
-
-	#ldconst
-	movl		$8, -52(%rbp)
-
-	#cast
-	movslq		-52(%rbp), %rax
-  movq %rax, -68(%rbp)
-
-	#ldconst
-  movq $-16, -60(%rbp)
-
-	#add
-    movq %rbp, %rax
-  addq -60(%rbp), %rax
-  movq %rax, -60(%rbp)
-
-	#add
-  movq -68(%rbp), %rax
-  addq -60(%rbp), %rax
-  movq %rax, -60(%rbp)
-
-	#rmem
-  movq -60(%rbp), %rax
-  movq (%rax), %r10
-  movq %r10, -76(%rbp)
-
-	#copy
-	movl		-76(%rbp), %eax
-	movl		%eax, -80(%rbp)
-
-	#ldconst
-	movl		$0, -84(%rbp)
-
-	#cast
-	movslq		-84(%rbp), %rax
-  movq %rax, -100(%rbp)
-
-	#ldconst
-  movq $-16, -92(%rbp)
-
-	#add
-    movq %rbp, %rax
-  addq -92(%rbp), %rax
-  movq %rax, -92(%rbp)
-
-	#add
-  movq -100(%rbp), %rax
-  addq -92(%rbp), %rax
-  movq %rax, -92(%rbp)
-
-	#rmem
-  movq -92(%rbp), %rax
-  movq (%rax), %r10
-  movq %r10, -108(%rbp)
-
-	#copy
-	movl		-108(%rbp), %eax
-	movl		%eax, -112(%rbp)
-
-	#add
-	movl		-80(%rbp), %eax
-	addl		-112(%rbp), %eax
-	movl		%eax, -116(%rbp)
-
-	#ret
-	movl		-116(%rbp), %eax
-	movl		%eax, -120(%rbp)
-	jmp			.main_1
-.main_1:
-
-	#finret
-	movl		-120(%rbp), %eax
-	#epilogue
-	leave
+	.file	"test.c"
+	.text
+	.globl	fibo
+	.type	fibo, @function
+fibo:
+.LFB0:
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	pushq	%rbx
+	subq	$24, %rsp
+	.cfi_offset 3, -24
+	movl	%edi, -20(%rbp)
+	cmpl	$0, -20(%rbp)
+	jg	.L2
+	movl	$0, %eax
+	jmp	.L3
+.L2:
+	cmpl	$1, -20(%rbp)
+	jne	.L4
+	movl	$1, %eax
+	jmp	.L3
+.L4:
+	movl	-20(%rbp), %eax
+	subl	$1, %eax
+	movl	%eax, %edi
+	call	fibo
+	movl	%eax, %ebx
+	movl	-20(%rbp), %eax
+	subl	$2, %eax
+	movl	%eax, %edi
+	call	fibo
+	addl	%ebx, %eax
+.L3:
+	addq	$24, %rsp
+	popq	%rbx
+	popq	%rbp
+	.cfi_def_cfa 7, 8
 	ret
-
-
+	.cfi_endproc
+.LFE0:
+	.size	fibo, .-fibo
+	.globl	main
+	.type	main, @function
+main:
+.LFB1:
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$16, %rsp
+	movl	$3, %edi
+	call	fibo
+	movl	%eax, -4(%rbp)
+	movl	-4(%rbp), %eax
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE1:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 8
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 8
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 8
+4:

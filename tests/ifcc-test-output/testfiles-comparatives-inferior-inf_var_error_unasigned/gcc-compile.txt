@@ -1,6 +1,6 @@
 input.c: In function ‘main’:
 input.c:4:13: warning: ‘a’ is used uninitialized in this function [-Wuninitialized]
-    4 |     return a<b;
-      |            ~^~
+    4 |     return a<=b;
+      |            ~^~~
 
 return code: 0

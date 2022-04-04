@@ -1,9 +1,18 @@
-int func(int a, int b, int c, int d, int e, int f, int g){
-    return a;
+int fibo(int n)
+{
+if ( n <= 0 )
+{
+return 0;
 }
-
-int main() {
-    int a = 1;
-    int b = func(a, 2,3,4,5,6,7);
-    return b;
+else if (n == 1)
+{
+return 1;
+}
+return fibo(n-1)
++ fibo(n-2);
+}
+int main()
+{
+    int a =  fibo(3);
+return a;
 }

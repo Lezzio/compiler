@@ -1,0 +1,13 @@
+input.c: In function ‘func’:
+input.c:3:5: warning: ‘main’ is normally a non-static function [-Wmain]
+    3 | int main() {
+      |     ^~~~
+input.c:6:1: error: expected declaration or statement at end of input
+    6 | }
+      | ^
+At top level:
+input.c:3:5: warning: ‘main’ defined but not used [-Wunused-function]
+    3 | int main() {
+      |     ^~~~
+
+return code: 1
