@@ -17,7 +17,7 @@ antlrcpp::Any AstVisitor::visitAxiom(ifccParser::AxiomContext *ctx) {
 }
 
 /**
- * @brief Visit each fonctions of a program and create the program
+ * @brief Visit each fonctions of a program and create the object program
  * 
  * @param context : context of the program
  * @return : a pointer on the program
@@ -66,7 +66,7 @@ antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
  * @brief Visit each statement of a block
  * 
  * @param context : context of the block
- * @return antlrcpp::Any 
+ * @return : a pointer on the block
  */
 antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context) {
     auto *block = new Block();
@@ -78,40 +78,40 @@ antlrcpp::Any AstVisitor::visitBlock(ifccParser::BlockContext *context) {
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by a declaration
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement1(ifccParser::Statement1Context *context) {
     return (Statement *) visit(context->declaration());
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by an affectation
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement2(ifccParser::Statement2Context *context) {
     return (Statement *) visit(context->affectation());
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by a return
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement3(ifccParser::Statement3Context *context) {
     return (Statement *) visit(context->retcode());
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by a if block
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement4(ifccParser::Statement4Context *context)
 {
@@ -119,10 +119,10 @@ antlrcpp::Any AstVisitor::visitStatement4(ifccParser::Statement4Context *context
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by a white block
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement5(ifccParser::Statement5Context *context)
 {
@@ -130,10 +130,10 @@ antlrcpp::Any AstVisitor::visitStatement5(ifccParser::Statement5Context *context
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by a for block
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement6(ifccParser::Statement6Context *context)
 {
@@ -141,10 +141,10 @@ antlrcpp::Any AstVisitor::visitStatement6(ifccParser::Statement6Context *context
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by an expression
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement7(ifccParser::Statement7Context *context)
 {
@@ -154,10 +154,10 @@ antlrcpp::Any AstVisitor::visitStatement7(ifccParser::Statement7Context *context
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by an instruction break
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement8(ifccParser::Statement8Context *context)
 {
@@ -166,10 +166,10 @@ antlrcpp::Any AstVisitor::visitStatement8(ifccParser::Statement8Context *context
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by an instruction continue
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement9(ifccParser::Statement9Context *context)
 {
@@ -178,10 +178,10 @@ antlrcpp::Any AstVisitor::visitStatement9(ifccParser::Statement9Context *context
 }
 
 /**
- * @brief 
+ * @brief visit a statement created by an array
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : context of the statement
+ * @return : a pointer on the statement
  */
 antlrcpp::Any AstVisitor::visitStatement10(ifccParser::Statement10Context *context)
 {
@@ -189,10 +189,10 @@ antlrcpp::Any AstVisitor::visitStatement10(ifccParser::Statement10Context *conte
 }
 
 /**
- * @brief 
+ * @brief visit parameters of the context
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context
+ * @return : a pointer on the list of parameters
  */
 antlrcpp::Any AstVisitor::visitParameters(ifccParser::ParametersContext *context)
 {
@@ -207,10 +207,10 @@ antlrcpp::Any AstVisitor::visitParameters(ifccParser::ParametersContext *context
 }
 
 /**
- * @brief 
+ * @brief get a parameter by its address
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context
+ * @return : a pointer on the parameter
  */
 antlrcpp::Any AstVisitor::visitParameter(ifccParser::ParameterContext *context)
 {
@@ -226,10 +226,10 @@ antlrcpp::Any AstVisitor::visitParameter(ifccParser::ParameterContext *context)
 }
 
 /**
- * @brief 
+ * @brief visit the declarations and create a list of declarations
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context
+ * @return a pointer on the statement of the list of declarations
  */
 antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *context)
 {
@@ -248,10 +248,10 @@ antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *conte
 }
 
 /**
- * @brief 
+ * @brief visit a return in an expression a create the statement of the return
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the return
+ * @return a statement pointer of the return
  */
 antlrcpp::Any AstVisitor::visitRet1(ifccParser::Ret1Context *context) {
     Expr *expr = (Expr *) visit(context->expression());
@@ -260,10 +260,10 @@ antlrcpp::Any AstVisitor::visitRet1(ifccParser::Ret1Context *context) {
 }
 
 /**
- * @brief 
+ * @brief visit an affectation 1 (type IDENT '=' expression) and create its statement
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the affectation
+ * @return a statement pointer of the affectation
  */
 antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *context) {
     string res = (string) visit(context->type()).as<string>();
@@ -280,10 +280,10 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
 }
 
 /**
- * @brief 
+ * @brief visit an affectation 2 (IDENT '=' expression) and create its statement
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the affectation
+ * @return a statement pointer of the affectation
  */
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
     auto *exprVar = new ExprVar(context->IDENT()->getText());
@@ -293,10 +293,10 @@ antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *con
 }
 
 /**
- * @brief 
+ * @brief visit an affectation 3 (expression '=' expression) and create its statement
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the affectation
+ * @return a statement pointer of the affectation
  */
 antlrcpp::Any AstVisitor::visitAffectation3(ifccParser::Affectation3Context *context){
     Expr *lexpr = (Expr *) visit(context->expression(0));
@@ -316,10 +316,10 @@ antlrcpp::Any AstVisitor::visitAffectation3(ifccParser::Affectation3Context *con
 }
 
 /**
- * @brief 
+ * @brief visit the declaration of an array and create its statement
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the array
+ * @return a statement pointer of the array's declaration
  */
 antlrcpp::Any AstVisitor::visitDeclarationArray(ifccParser::DeclarationArrayContext *context){
     int size = stoi(context->CONST()->getText()); 
@@ -341,10 +341,10 @@ antlrcpp::Any AstVisitor::visitDeclarationArray(ifccParser::DeclarationArrayCont
 }
 
 /**
- * @brief 
+ * @brief visit the affectation of an array and create its statement
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the array
+ * @return a statement pointer of the array's affectation
  */
 antlrcpp::Any AstVisitor::visitAffectationArray(ifccParser::AffectationArrayContext *context){
     int size = 0;
@@ -386,10 +386,10 @@ antlrcpp::Any AstVisitor::visitAffectationArray(ifccParser::AffectationArrayCont
 }
 
 /**
- * @brief 
+ * @brief visit en unary expression 
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the unary expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitUnaryexpr(ifccParser::UnaryexprContext *context) {
     Expr *expr = (Expr *) visit(context->expression());
@@ -404,10 +404,10 @@ antlrcpp::Any AstVisitor::visitUnaryexpr(ifccParser::UnaryexprContext *context) 
 }
 
 /**
- * @brief 
+ * @brief visit a char expression
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the char
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitCharexpr(ifccParser::CharexprContext *context) {
     string variable = context->CHARACTER()->getText();
@@ -419,10 +419,10 @@ antlrcpp::Any AstVisitor::visitCharexpr(ifccParser::CharexprContext *context) {
 }
 
 /**
- * @brief 
+ * @brief visit a relationnal expression (>= for exemple)
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the relationnal expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitRelationalexpr(ifccParser::RelationalexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
@@ -468,20 +468,20 @@ antlrcpp::Any AstVisitor::visitRelationalexpr(ifccParser::RelationalexprContext 
 }
 
 /**
- * @brief 
+ * @brief visit an expression between brackets
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitBracketexpr(ifccParser::BracketexprContext *context) {
     return (Expr *) visit(context->expression());
 }
 
 /**
- * @brief 
+ * @brief visit an expression with only a variable
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitVarexpr(ifccParser::VarexprContext *context) {
     ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
@@ -489,10 +489,10 @@ antlrcpp::Any AstVisitor::visitVarexpr(ifccParser::VarexprContext *context) {
 }
 
 /**
- * @brief 
+ * @brief visit an expression with a multiplicative operator (* / %)
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitMultplicationexpr(ifccParser::MultplicationexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
@@ -544,10 +544,10 @@ antlrcpp::Any AstVisitor::visitMultplicationexpr(ifccParser::MultplicationexprCo
 }
 
 /**
- * @brief 
+ * @brief visit an expression with a additive operator (+ -)
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
@@ -596,10 +596,10 @@ antlrcpp::Any AstVisitor::visitAdditiveexpr(ifccParser::AdditiveexprContext *con
 }
 
 /**
- * @brief 
+ * @brief visit a bit to bit expression (& | ^)
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitBitsexpr(ifccParser::BitsexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
@@ -641,10 +641,10 @@ antlrcpp::Any AstVisitor::visitBitsexpr(ifccParser::BitsexprContext *context) {
 }
 
 /**
- * @brief 
+ * @brief visit an expression with constant variables
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitConstexpr(ifccParser::ConstexprContext *context) {
     int value = stoi(context->CONST()->getText());
@@ -653,10 +653,10 @@ antlrcpp::Any AstVisitor::visitConstexpr(ifccParser::ConstexprContext *context) 
 }
 
 /**
- * @brief 
+ * @brief visit an equality expression
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitEqualityexpr(ifccParser::EqualityexprContext *context) {
     Expr *lExpr = (Expr *) visit(context->expression(0));
@@ -694,10 +694,10 @@ antlrcpp::Any AstVisitor::visitEqualityexpr(ifccParser::EqualityexprContext *con
 }
 
 /**
- * @brief 
+ * @brief visit an expression with an array
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the expression
+ * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context){
     string varname = context->IDENT()->getText();
@@ -715,10 +715,10 @@ antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context){
 }
 
 /**
- * @brief 
+ * @brief visit a type
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the type
+ * @return : the type visited
  */
 antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context) {
     string type = context->getText();
@@ -726,10 +726,10 @@ antlrcpp::Any AstVisitor::visitType(ifccParser::TypeContext *context) {
 }
 
 /**
- * @brief 
+ * @brief visit a if block and create the instruction associated
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the if block
+ * @return a statement pointer of the instruction
  */
 antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context)
 {
@@ -754,10 +754,10 @@ antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context)
 }
 
 /**
- * @brief 
+ * @brief visit else block
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the else block 
+ * @return a pointer on the block
  */
 antlrcpp::Any AstVisitor::visitElseBlock(ifccParser::ElseBlockContext *context) 
 {
@@ -778,10 +778,10 @@ antlrcpp::Any AstVisitor::visitElseBlock(ifccParser::ElseBlockContext *context)
 }
 
 /**
- * @brief 
+ * @brief visit a white block and create the instrcution associated
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the white block
+ * @return a statement of the instruction created
  */
 antlrcpp::Any AstVisitor::visitWhileBlock(ifccParser::WhileBlockContext *context){
     Expr* test = (Expr*)visit(context->expression());
@@ -800,10 +800,10 @@ antlrcpp::Any AstVisitor::visitWhileBlock(ifccParser::WhileBlockContext *context
 }
 
 /**
- * @brief 
+ * @brief visit a for block and create the instruction associated
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the for block
+ * @return a statement pointer of the instruction
  */
 antlrcpp::Any AstVisitor::visitForBlock(ifccParser::ForBlockContext *context) {
     Statement * init = nullptr;
@@ -831,10 +831,10 @@ antlrcpp::Any AstVisitor::visitForBlock(ifccParser::ForBlockContext *context) {
 }
 
 /**
- * @brief 
+ * @brief visit an expression with a function
  * 
- * @param context 
- * @return antlrcpp::Any 
+ * @param context : the context of the function
+ * @return an expression pointer of the function
  */
 antlrcpp::Any AstVisitor::visitFunctionexpr(ifccParser::FunctionexprContext *context){
     string name = context->IDENT()->getText();
@@ -848,9 +848,9 @@ antlrcpp::Any AstVisitor::visitFunctionexpr(ifccParser::FunctionexprContext *con
 }
 
 /**
- * @brief 
+ * @brief check if an expression is a constant
  * 
- * @param expr 
+ * @param expr : the expression to check
  * @return true 
  * @return false 
  */
@@ -871,10 +871,10 @@ bool AstVisitor::checkConst(Expr * expr){
 }
 
 /**
- * @brief 
+ * @brief get the value of the expression if constant or return 0
  * 
- * @param expr 
- * @return int 
+ * @param expr : the expression
+ * @return : the value of the expression or a 0
  */
 int AstVisitor::getConstValue(Expr * expr){
     ExprConst * exprConst = dynamic_cast<ExprConst *>(expr);

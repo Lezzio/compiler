@@ -3,7 +3,10 @@
 //
 
 #include "Error.h"
-
+/**
+ * @brief Construct a new Error:: Error object
+ * 
+ */
 Error::Error() {
 
 }
