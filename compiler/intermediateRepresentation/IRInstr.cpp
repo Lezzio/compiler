@@ -7,7 +7,7 @@ using namespace std;
 
 /**
  * @brief Method which generate/assemble in x86
- * 
+ *
  * @param o the output stream
  */
 void IRInstr::gen_asm_x86(ostream &o) {
@@ -247,8 +247,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getNeqInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -262,8 +262,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getLtInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -277,8 +277,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getLeInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -292,8 +292,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getGtInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -307,8 +307,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getGeInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -337,8 +337,10 @@ void IRInstr::gen_asm_x86(ostream &o) {
             o << "\n";
             o << "\t#cast\n";
             string source = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
-            o << getCastInstr(source, reg);
+            TypeSymbol type_from = static_cast<TypeSymbol>(stoi(this->params[1]));
+            o << getCastInstr(source, reg, type_from);
             o << getMovInstr(reg, source);
+            break;
         }
         default:
             break;
@@ -347,7 +349,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
 
 /**
  * @brief Method which shrink asm x86 to ARM
- * 
+ *
  * @param str_x86 the input string
  * @return string the output string
  */
@@ -362,7 +364,7 @@ string shrink_x86_to_ARM(string str_x86) {
 
 /**
  * @brief Method which generate/assemble in ARM
- * 
+ *
  * @param o the output stream
  */
 void IRInstr::gen_asm_ARM(ostream &o) {
@@ -594,10 +596,18 @@ void IRInstr::gen_asm_ARM(ostream &o) {
                 cerr << "Error in func : " << __FUNCTION__ << " status should be 'start' or 'end' instead of : "
                      << this->params[1] << endl;
             }
-
-
             break;
         }
+        case cast : {
+            o << "\n";
+            o << "\t#cast\n";
+            string source = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
+            TypeSymbol type_from = static_cast<TypeSymbol>(stoi(this->params[1]));
+            //o << getCastInstr(source, reg, type_from);
+            //o << getMovInstr(reg, source);
+            break;
+        }
+
         default:
             break;
     }
@@ -605,11 +615,11 @@ void IRInstr::gen_asm_ARM(ostream &o) {
 
 /**
  * @brief Construct a new IRInstr::IRInstr object
- * 
- * @param bb_ 
- * @param op 
- * @param t 
- * @param params 
+ *
+ * @param bb_
+ * @param op
+ * @param t
+ * @param params
  */
 IRInstr::IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> params)
         : bb(bb_), op(op), t(t), params(std::move(params)) {
@@ -618,14 +628,53 @@ IRInstr::IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> par
 /******************************************* Instructions ******************************************************/
 /**
  * @brief Get the mov instruction asm code
- * 
+ *
  * @param origine : origin register name
  * @param destination : destination register name
- * @param arch : architecture used x86 or ARM 
+ * @param arch : architecture used x86 or ARM
  * @param type : type of the symbol
  * @param cst : bool const or not
- * @return string 
+ * @return string
  */
+string IRInstr::getCastInstr(const string &origine, const string &destination, TypeSymbol type_from, bool sign, Arch arch)
+{
+    // t := type_to
+    string from, to, signed_;
+    if (arch == x86) {
+
+        if(type_from == CHAR || type_from == INT8_T){
+            from = "b";
+        } else if (type_from == INT){
+            from = "l";
+        } else if (type_from == INT64_T){
+            from = "q";
+        } else {
+            cerr << "Invalid type_from : " << type_from << endl;
+        }
+
+        if(t == CHAR || t == INT8_T){
+            to = "b";
+        } else if (t == INT){
+            to = "l";
+        } else if (t == INT64_T){
+            to = "q";
+        } else {
+            cerr << "Invalid type_to : " << t << endl;
+        }
+
+        if (sign){
+            signed_ = "s";
+        } else {
+            signed_ = "z";
+        }
+        return "\tmov" + signed_ + from + to + "\t\t" + origine + ", " + destination + "\n";
+    } else {    //ARM
+
+    }
+    return "";
+}
+
+
 string IRInstr::getMovInstr(const string &origine, const string &destination, TypeSymbol type, Arch arch, bool cst) {
     if (arch == x86) {
         if (type == INT) {
@@ -675,31 +724,13 @@ string IRInstr::getMovInstr(const string &origine, const string &destination, Ty
 }
 
 /**
- * @brief Get the cast instruction asm code
- * 
- * @param origine : origin register name
- * @param destination : destination register name
- * @param arch : architecture used x86 or ARM 
- * @return string 
- */
-string IRInstr::getCastInstr(const string &origine, const string &destination, Arch arch)
-{
-    if (arch == x86) {
-        if(t == INT64_T){
-            return "    movzbl " + origine + ", " + destination + "\n";
-        }
-    }
-    return "";
-}
-
-/**
  * @brief Get the add instruction asm code
- * 
+ *
  * @param arg1 : register content to add
  * @param arg2 : register in which the content is added
- * @param arch : architecture used x86 or ARM 
+ * @param arch : architecture used x86 or ARM
  * @param dest : destination register (ARM)
- * @return string 
+ * @return string
  */
 string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
     if (arch == x86) {
@@ -720,12 +751,12 @@ string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch, c
 
 /**
  * @brief Get the substraction instruction asm code
- * 
+ *
  * @param arg1 : register content to substract
  * @param arg2 : register in which the content is substracted
- * @param arch : architecture used x86 or ARM 
- * @param dest : destination register (ARM) 
- * @return string 
+ * @param arch : architecture used x86 or ARM
+ * @param dest : destination register (ARM)
+ * @return string
  */
 string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch, const string &dest) {
     if (arch == x86) {
@@ -745,11 +776,11 @@ string IRInstr::getSubInstr(const string &arg1, const string &arg2, Arch arch, c
 
 /**
  * @brief Get the multiplication instruction asm code
- * 
+ *
  * @param arg1 : register content to multiply
  * @param arg2 : register in which the content is multiplied
- * @param arch : architecture used x86 or ARM 
- * @return string 
+ * @param arch : architecture used x86 or ARM
+ * @return string
  */
 string IRInstr::getMulInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
@@ -766,12 +797,12 @@ string IRInstr::getMulInstr(const string &arg1, const string &arg2, Arch arch) {
 
 /**
  * @brief Get the division instruction asm code
- * 
+ *
  * @param arg1 : register content to divide
  * @param arg2 : register in which the content is divided
- * @param arch : architecture used x86 or ARM 
- * @param modulo 
- * @return string 
+ * @param arch : architecture used x86 or ARM
+ * @param modulo
+ * @return string
  */
 string IRInstr::getDivInstr(const string &arg1, const string &arg2, Arch arch, bool modulo) {
     if (arch == x86) {
@@ -825,11 +856,11 @@ string IRInstr::getDivInstr(const string &arg1, const string &arg2, Arch arch, b
 
 /**
  * @brief Get the or instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the bool result
- * @param arg2 : register bool operation result 
- * @param arch : architecture used x86 or ARM 
- * @return string 
+ * @param arg2 : register bool operation result
+ * @param arch : architecture used x86 or ARM
+ * @return string
  */
 string IRInstr::getOrInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
@@ -846,11 +877,11 @@ string IRInstr::getOrInstr(const string &arg1, const string &arg2, Arch arch) {
 
 /**
  * @brief Get the and instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the bool result
- * @param arg2 : register bool operation result 
- * @param arch : architecture used x86 or ARM 
- * @return string 
+ * @param arg2 : register bool operation result
+ * @param arch : architecture used x86 or ARM
+ * @return string
  */
 string IRInstr::getAndInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
@@ -867,12 +898,12 @@ string IRInstr::getAndInstr(const string &arg1, const string &arg2, Arch arch) {
 }
 
 /**
- * @brief 
- * 
- * @param arg1 
- * @param arg2 
- * @param arch 
- * @return string 
+ * @brief
+ *
+ * @param arg1
+ * @param arg2
+ * @param arch
+ * @return string
  */
 string IRInstr::getXorInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
@@ -890,11 +921,11 @@ string IRInstr::getXorInstr(const string &arg1, const string &arg2, Arch arch) {
 
 /**
  * @brief Get the xor instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the bool result
- * @param arg2 : register bool operation result 
- * @param arch : architecture used x86 or ARM 
- * @return string 
+ * @param arg2 : register bool operation result
+ * @param arch : architecture used x86 or ARM
+ * @return string
  */
 string IRInstr::getCompInstr(const string &arg1, const string &arg2, Arch arch) {
     if (arch == x86) {
@@ -912,10 +943,10 @@ string IRInstr::getCompInstr(const string &arg1, const string &arg2, Arch arch) 
 
 /**
  * @brief Get the not instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the bool result
- * @param arch : architecture used x86 or ARM  
- * @return string 
+ * @param arch : architecture used x86 or ARM
+ * @return string
  */
 string IRInstr::getNotInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
@@ -933,10 +964,10 @@ string IRInstr::getNotInstr(const string &arg1, Arch arch) {
 
 /**
  * @brief Get the neg instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the result
- * @param arch : architecture used x86 or ARM 
- * @return string 
+ * @param arch : architecture used x86 or ARM
+ * @return string
  */
 string IRInstr::getNegInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
@@ -953,9 +984,9 @@ string IRInstr::getNegInstr(const string &arg1, Arch arch) {
 
 /**
  * @brief Get the eq instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the flag result
- * @param arch : architecture used x86 or ARM  
+ * @param arch : architecture used x86 or ARM
  */
 string IRInstr::getEqInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
@@ -970,9 +1001,9 @@ string IRInstr::getEqInstr(const string &arg1, Arch arch) {
 
 /**
  * @brief Get the neq instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the flag result
- * @param arch : architecture used x86 or ARM 
+ * @param arch : architecture used x86 or ARM
  */
 string IRInstr::getNeqInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
@@ -987,9 +1018,9 @@ string IRInstr::getNeqInstr(const string &arg1, Arch arch) {
 
 /**
  * @brief Get the Lt instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the flag result
- * @param arch : architecture used x86 or ARM  
+ * @param arch : architecture used x86 or ARM
  */
 string IRInstr::getLtInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
@@ -1014,9 +1045,9 @@ string IRInstr::getLtInstr(const string &arg1, Arch arch) {
 
 /**
  * @brief Get the Le instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the flag result
- * @param arch : architecture used x86 or ARM 
+ * @param arch : architecture used x86 or ARM
  */
 string IRInstr::getLeInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
@@ -1041,9 +1072,9 @@ string IRInstr::getLeInstr(const string &arg1, Arch arch) {
 
 /**
  * @brief Get the Gt instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the flag result
- * @param arch : architecture used x86 or ARM 
+ * @param arch : architecture used x86 or ARM
  */
 string IRInstr::getGtInstr(const string &arg1, Arch arch) {
     if (arch == x86) {
@@ -1068,7 +1099,7 @@ string IRInstr::getGtInstr(const string &arg1, Arch arch) {
 
 /**
  * @brief Get the Ge instruction asm code
- * 
+ *
  * @param arg1 : register which will contain the flag result
  * @param arch : architecture used x86 or ARM
  */
@@ -1133,10 +1164,10 @@ string IRInstr::getGeInstr(const string &arg1, Arch arch) {
 
 /**
  * @brief Get the jump instruction asm code
- * 
+ *
  * @param arg1 : register to where the jump will be done
  * @param arch : architecture used x86 or ARM
- * @return string 
+ * @return string
  */
 string IRInstr::getJumpInstr(const string &arg1, Arch arch) {
     return "\tjmp\t\t\t" + arg1 + "\n";
@@ -1144,10 +1175,10 @@ string IRInstr::getJumpInstr(const string &arg1, Arch arch) {
 
 /**
  * @brief Get the call instruction asm code
- * 
- * @param arg1 : register called 
+ *
+ * @param arg1 : register called
  * @param arch : architecture used x86 or ARM
- * @return string 
+ * @return string
  */
 string IRInstr::getCallInstr(const string &arg1, Arch arch) {
     return "\tcall\t\t" + arg1 + "\n";
