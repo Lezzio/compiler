@@ -928,17 +928,6 @@ void ExprFunction::addParameter(Expr *expr) {
  * @return string 
  */
 string ExprFunction::linearize(CFG *cfg) {
-    int position = 1;
-    for (Expr *e : parameters) {
-        string var = e->linearize(cfg);
-        TypeSymbol typeTmp = cfg->get_var_type(var, cfg->getCurrentScope());
-        if (!cfg->isSymbolAssigned(var, cfg->getCurrentScope())) {
-            cfg->assignSymbol(var, cfg->getCurrentScope());
-        }
-        cfg->addInstruction(IRInstr::copy, typeTmp, {"param_reg", var, to_string(position)});
-        position++;
-    }
-
     if (!cfg->doesSymbolExist(varName, &GLOBAL_SCOPE)) {
         varName = varName + "@PLT";
     }
@@ -946,6 +935,7 @@ string ExprFunction::linearize(CFG *cfg) {
     TypeSymbol typeFunc = cfg->get_var_type(varName, &GLOBAL_SCOPE);
 
     Symbol * function = cfg->getSymbolTable()->lookupSymbol(varName, &GLOBAL_SCOPE);
+
     int inNumber = this->parameters.size();
     if(inNumber > function->getNumberParameters()){
         cerr << "error: too many arguments to function '" << varName <<"'"<< endl;
@@ -955,8 +945,26 @@ string ExprFunction::linearize(CFG *cfg) {
         exit(1);
     }
 
-    //TODO: cast if necessarry using function->getParameterType(position)
+    int position = 1;
 
+    for (Expr *e : parameters) {
+        string var = e->linearize(cfg);
+
+        TypeSymbol typeTmp = cfg->get_var_type(var, cfg->getCurrentScope());
+
+        if (!cfg->isSymbolAssigned(var, cfg->getCurrentScope())) {
+            cfg->assignSymbol(var, cfg->getCurrentScope());
+        }
+
+
+        TypeSymbol type_param = function->getParameterType(position-1);
+        if (typeTmp != type_param){
+            cfg->addInstruction(IRInstr::cast, type_param, {var, to_string(typeTmp)});
+        }
+
+        cfg->addInstruction(IRInstr::copy, typeTmp, {"param_reg", var, to_string(position)});
+        position++;
+    }
     string tempVar = cfg->create_new_tempvar(typeFunc);
 
     cfg->addInstruction(IRInstr::call, typeFunc, {tempVar, varName});
