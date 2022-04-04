@@ -424,6 +424,7 @@ class ExprFunction : public Expr
         ExprFunction(string varName) :
             Expr(varName){};
         virtual ~ExprFunction();
+        string getName() const {return varName;};
     protected : 
         vector<Expr *> parameters;
 };

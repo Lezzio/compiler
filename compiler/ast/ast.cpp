@@ -257,6 +257,12 @@ string Affectation::linearize(CFG *cfg) {
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
 
+    ExprFunction * function = dynamic_cast<ExprFunction *>(rExpr);
+    if(function && cfg->get_var_type(function->getName(), &GLOBAL_SCOPE) == VOID){
+        cerr << "error: void value not ignored as it ought to be" << endl;
+        exit(1);
+    }
+
     if (!cfg->isSymbolAssigned(var1, cfg->getCurrentScope())) {
         cfg->assignSymbol(var1, cfg->getCurrentScope());
     }
@@ -275,6 +281,12 @@ string ExprAffectation::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
+
+    ExprFunction * function = dynamic_cast<ExprFunction *>(rExpr);
+    if(function && cfg->get_var_type(function->getName(), &GLOBAL_SCOPE) == VOID){
+        cerr << "error: void value not ignored as it ought to be" << endl;
+        exit(1);
+    }
 
     if (!cfg->isSymbolAssigned(var1, cfg->getCurrentScope())) {
         cfg->assignSymbol(var1, cfg->getCurrentScope());
@@ -332,6 +344,12 @@ string DecAffectation::linearize(CFG *cfg) {
     //cout << " POINT #1 " << endl; debug
     string var2 = rExpr->linearize(cfg);
     //cout << " POINT #2 " << endl; debug
+
+    ExprFunction * function = dynamic_cast<ExprFunction *>(rExpr);
+    if(function && cfg->get_var_type(function->getName(), &GLOBAL_SCOPE) == VOID){
+        cerr << "error: void value not ignored as it ought to be" << endl;
+        exit(1);
+    }
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
     //cout << " POINT #3 " << endl; debug
@@ -648,7 +666,14 @@ vector<CFG *> Prog::linearize() {
     auto *symbolTable = new SymbolTable();
 
     symbolTable->defFunction("getchar@PLT", CHAR);
+    vector<TypeSymbol> params;
+    int number =0;
+    symbolTable->setFunctionParameters("getchar@PLT", params, number);
     symbolTable->defFunction("putchar@PLT", VOID);
+    number = 1;
+    vector<TypeSymbol> params2;
+    params2.push_back(CHAR);
+    symbolTable->setFunctionParameters("putchar@PLT", params2, number);
 
     for (Function *f: functions) {
         CFG *cfg = new CFG(symbolTable, f->name);

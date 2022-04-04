@@ -1,11 +1,8 @@
-int test(int a){
-    a = 2*a;
-    return a;
+void test(){
+
 }
-
-
 int main() {
     int b = 6;
-    return test();
-
+    int c = test();
+    return b;
 }
