@@ -25,15 +25,28 @@ Le code du projet est organisé de la manière suivante :
 
 `compiler/`: contient le code source du projet et notemment le Makefile
 
-- `compiler/ast/`: code relatif à la création et au parcours de l'AST
+- `compiler/ast/` : code relatif à la création et au parcours de l'AST
 
-- `compiler/error/`: code relatif à la gestion des erreurs du compilateur
+- `compiler/error/` : code relatif à la gestion des erreurs du compilateur
   
-- `compiler/intermediateRepresentation/`: code relatif à l'IR et au CFG
+- `compiler/intermediateRepresentation/` : code relatif à l'IR et au CFG
   
-- `compiler/symbolTable/`: code relatif à la gestion de la table des symboles
+- `compiler/symbolTable/` : code relatif à la gestion de la table des symboles
   
-`tests/`: contient tous les fichiers et les scripts relatifs aux tests du projet. 
+`tests/` : contient tous les fichiers et les scripts relatifs aux tests du projet. 
+
+
+Dans ces dossiers, vous trouverez quelques fichiers clefs pour le projet. En voici une description sommaire:
+
+- `AstVisitor.cpp` : Visite du code source parsé sous forme d'arbre (il parcourt chacun des noeuds). En fonction du contexte, il décide l'action à réaliser.
+
+- `compiler/ast.cpp` : linéarise les objets créés par l'AstVisitor. Appelle IrInstr pour écrire les instructions de l'executable.
+
+- `compiler/intermediateRepresentation/IR_instr.cpp` : Repertorie toutes les instructions assembleur à écrire en fonction de chaque cas. Les instructions peuvent être en x86 ou arm.
+
+- `compiler/intermediateRepresentation/CFG.cpp` : lien entre l'AST et la symbole Table
+
+- `compiler/intermediateRepresentation/BasicBlock.cpp` : Retourne les pointeurs d'accès au CFG en fonction de chaque cas.
 
 ## Utilisation
 Dans un premier temps, allez dans le dossier `compiler/` puis entrez la commande `make` pour compiler le projet. Ensuite, entrez la commande `ifcc FICHIER` ou FICHIER est le nom du fichier .c que vous souhaitez compiler. Notre compilateur va lire votre fichier et générer l'exécutable correspondant, à moins qu'une erreur soit détectée, auxquel cas il affichera l'erreur décetctée et la ligne où se trouve le problème.

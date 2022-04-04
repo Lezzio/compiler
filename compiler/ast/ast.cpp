@@ -18,6 +18,53 @@ string ExprChar::linearize(CFG *cfg) {
     return tempVar;
 }
 
+string ExprArray::linearize(CFG *cfg) {
+    cfg->add_to_symbol_table(varName, type, DECLARED,size);
+    return varName;
+}
+
+string ExprLArray::linearize(CFG *cfg) {
+    string var1 = this->position->linearize(cfg);
+    int offset = -cfg->get_var_index(varName);
+    string tmpVar = cfg->create_new_tempvar(INT64_T);
+    
+    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    if(t1 != INT64_T){
+        cfg->addInstruction(IRInstr::cast, INT64_T, {var1});
+    }
+
+    cfg->addInstruction(IRInstr::ldconst, INT64_T, {tmpVar, "$"+to_string(offset)});
+    cfg->addInstruction(IRInstr::add, INT64_T, {tmpVar, "%rbp", tmpVar});
+    cfg->addInstruction(IRInstr::add, INT64_T, {tmpVar, var1, tmpVar});
+    return tmpVar;
+}
+
+ExprLArray::~ExprLArray(){
+    delete position;
+}
+
+string ExprRArray::linearize(CFG *cfg) {
+    string var1 = this->position->linearize(cfg);
+    int offset = -cfg->get_var_index(varName);
+    string tmpVar = cfg->create_new_tempvar(INT64_T);
+
+    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    if(t1 != INT64_T){
+        cfg->addInstruction(IRInstr::cast, INT64_T, {var1});
+    }
+    cfg->addInstruction(IRInstr::ldconst, INT64_T, {tmpVar, "$"+to_string(offset)});
+    cfg->addInstruction(IRInstr::add, INT64_T, {tmpVar, "%rbp", tmpVar});
+    cfg->addInstruction(IRInstr::add, INT64_T, {tmpVar, var1, tmpVar});
+
+    string tmpVar2 = cfg->create_new_tempvar(INT64_T);
+    cfg->addInstruction(IRInstr::rmem, INT64_T, {tmpVar2, tmpVar});
+    return tmpVar2;
+}
+
+ExprRArray::~ExprRArray(){
+    delete position;
+}
+
 string ExprMult::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
@@ -218,6 +265,58 @@ Affectation::~Affectation() {
     delete (rExpr);
 }
 
+string ExprAffectation::linearize(CFG *cfg) {
+    string var1 = lExpr->linearize(cfg);
+    string var2 = rExpr->linearize(cfg);
+
+    TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
+
+    cfg->addInstruction(IRInstr::wmem, INT64_T, {var2, var1}); //TODO:Verify
+    return var1;
+}
+
+ExprAffectation::~ExprAffectation() {
+    delete (lExpr);
+    delete (rExpr);
+}
+
+string ArrayAffectation::linearize(CFG *cfg){
+    arrayD->linearize(cfg);
+
+    for(auto s : array_values){
+        s->linearize(cfg);
+    }
+
+    return "";
+}
+
+void ArrayAffectation::addStatement(ExprAffectation * statement){
+    array_values.push_back(statement);
+}
+
+void ArrayAffectation::setArray(ExprArray *exprArray){
+    arrayD  = exprArray;
+}
+
+ArrayAffectation::~ArrayAffectation(){
+    for(auto s : array_values){
+        delete s;
+    }
+    array_values.clear();
+    delete arrayD;
+}
+
+
+string ExprDeclaration::linearize(CFG *cfg) {
+    string var = expr->linearize(cfg);
+    return var;
+}
+
+ExprDeclaration::~ExprDeclaration(){
+    delete expr;
+}
+
+
 string DecAffectation::linearize(CFG *cfg) {
     //cout << " DEF AFFECTATION L " << endl; debug
     string var1 = declaration->linearize(cfg);
@@ -385,9 +484,11 @@ string InstructionFor::linearize(CFG * cfg)
 
     if(init != nullptr) {
         beforeForBB->exit_true = initForBB;
+        //TODO Unit testing of the for loop init scope
+        cfg->enteringScope();
         cfg->add_bb(initForBB);
-        //TODO CFG entering & exiting scope
         init->linearize(cfg);
+        cfg->exitingScope();
         initForBB->exit_true = testBB;
     } else {
         beforeForBB->exit_true = testBB;
@@ -438,7 +539,7 @@ string Parameters::linearize(CFG *cfg) {
     int position = 1;
     for (Parameter *p: parameters) {
         string name = p->linearize(cfg);
-        cfg->setParametersPosition(name, position);
+        cfg->setParametersPosition(name, position, cfg->getCurrentScope());
         position++;
     }
     return "";
@@ -501,7 +602,9 @@ string ExprFunction::linearize(CFG *cfg) {
         varName = varName + "@PLT";
     }
 
+    cout << "ici1" << endl;
     TypeSymbol typeFunc = cfg->get_var_type(varName, cfg->getCurrentScope());
+        cout << "ici2" << endl;
     string tempVar = cfg->create_new_tempvar(typeFunc);
 
     cfg->addInstruction(IRInstr::call, typeFunc, {tempVar, varName});

@@ -85,6 +85,8 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
         return IR_reg_to_asm_param(position);
     }
     //ERROR
+    cout << "reg = " << reg << endl;
+    symbolTable->print_dictionary();
     cerr << "Error in IR_reg_to_asm" << endl;
     exit(1);
 }
@@ -133,7 +135,6 @@ void CFG::gen_asm_epilogue_x86(ostream &o) {
             "\tret\n";
 }
 
-
 void CFG::gen_asm_prologue_ARM(ostream &o) {
     o << "\tpush\t{r7, lr}" << endl;
     o << "\tsub\tsp, sp, #space_needed" << endl;
@@ -155,7 +156,6 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
     //o << "\tbx\tlr" << endl;
 }
 
-
 // symbol symbolTable methods
 void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol) {
     //cout << "--------------" << endl; debug
@@ -169,14 +169,15 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
     } else {
         symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false);
     }
-    //cout << "Added symbol finished" << endl; debug
-    //symbolTable->print_dictionary(); debug
-    //cout << "--------------" << endl; debug
 }
 
-//TODO Feed scope to the set parameter position
-void CFG::setParametersPosition(const string& name, int position) {
-    Symbol *symbol = symbolTable->lookupParameter(name, 0);
+void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, int size){
+    symbolTable->addSymbol(name, getCurrentScope(), t, size, stateSymbol, false);
+}
+
+//TODO Feed scope to the set parameter position => now check if working
+void CFG::setParametersPosition(const string &name, int position, Scope *pScope) {
+    Symbol *symbol = symbolTable->lookupParameter(name, pScope);
     symbol->setIndex(position);
 }
 
@@ -204,6 +205,7 @@ TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
     //TODO: check error
     return symbol->getTypeSymbol();
 }
+
 
 /**
  * @return a newly generated functionName for a basic block following the format :
@@ -235,7 +237,7 @@ void CFG::setReturnSymbol(const string& name, Scope *scope) {
     }
 }
 
-bool CFG::doesSymbolExist(string name, Scope *scope) {
+bool CFG::doesSymbolExist(const string& name, Scope *scope) {
     return symbolTable->doesSymbolExist(name, scope);
 }
 

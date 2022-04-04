@@ -20,8 +20,11 @@ SymbolTable::SymbolTable() {
 int SymbolTable::addSymbol(const string &symbolName, Scope * symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst) {
     //cout << "ADD SYMBOL name = " << symbolName << " scope current level = " << symbolScope->getCurrentLevel() << endl; debug
     int index = staticIndex + getOffsetType(typeSymbol);
+    if(additional != 0){
+        index =staticIndex + additional;
+    }
     auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst);
-    if (!doesSymbolExist(newSymbol)) {
+    if (!doesSymbolExist(newSymbol, true)) {
         this->symbolTable[newSymbol->getName()][symbolScope->getCurrentLevel()] = newSymbol;
         staticIndex = index;
         highestIndex = index;
@@ -37,7 +40,7 @@ bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, Ty
     //cout << "DECLARE SYMBOL name = " << symbolName << " scope current level = " << symbolScope->getCurrentLevel() << endl; debug
     auto *newSymbol = new Symbol(symbolName, symbolScope, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst);
 
-    if (!doesSymbolExist(newSymbol)) {
+    if (!doesSymbolExist(newSymbol, true)) {
         this->symbolTable[newSymbol->getName()][symbolScope->getCurrentLevel()] = newSymbol;
         return true;
     } else {
@@ -70,7 +73,7 @@ int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
 
 bool SymbolTable::defParameter(const string& name, Scope *scope, TypeSymbol typeSymbol) {
     auto *newSymbol = new Symbol(name, scope, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
-    if (!doesSymbolExist(newSymbol)) {
+    if (!doesSymbolExist(newSymbol, true)) {
         this->symbolTable[newSymbol->getName()][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
         return true;
     }
@@ -112,8 +115,8 @@ void SymbolTable::print_dictionary() {
  * @return true if symbol exists in the symbolTable
  * @return false else
  */
-bool SymbolTable::doesSymbolExist(Symbol *symbol) {
-    return doesSymbolExist(symbol->getName(), symbol->getScope());
+bool SymbolTable::doesSymbolExist(Symbol *symbol, bool scopedCurrent) {
+    return doesSymbolExist(symbol->getName(), symbol->getScope(), scopedCurrent);
 }
 
 /**
@@ -123,19 +126,28 @@ bool SymbolTable::doesSymbolExist(Symbol *symbol) {
  * @return true if symbol exists in the symbolTable
  * @return false else
  */
-bool SymbolTable::doesSymbolExist(const string& name, Scope *scope) {
+bool SymbolTable::doesSymbolExist(const string& name, Scope *scope, bool scopedCurrent) {
+    //Create a new scope scoped to the current scope level instead of using the whole level context
+    if (scopedCurrent) {
+        vector<int> currentLevelScope;
+        currentLevelScope.push_back(scope->getCurrentLevel());
+        scope = new Scope(scope->name);
+        scope->levelContext = currentLevelScope;
+    }
     return lookupSymbol(name, scope) != nullptr;
 }
 
 int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
     switch (typeSymbol) {
+        case INT64_T:
+            return 8;
         case INT:
             return 4;
         case INT8_T:
         case CHAR :
             return 1;
         default:
-            cerr << "Error" << endl;
+            cerr << "Error in getOffsetType" << endl;
             exit(1);
     }
 }

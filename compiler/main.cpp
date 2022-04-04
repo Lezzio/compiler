@@ -47,8 +47,10 @@ int main(int argn, const char **argv) {
     ifccLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
     tokens.fill();
+    
     auto * syntaxErrorListener =  new SyntaxErrorListener();
     ifccParser parser(&tokens);
+    
    // Ref<ANTLRErrorStrategy> errorStrategyRef = make_shared<ErrorStrategy>();
    // parser.setErrorHandler(errorStrategyRef);
    // parser.addErrorListener(syntaxErrorListener);
@@ -74,6 +76,7 @@ int main(int argn, const char **argv) {
 
     AstVisitor v;
 
+
     Prog * prog = v.visit(tree);
     vector<CFG *> cfgs;
     cfgs = prog->linearize();
@@ -87,6 +90,7 @@ int main(int argn, const char **argv) {
             cfg->gen_asm_x86(cout);
         }
     }
+    
     delete (syntaxErrorListener);
     delete (prog);
     return 0;

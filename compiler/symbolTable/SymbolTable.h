@@ -16,13 +16,13 @@ class SymbolTable
 {
 public :
 
-    //lookup 
+    //lookup
     //insert
     
     SymbolTable();
     ~SymbolTable();
-    bool doesSymbolExist(Symbol * symbol);
-    bool doesSymbolExist(const string& name, Scope *scope);
+    bool doesSymbolExist(Symbol * symbol, bool scopedCurrent = false);
+    bool doesSymbolExist(const string& name, Scope *scope, bool scopedCurrent = false);
     Symbol * lookupSymbol(const string& name, Scope *scope);
     Symbol * lookupParameter(const string& name, Scope *scope);
     /**

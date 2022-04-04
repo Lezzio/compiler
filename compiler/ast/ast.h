@@ -71,6 +71,49 @@ class ExprChar : public Expr
         int value;
 };
 
+class ExprArray : public Expr
+{
+    public :
+        virtual string linearize(CFG * cfg);
+        ExprArray(string varName, TypeSymbol type, int size) :
+            Expr(varName), size(size), type(type){};
+        virtual ~ExprArray()= default;
+    protected : 
+        TypeSymbol type;
+        int size;
+
+};
+
+
+class ExprLArray : public Expr  
+{
+    public :
+        virtual string linearize(CFG * cfg);
+        ExprLArray(string varName, TypeSymbol type, Expr* position) :
+            Expr(varName), position(position), type(type){};
+        virtual ~ExprLArray();
+    protected : 
+        TypeSymbol type;
+        Expr* position;
+
+};
+
+class ExprRArray : public Expr 
+{
+    public :
+        virtual string linearize(CFG * cfg);
+        ExprRArray(string varName, TypeSymbol type, Expr *position) :
+            Expr(varName), position(position), type(type){};
+        virtual ~ExprRArray();
+        TypeSymbol getType() { return type; };
+        Expr * getPosition() { return position; };
+        string getName() { return varName; };
+    protected : 
+        TypeSymbol type;
+         Expr* position;
+
+};
+
 class ExprMult : public Expr
 {
     public :
@@ -179,6 +222,44 @@ class Affectation : public Statement
     protected :
         ExprVar *lExpr;
         Expr *rExpr;
+};
+
+class ExprAffectation : public Statement 
+{
+    public :
+        virtual string linearize(CFG * cfg);
+         ExprAffectation(Expr * lExpr, Expr * rExpr) :
+            Statement(), lExpr(lExpr), rExpr(rExpr) {};
+        virtual ~ExprAffectation();
+    protected :
+        Expr *lExpr;
+        Expr *rExpr;
+};
+
+class ArrayAffectation : public Statement 
+{
+    public :
+        virtual string linearize(CFG * cfg);
+        void addStatement(ExprAffectation * statement);
+        void setArray(ExprArray * exprArray);
+         ArrayAffectation() :
+            Statement() {};
+        virtual ~ArrayAffectation();
+    protected :
+        vector<ExprAffectation *> array_values;
+        ExprArray * arrayD;
+
+};
+
+class ExprDeclaration : public Statement  
+{
+    public :
+        virtual string linearize(CFG * cfg);
+         ExprDeclaration(Expr * expr) :
+            Statement(), expr(expr) {};
+        virtual ~ExprDeclaration();
+    protected :
+        Expr * expr;
 };
 
 class Declaration : public ASTNode

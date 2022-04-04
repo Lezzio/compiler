@@ -49,7 +49,8 @@ public:
         cmp_gt,
         cmp_ge,
         jmp,
-        offset
+        offset, 
+        cast
     } Operation;
 
     typedef enum {
@@ -92,6 +93,7 @@ private:
     string getGeInstr(const string& arg1, Arch arch = x86);
     string getJumpInstr(const string& arg1, Arch arch = x86);
     string getCallInstr(const string& arg1, Arch arch = x86);
+    string getCastInstr(const string &origine, const string &destination, Arch arch = x86);
 
 };
 
@@ -158,8 +160,6 @@ public:
     CFG(SymbolTable * symbolTable, string name);
     virtual ~CFG();
 
-    DefFonction *ast; /**< The AST this CFG comes from */
-
     void add_bb(BasicBlock *bb);
     void addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> params);
 
@@ -174,8 +174,9 @@ public:
     void gen_asm_prologue_ARM(ostream &o);
     void gen_asm_epilogue_ARM(ostream &o);
 
-    // symbol symbolTable methods
+    // symbol table methods
     void add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol);
+    void add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, int size);
     string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
     TypeSymbol get_var_type(const string& name, Scope *scope);
@@ -183,8 +184,8 @@ public:
     bool isSymbolAssigned(const string& name, Scope *scope);
     void setReturnSymbol(const string& name, Scope *scope);
     void setCurrentFunction(string name) { symbolTable->current_function = name; }
-    void setParametersPosition(const string& name, int position);
-    bool doesSymbolExist(string name, Scope *scope);
+    void setParametersPosition(const string &name, int position, Scope *pScope);
+    bool doesSymbolExist(const string& name, Scope *scope);
     string getOffset();
     SymbolTable * getSymbolTable();
 
