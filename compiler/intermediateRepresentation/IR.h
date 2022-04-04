@@ -93,7 +93,7 @@ private:
     string getGeInstr(const string& arg1, Arch arch = x86);
     string getJumpInstr(const string& arg1, Arch arch = x86);
     string getCallInstr(const string& arg1, Arch arch = x86);
-    string getCastInstr(const string &origine, const string &destination, Arch arch = x86);
+    string getCastInstr(const string &origine, const string &destination, TypeSymbol type_from, bool sign = true, Arch arch = x86);
 
 };
 

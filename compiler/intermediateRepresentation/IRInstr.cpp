@@ -242,8 +242,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getNeqInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -257,8 +257,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getLtInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -272,8 +272,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getLeInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -287,8 +287,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getGtInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -302,8 +302,8 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            o << getMovInstr(lvalue, "%eax");
-            o << getCompInstr(rvalue, "%eax");
+            o << getMovInstr(lvalue, reg);
+            o << getCompInstr(rvalue, reg);
             o << getGeInstr("%al");
             if (reg != "%al") {
                 o << getMovInstr("%al", reg, INT8_T);
@@ -332,8 +332,10 @@ void IRInstr::gen_asm_x86(ostream &o) {
             o << "\n";
             o << "\t#cast\n";
             string source = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
-            o << getCastInstr(source, reg);
+            TypeSymbol type_from = static_cast<TypeSymbol>(stoi(this->params[1]));
+            o << getCastInstr(source, reg, type_from);
             o << getMovInstr(reg, source);
+            break;
         }
         default:
             break;
@@ -578,10 +580,18 @@ void IRInstr::gen_asm_ARM(ostream &o) {
                 cerr << "Error in func : " << __FUNCTION__ << " status should be 'start' or 'end' instead of : "
                      << this->params[1] << endl;
             }
-
-
             break;
         }
+        case cast : {
+            o << "\n";
+            o << "\t#cast\n";
+            string source = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
+            TypeSymbol type_from = static_cast<TypeSymbol>(stoi(this->params[1]));
+            //o << getCastInstr(source, reg, type_from);
+            //o << getMovInstr(reg, source);
+            break;
+        }
+
         default:
             break;
     }
@@ -591,12 +601,40 @@ IRInstr::IRInstr(BasicBlock *bb_, Operation op, TypeSymbol t, vector<string> par
         : bb(bb_), op(op), t(t), params(std::move(params)) {
 }
 
-string IRInstr::getCastInstr(const string &origine, const string &destination, Arch arch)
+string IRInstr::getCastInstr(const string &origine, const string &destination, TypeSymbol type_from, bool sign, Arch arch)
 {
+    // t := type_to
+    string from, to, signed_;
     if (arch == x86) {
-        if(t == INT64_T){
-            return "    movzbl " + origine + ", " + destination + "\n";
+
+        if(type_from == CHAR || type_from == INT8_T){
+            from = "b";
+        } else if (type_from == INT){
+            from = "l";
+        } else if (type_from == INT64_T){
+            from = "q";
+        } else {
+            cerr << "Invalid type_from : " << type_from << endl;
         }
+
+        if(t == CHAR || t == INT8_T){
+            to = "b";
+        } else if (t == INT){
+            to = "l";
+        } else if (t == INT64_T){
+            to = "q";
+        } else {
+            cerr << "Invalid type_to : " << t << endl;
+        }
+
+        if (sign){
+            signed_ = "s";
+        } else {
+            signed_ = "z";
+        }
+        return "\tmov" + signed_ + from + to + "\t\t" + origine + ", " + destination + "\n";
+    } else {    //ARM
+
     }
     return "";
 }

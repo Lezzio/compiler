@@ -163,6 +163,12 @@ string ExprRelational::linearize(CFG *cfg) {
         typeTmp = CHAR;
     }
 
+    if (t1 != typeTmp){
+        cfg->addInstruction(IRInstr::cast, typeTmp, {var1, to_string(t1)});
+    } else if (t2 != typeTmp){
+        cfg->addInstruction(IRInstr::cast, typeTmp, {var2, to_string(t2)});
+    }
+
     string tempVar = cfg->create_new_tempvar(typeTmp);
     if (op == GR) {
         cfg->addInstruction(IRInstr::cmp_gt, typeTmp, {tempVar, var1, var2});
@@ -193,6 +199,13 @@ string ExprEqual::linearize(CFG *cfg) {
     } else {
         typeTmp = CHAR;
     }
+
+    if (t1 != typeTmp){
+        cfg->addInstruction(IRInstr::cast, typeTmp, {var1, to_string(t1)});
+    } else if (t2 != typeTmp){
+        cfg->addInstruction(IRInstr::cast, typeTmp, {var2, to_string(t2)});
+    }
+
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
     if (op == EQUAL) {
