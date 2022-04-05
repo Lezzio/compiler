@@ -166,7 +166,7 @@ public:
     // x86 code generation: could be encapsulated in a processor class in a retargetable compiler
     void gen_asm_x86(ostream &o);
     string IR_reg_to_asm(const string &reg, Scope *scope); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
-    static string IR_reg_to_asm_param(int position);
+    static string IR_reg_to_asm_param(int position, TypeSymbol type);
     static void gen_asm_prologue_x86(ostream &o);
     void gen_asm_epilogue_x86(ostream &o);
 
@@ -196,6 +196,7 @@ public:
     BasicBlock *return_bb;
     string breakBBname;
     string continueBBname;
+    string functionName;
 
     bool firstBB(BasicBlock * bb);
 
@@ -204,7 +205,6 @@ public:
     Scope *getCurrentScope();
 
 protected:
-    string functionName;
     int highestLevel;
     vector<int> levelHistory;
     SymbolTable * symbolTable;
@@ -213,6 +213,7 @@ protected:
     int nextBBnumber;             /**< just for naming */
 
     vector<BasicBlock *> bbs; /**< all the basic blocks of this CFG*/
+    bool isReturnSet;
 };
 
 #endif

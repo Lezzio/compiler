@@ -1,0 +1,6 @@
+input.c: In function ‘print_int’:
+input.c:5:1: warning: implicit declaration of function ‘putchar’ [-Wimplicit-function-declaration]
+    5 | putchar('-');
+      | ^~~~~~~
+
+return code: 0

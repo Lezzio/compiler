@@ -18,9 +18,13 @@ main:
 	movl	$0, -20(%rbp)
 	movl	$1, -16(%rbp)
 	movl	$2, -12(%rbp)
-	leaq	-20(%rbp), %rax
-	movq	-8(%rbp), %rdx
-	xorq	%fs:40, %rdx
+	movl	-12(%rbp), %edx
+	movl	-16(%rbp), %eax
+	addl	%eax, %edx
+	movl	-20(%rbp), %eax
+	addl	%edx, %eax
+	movq	-8(%rbp), %rcx
+	xorq	%fs:40, %rcx
 	je	.L3
 	call	__stack_chk_fail@PLT
 .L3:
@@ -30,7 +34,7 @@ main:
 	.cfi_endproc
 .LFE0:
 	.size	main, .-main
-	.ident	"GCC: (Ubuntu 9.4.0-1ubuntu1~20.04) 9.4.0"
+	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"
 	.align 8

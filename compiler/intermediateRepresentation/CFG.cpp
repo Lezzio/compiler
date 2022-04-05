@@ -13,7 +13,7 @@ using namespace std;
  */
 CFG::CFG(SymbolTable *symbolTable, string name)
         : functionName(std::move(name)), symbolTable(symbolTable), nextBBnumber(0), current_bb(nullptr), return_bb(nullptr),
-          nextTmpVarNumber(0), highestLevel(0), breakBBname(""), continueBBname("") {
+          nextTmpVarNumber(0), highestLevel(0), breakBBname(""), continueBBname(""), isReturnSet(false) {
     levelHistory.push_back(0);
 }
 
@@ -74,7 +74,17 @@ void CFG::gen_asm_x86(ostream &o) {
     for (auto it = bbs.begin(); it != bbs.end(); it++) {
         (*it)->gen_asm_86(o);
     }
-    return_bb->gen_asm_86(o);
+    if (get_var_type(functionName, &GLOBAL_SCOPE) != VOID && isReturnSet) {
+        return_bb->gen_asm_86(o);
+    } else if(get_var_type(functionName, &GLOBAL_SCOPE)!= VOID) {
+        if(functionName.compare("main")==0){
+            cout << "\tmovl\t\t$0, %eax\n";
+        } else {
+            cerr << "warning: control reaches end of non-void function [-Wreturn-type]" << endl;
+            exit(1);
+        }
+
+    }
     gen_asm_epilogue_x86(o);
     //o << "\n";
     //symbolTable->print_dictionary();
@@ -132,7 +142,7 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
     symbolReturned = this->symbolTable->lookupParameter(reg+"_param", scope);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
-        return IR_reg_to_asm_param(position);
+        return IR_reg_to_asm_param(position, symbolReturned->getTypeSymbol());
     }
     //debug
     //cout << "reg = " << reg << endl;
@@ -150,26 +160,44 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
  * @param position : la position
  * @return string : le registre a mettre dans l'assembleur
  */
-string CFG::IR_reg_to_asm_param(int position) {
+string CFG::IR_reg_to_asm_param(int position, TypeSymbol type) {
     string retVal;
     switch (position) {
         case 1:
             retVal = "%edi";
+            if(type == CHAR){
+                retVal = "%dil";
+            }
             break;
         case 2:
             retVal = "%esi";
+            if(type == CHAR){
+                retVal = "%sil";
+            }
             break;
         case 3:
             retVal = "%edx";
+            if(type == CHAR){
+                retVal = "%dl";
+            }
             break;
         case 4:
             retVal = "%ecx";
+            if(type == CHAR){
+                retVal = "%cl";
+            }
             break;
         case 5:
             retVal = "%r8d";
+            if(type == CHAR){
+                retVal = "%r8b";
+            }
             break;
         case 6:
             retVal = "%r9d";
+            if(type == CHAR){
+                retVal = "%r9b";
+            }
             break;
         default:
             retVal = "unknown";
@@ -379,6 +407,7 @@ void CFG::setReturnSymbol(const string& name, Scope *scope) {
     //Return symbol scope is always on the level 0 to be accessed anywhere within the scope (name)
     scope->levelContext.clear();
     scope->levelContext.push_back(0);
+    isReturnSet = true;
     //cout << " #setReturnSymbol - Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl; debug
     if (!symbolTable->doesSymbolExist(name, scope)) {
         symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, false);

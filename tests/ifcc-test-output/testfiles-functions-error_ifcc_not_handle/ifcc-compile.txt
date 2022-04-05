@@ -1,0 +1,3 @@
+Sorry, ifcc does'nt handle function with more than 6 parameters
+
+return code: 1

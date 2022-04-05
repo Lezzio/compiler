@@ -1,0 +1,4 @@
+line 3:12 no viable alternative at input 'int tab[length'
+error: syntax error during parsing
+
+return code: 1

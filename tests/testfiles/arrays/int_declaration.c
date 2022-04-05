@@ -1,4 +1,4 @@
 int main() {
     int tab[3];
-    return tab;
+    return tab[0];
 }

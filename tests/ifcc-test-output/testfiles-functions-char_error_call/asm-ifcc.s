@@ -10,7 +10,7 @@
 	subq		$32, %rsp
 
 	#ret
-	movb		%edi, %al
+	movb		%dil, %al
 	movb		%al, -4(%rbp)
 	jmp			.func_1
 .func_1:
@@ -40,7 +40,7 @@
 
 	#copy
 	movb		-9(%rbp), %al
-	movb		%al, %edi
+	movb		%al, %dil
 
 	#call
 	call		func

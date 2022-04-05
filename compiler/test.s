@@ -1,8 +1,8 @@
 	.file	"test.c"
 	.text
-	.globl	test
-	.type	test, @function
-test:
+	.globl	fibo
+	.type	fibo, @function
+fibo:
 .LFB0:
 	.cfi_startproc
 	endbr64
@@ -11,17 +11,39 @@ test:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
+	pushq	%rbx
+	subq	$24, %rsp
+	.cfi_offset 3, -24
 	movl	%edi, -20(%rbp)
+	cmpl	$0, -20(%rbp)
+	jg	.L2
+	movl	$0, %eax
+	jmp	.L3
+.L2:
+	cmpl	$1, -20(%rbp)
+	jne	.L4
+	movl	$1, %eax
+	jmp	.L3
+.L4:
 	movl	-20(%rbp), %eax
-	addl	%eax, %eax
-	movl	%eax, -4(%rbp)
-	movl	-4(%rbp), %eax
+	subl	$1, %eax
+	movl	%eax, %edi
+	call	fibo
+	movl	%eax, %ebx
+	movl	-20(%rbp), %eax
+	subl	$2, %eax
+	movl	%eax, %edi
+	call	fibo
+	addl	%ebx, %eax
+.L3:
+	addq	$24, %rsp
+	popq	%rbx
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE0:
-	.size	test, .-test
+	.size	fibo, .-fibo
 	.globl	main
 	.type	main, @function
 main:
@@ -34,10 +56,8 @@ main:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
-	movl	$6, -8(%rbp)
-	movl	-8(%rbp), %eax
-	movl	%eax, %edi
-	call	test
+	movl	$3, %edi
+	call	fibo
 	movl	%eax, -4(%rbp)
 	movl	-4(%rbp), %eax
 	leave

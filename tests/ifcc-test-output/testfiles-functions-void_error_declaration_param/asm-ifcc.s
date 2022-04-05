@@ -1,3 +1,4 @@
+warning: ‘return’ with a value, in function returning void [-Wreturn-type]
 .text
 .globl	func
  func: 
@@ -13,15 +14,6 @@
 	movl		%edi, %eax
 	addl		%esi, %eax
 	movl		%eax, -4(%rbp)
-
-	#ret
-	movl		-4(%rbp), %eax
-	movl		%eax, -8(%rbp)
-	jmp			.func_1
-.func_1:
-
-	#finret
-	movl		-8(%rbp), %eax
 	#epilogue
 	nop
 	leave
@@ -38,29 +30,30 @@
 	subq		$32, %rsp
 
 	#ldconst
-	movl		$1, -12(%rbp)
+	movl		$1, -8(%rbp)
 
 	#copy
-	movl		-12(%rbp), %eax
-	movl		%eax, -16(%rbp)
+	movl		-8(%rbp), %eax
+	movl		%eax, -12(%rbp)
 
 	#ldconst
-	movl		$2, -20(%rbp)
-
-	#copy
-	movl		-20(%rbp), %eax
-	movl		%eax, -24(%rbp)
+	movl		$2, -16(%rbp)
 
 	#copy
 	movl		-16(%rbp), %eax
+	movl		%eax, -20(%rbp)
+
+	#copy
+	movl		-12(%rbp), %eax
 	movl		%eax, %edi
 
 	#copy
-	movl		-24(%rbp), %eax
+	movl		-20(%rbp), %eax
 	movl		%eax, %esi
 
 	#call
 	call		func
-.main_1:
-
-	#finret
+	movl		$0, %eax
+	#epilogue
+	leave
+	ret
