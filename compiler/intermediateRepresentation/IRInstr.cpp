@@ -714,13 +714,13 @@ string IRInstr::getMovInstr(const string &origine, const string &destination, Ty
                 action = "\tmovb\t\t";
             }
             if (t == INT64_T) {
-                action = "  movq ";
+                action = "\tmovq\t\t";
             }
             return action + origine + ", " + destination + "\n";
         } else if (type == INT8_T) {
             return "\tmovzbl\t\t" + origine + ", " + destination + "\n";
         } else {
-            return "    movq " + origine + ", " + destination + "\n";
+            return "\tmovq\t\t" + origine + ", " + destination + "\n";
         }
     } else {
         string action, type_b;
@@ -770,7 +770,7 @@ string IRInstr::getAddInstr(const string &arg1, const string &arg2, Arch arch, c
             action = "\taddb\t\t";
         }
         if (t == INT64_T) {
-            action = "  addq ";
+            action = "\taddq\t\t";
         }
         return action + arg1 + ", " + arg2 + "\n";
     } else {
