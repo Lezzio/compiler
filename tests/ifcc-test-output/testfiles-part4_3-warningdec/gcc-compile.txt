@@ -1,6 +1,6 @@
-input.c: In function ‘main’:
-input.c:2:9: warning: unused variable ‘variable’ [-Wunused-variable]
-    2 |     int variable;
-      |         ^~~~~~~~
+input.c:2:9: warning: unused variable 'variable' [-Wunused-variable]
+    int variable;
+        ^
+1 warning generated.
 
 return code: 0

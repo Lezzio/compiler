@@ -1,2 +1,3 @@
+/bin/sh: /Users/aguigal/CLionProjects/compiler/tests/ifcc-wrapper.sh: Permission denied
 
-return code: 0
+return code: 126

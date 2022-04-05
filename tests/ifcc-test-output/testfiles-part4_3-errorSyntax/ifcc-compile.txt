@@ -1,4 +1,3 @@
-line 3:13 no viable alternative at input 'variable 10'
-error: syntax error during parsing
+/bin/sh: /Users/aguigal/CLionProjects/compiler/tests/ifcc-wrapper.sh: Permission denied
 
-return code: 1
+return code: 126
