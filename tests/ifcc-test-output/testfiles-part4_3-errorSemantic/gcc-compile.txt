@@ -1,6 +1,2 @@
-input.c:3:16: warning: implicit conversion from 'double' to 'int' changes value from 10.5 to 10 [-Wliteral-conversion]
-    variable = 10.5;
-             ~ ^~~~
-1 warning generated.
 
 return code: 0
