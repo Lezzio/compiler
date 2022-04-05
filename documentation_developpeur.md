@@ -83,9 +83,15 @@ Ce projet a été développé selon la méthodologie du Test Driven Development 
 
 Les tests, placés dans le répertoire `tests/`, fonctionnent de la manière suivante. Notre compilateur essaye de compiler différents fichiers .c créés spécifiquement pour les tests. Les mêmes fichiers sont compilés en parallèle avec gcc, le compilateur officiel du langage c, et les résultats obtenus sont alors comparés. Cette gestion des tests nous permet de contrôler le fait que tout nouveau développement n'entraîne pas de changements néfastes au niveau des exécutables produits par notre compilateur.
 
-Selon la distribution sur laquelle les tests sont lancés, il se peut qu'ils se lancent mal. Il est possible de repérer lorsque la batterie de tests se lance mal si la plupart des tests de comparaison (TEST-CASE: ifcc-test-output/testfiles-comparatives-...) ne passent pas. A ce moment là il y a plusieurs possibilités, et voici trois recommandations :
+Selon la distribution sur laquelle les tests sont lancés, il se peut qu'ils se lancent mal. Il est possible de repérer lorsque la batterie de tests se lance mal si la plupart des tests de comparaison (`TEST-CASE: ifcc-test-output/testfiles-comparatives-...`) ne passent pas. A ce moment là il y a plusieurs possibilités, et voici trois recommandations :
 1 - Vérifiez les droits en lecture / écriture sur le fichier `ifcc-wrapper.sh`. Eventuellement, corrigez-les (`chmod -x ifcc-wrapper.sh`).
 2 - Changez la première ligne du idcc-wrapper.sh de "`#!/bin/sh`" en "`#!/bin/bash`", et vérifiez que ce fichier soit bien en séquence de fin de ligne "LF" et non pas en "CRLF". Faites de même pour le fichier ifcc-test.py.
+
+Il est aussi possible de lancer les tests pour une architecture arm. Pour cela il suffit de se placer dans le dossier ARM et lancer les tests de cette manière : `./ifcc-test-arm.py ../testfiles/`. Il est possible de changer le chemin passé en argument pour effectuer le test sur n'importe quel fichier .c ou dossier comprenant uniquement des fichiers c.
+Dans le cas où les tests sont lancés sur une architecture autre que ARM, il est possible de d'installer un émulateur, voici la manipulation pour une distribution ubuntu (résumé de la manipulation décrite sur `https://gist.github.com/luk6xff/9f8d2520530a823944355e59343eadc1`:
+1 - `sudo apt-get install gcc-arm-linux-gnueabihf libc6-dev-armhf-cross qemu-user-static` 
+2 - `sudo apt-get install qemu`
+
 
 ## Limites du compilateur
 Notre compilateur est un projet universitaire. A ce titre, il ne réalise qu'une petite partie des fonctionnalités d'un vrai compilateur. Ainsi vous ne pouvez pas:
