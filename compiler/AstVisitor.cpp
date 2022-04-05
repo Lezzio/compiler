@@ -221,7 +221,8 @@ antlrcpp::Any AstVisitor::visitParameter(ifccParser::ParameterContext *context)
     if (res == "char") {
         t = CHAR;
     }
-    auto * parameter = new Parameter(context->IDENT()->getText(), t);
+    auto line = context->IDENT()->getSymbol()->getLine();
+    auto * parameter = new Parameter(context->IDENT()->getText(), t, line);
 
     return (Parameter *) parameter;
 }
@@ -289,7 +290,7 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
  * @return a statement pointer of the affectation
  */
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
-    auto *exprVar = new ExprVar(context->IDENT()->getText());
+    auto *exprVar = new ExprVar(context->IDENT()->getText();
     Expr *expr = (Expr *) visit(context->expression());
     auto *affectation = new Affectation(exprVar, expr);
     return (Statement *) affectation;

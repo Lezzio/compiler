@@ -43,7 +43,7 @@ string ExprChar::linearize(CFG *cfg) {
  * @return string : the name of the array variable in the symbol table
  */
 string ExprArray::linearize(CFG *cfg) {
-    cfg->add_to_symbol_table(varName, type, DECLARED,size);
+    cfg->add_to_symbol_table(varName, type, DECLARED, size, 0); //TODO Symbol line
     return varName;
 }
 
@@ -390,10 +390,12 @@ Block::~Block() {
  * @return string : the left expression linearized name
  */
 string Affectation::linearize(CFG *cfg) {
+    cout << "AFFEC" << endl;
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
+    cout << "AFFEC 2" << endl;
 
     ExprFunction * function = dynamic_cast<ExprFunction *>(rExpr);
     if(function && cfg->get_var_type(function->getName(), &GLOBAL_SCOPE) == VOID){
@@ -404,6 +406,7 @@ string Affectation::linearize(CFG *cfg) {
     if (!cfg->isSymbolAssigned(var1, cfg->getCurrentScope())) {
         cfg->assignSymbol(var1, cfg->getCurrentScope());
     }
+    cout << "GOT HERE" << endl;
 
     cfg->addInstruction(IRInstr::copy, typeTmp, {var1, var2});
     return var1;
@@ -425,6 +428,7 @@ Affectation::~Affectation() {
  * @return string : the left expression linearized name 
  */
 string ExprAffectation::linearize(CFG *cfg) {
+    cout << "ExprAffectation" << endl;
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
@@ -824,7 +828,7 @@ string InstructionExpr::linearize(CFG *cfg) {
  * @return string : the name of the symbol
  */
 string Parameter::linearize(CFG *cfg) {
-    cfg->add_to_symbol_table(name, type, PARAMETER, 0);
+    cfg->add_to_symbol_table(name, type, PARAMETER, line);
     return name;
 }
 
@@ -881,7 +885,7 @@ Function::~Function() {
  */
 string Function::linearize(CFG *cfg) {
     cfg->setCurrentFunction(name);
-    cfg->add_to_symbol_table(name, type, FUNCTION, 0);
+    cfg->add_to_symbol_table(name, type, FUNCTION, line);
 
     auto *bb = new BasicBlock(cfg, cfg->new_BB_name());
     cfg->add_bb(bb);
@@ -991,11 +995,11 @@ string ExprFunction::linearize(CFG *cfg) {
 vector<CFG *> Prog::linearize() {
     auto *symbolTable = new SymbolTable();
 
-    symbolTable->defFunction("getchar@PLT", CHAR);
+    symbolTable->defFunction("getchar@PLT", CHAR, -1);
     vector<TypeSymbol> params;
     int number =0;
     symbolTable->setFunctionParameters("getchar@PLT", params, number);
-    symbolTable->defFunction("putchar@PLT", VOID);
+    symbolTable->defFunction("putchar@PLT", VOID, -1);
     number = 1;
     vector<TypeSymbol> params2;
     params2.push_back(CHAR);

@@ -31,5 +31,6 @@ ErrorManager * ErrorManager::getInstance() {
  * @param error : the error to add
  */
 void ErrorManager::addError(Error * error) {
+    std::cout << "Error detected : " << error->message << " at line " << error->line << endl;
     this->errors.push_back(error);
 }

@@ -71,8 +71,8 @@ void CFG::gen_asm_x86(ostream &o) {
     cout << ".globl	"+currentFunction+"\n"
             " "+currentFunction+": \n";
 #endif
-    for (auto it = bbs.begin(); it != bbs.end(); it++) {
-        (*it)->gen_asm_86(o);
+    for (auto & bb : bbs) {
+        bb->gen_asm_86(o);
     }
     if (get_var_type(functionName, &GLOBAL_SCOPE) != VOID && isReturnSet) {
         return_bb->gen_asm_86(o);
@@ -139,7 +139,7 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returnVal;
     }
-    symbolReturned = this->symbolTable->lookupParameter(reg+"_param", scope);
+    symbolReturned = this->symbolTable->lookupParameter(reg, scope);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
         return IR_reg_to_asm_param(position, symbolReturned->getTypeSymbol());
@@ -269,9 +269,9 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
     //cout << "--------------" << endl; debug
     //cout << "About to add symbol named = " << name << endl; debug
     if (stateSymbol == PARAMETER) {
-        this->symbolTable->defParameter(name, getCurrentScope(), t);
+        this->symbolTable->defParameter(name, getCurrentScope(), t, symbolLine);
     } else if (stateSymbol == FUNCTION) {
-        this->symbolTable->defFunction(name, t);
+        this->symbolTable->defFunction(name, t, symbolLine);
     } else if (stateSymbol == DECLARED) {
         this->symbolTable->declareSymbol(name, getCurrentScope(), t, 0, DECLARED, false, symbolLine);
     } else {
@@ -299,7 +299,7 @@ void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stat
  * @param pScope : the scope of the parameters
  */
 void CFG::setParametersPosition(const string &name, int position, Scope *pScope) {
-    Symbol *symbol = symbolTable->lookupParameter(name+"_param", pScope);
+    Symbol *symbol = symbolTable->lookupParameter(name, pScope);
     symbol->setIndex(position);
 }
 
@@ -341,9 +341,12 @@ TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
     //cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
     Symbol *symbol = symbolTable->lookupSymbol(name, scope);
     if (symbol == nullptr) {
-        symbol = symbolTable->lookupParameter(name+"_param", scope);
+        symbol = symbolTable->lookupParameter(name, scope);
     }
     //TODO: check error
+    if (symbol == nullptr) {
+        ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + name + "\'", 0));
+    }
     return symbol->getTypeSymbol();
 }
 

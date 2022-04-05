@@ -13,7 +13,7 @@ public:
     Symbol();
 
     Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int additional,
-           StateSymbol stateSymbol, bool isConst);
+           StateSymbol stateSymbol, bool isConst, unsigned long declarationLine);
 
     ~Symbol();
 
@@ -48,6 +48,8 @@ public:
     int getNumberParameters() const;
 
     TypeSymbol getParameterType(int position) const;
+
+    unsigned long symbolLine;
 
 protected:
     string name;

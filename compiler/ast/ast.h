@@ -127,17 +127,19 @@ class ExprMult : public Expr
         Expr *rExpr;
 };
 
-class ExprAdd : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprAdd(string varName, Expr * lExpr, Expr * rExpr, Operator op) :
-            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op){};
-        virtual ~ExprAdd();
-    protected :
-        Operator op; 
-        Expr *lExpr;
-        Expr *rExpr;
+class ExprAdd : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprAdd(string varName, Expr *lExpr, Expr *rExpr, Operator op) :
+            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op) {};
+
+    virtual ~ExprAdd();
+
+protected :
+    Operator op;
+    Expr *lExpr;
+    Expr *rExpr;
 };
 
 class ExprBits : public Expr
@@ -378,17 +380,21 @@ class InstructionContinue : public Statement
     protected:
 };
 
-class Parameter : public ASTNode
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        Parameter(string name, TypeSymbol type) :
-            name(name),type(type){};
-        virtual ~Parameter()= default;
-        TypeSymbol getType() {return type;};
-    protected :
-        string name;
-        TypeSymbol type;
+class Parameter : public ASTNode {
+public :
+    virtual string linearize(CFG *cfg);
+
+    Parameter(string name, TypeSymbol type, unsigned long i) :
+            name(name), type(type) {
+        ASTNode::line = line;
+    };
+
+    virtual ~Parameter() = default;
+
+    TypeSymbol getType() { return type; };
+protected :
+    string name;
+    TypeSymbol type;
 };
 
 class Parameters : public Statement

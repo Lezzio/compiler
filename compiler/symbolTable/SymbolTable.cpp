@@ -34,15 +34,15 @@ int SymbolTable::addSymbol(const string &symbolName, Scope *symbolScope, TypeSym
     if(additional != 0){
         index = staticIndex + additional;
     }
-    auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst);
+    auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst, symbolLine);
     if (!doesSymbolExist(newSymbol, true)) {
         this->symbolTable[newSymbol->getName() + "_" + symbolScope->name][symbolScope->getCurrentLevel()] = newSymbol;
         staticIndex = index;
         highestIndex = index;
         return newSymbol->getAddress();
     } else {
-        ErrorManager::getInstance()->addError(new Error("redefinition of \'" + symbolName + "\'", symbolLine));
-        cout << "Error detected can't declare symbol twice ADD_SYMBOL" << endl;
+        ErrorManager::getInstance()->addError(new Error("redeclaration of \'" + symbolName + "\'", symbolLine));
+        //cout << "Error detected can't declare symbol twice ADD_SYMBOL" << endl;
     }
     delete newSymbol;
     return -1;
@@ -63,15 +63,15 @@ int SymbolTable::addSymbol(const string &symbolName, Scope *symbolScope, TypeSym
 bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional,
                                 StateSymbol stateSymbol, bool isConst, unsigned long symbolLine) {
 
-    auto *newSymbol = new Symbol(symbolName, symbolScope, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst);
+    auto *newSymbol = new Symbol(symbolName, symbolScope, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst, symbolLine);
 
     if (!doesSymbolExist(newSymbol, true)) {
         this->symbolTable[newSymbol->getName()+"_"+symbolScope->name][symbolScope->getCurrentLevel()] = newSymbol;
         return true;
     } else {
         //Error, can't declare a symbol twice
-        ErrorManager::getInstance()->addError(new Error("redefinition of \'" + symbolName + "\'", symbolLine));
-        cout << "Error detected can't declare symbol twice DECLARE_SYMBOL" << symbolLine << endl;
+        ErrorManager::getInstance()->addError(new Error("redeclaration of \'" + symbolName + "\'", symbolLine));
+        //cout << "Error detected can't declare symbol twice DECLARE_SYMBOL" << symbolLine << endl;
     }
     delete newSymbol;
     return false;
@@ -98,11 +98,10 @@ int SymbolTable::assignSymbol(Symbol *symbol) {
  * @param typeSymbol : type of the return
  * @return int : value which permits to know if the adding succeed or not
  */
-int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
-
-    auto *newSymbol = new Symbol(name, &GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
+int SymbolTable::defFunction(const string &name, TypeSymbol typeSymbol, unsigned long symbolLine) {
+    auto *newSymbol = new Symbol(name, &GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false, symbolLine);
     if (!doesSymbolExist(newSymbol)) {
-        this->symbolTable[newSymbol->getName()+"_"+GLOBAL_SCOPE.name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
+        this->symbolTable[newSymbol->getName() + "_" + GLOBAL_SCOPE.name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
         return 0;
     }
     delete newSymbol;
@@ -118,8 +117,8 @@ int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
  * @return true : adding succeed
  * @return false : adding failed (symbol alreay exists in the symbol table)
  */
-bool SymbolTable::defParameter(const string& name, Scope *scope, TypeSymbol typeSymbol) {
-    auto *newSymbol = new Symbol(name, scope, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
+bool SymbolTable::defParameter(const string &name, Scope *scope, TypeSymbol typeSymbol, unsigned long symbolLine) {
+    auto *newSymbol = new Symbol(name, scope, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false, symbolLine);
     if (!doesSymbolExist(newSymbol, true)) {
         this->symbolTable[newSymbol->getName()+"_"+"param"+"_"+scope->name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
         return true;
@@ -231,7 +230,7 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  * @return SYMBOL 
  */
 Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
-    //cout << "SYMBOL LOOK UP name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
+    cout << "SYMBOL LOOK UP name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
     auto matchedMap = symbolTable.find(name+"_"+scope->name);
     //cout << "lookup point #1" << endl;
     if (matchedMap != symbolTable.end()) {
@@ -253,7 +252,7 @@ Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
             }
         }
     }
-    //cout << "lookupSymbol # THE SYMBOL IS NULL" << endl;
+    cout << "lookupSymbol # THE SYMBOL IS NULL" << endl;
     return nullptr;
 }
 
@@ -266,7 +265,7 @@ Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
  */
 Symbol *SymbolTable::lookupParameter(const string& name, Scope *scope) {
     //cout << "LOOKING UP PARAMETER HENCE SYMBOL" << endl;
-    return lookupSymbol(name, scope);
+    return lookupSymbol(name + "_param", scope);
 }
 
 
