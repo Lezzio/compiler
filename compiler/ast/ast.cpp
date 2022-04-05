@@ -17,7 +17,6 @@ string ExprVar::linearize(CFG *cfg) {
     } else {
         //The variable has been used in an expression without being declared prior to the usage
         ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + varName + "\'", line));
-        exit(1);
     }
     return varName;
 }

@@ -15,5 +15,5 @@ using namespace antlr4;
  * @param e 
  */
 void ErrorStrategy::reportError(Parser * recognizer,const RecognitionException &e) {
-    cout << "CALLED ANTLR4 REPORT ERROR" << endl;
+    //cout << "CALLED ANTLR4 REPORT ERROR" << endl;
 }

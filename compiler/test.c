@@ -1,10 +1,8 @@
-
-int test(int i) {
-    return 10;
-}
-
 int main() {
-    int a = 0;
-    int d = e + v;
-    return 0;
+    int a = 1;
+    int b = 10;
+    if(1){
+        int a = 2;
+    }
+    return a;
 }

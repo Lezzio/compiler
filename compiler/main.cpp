@@ -24,6 +24,7 @@ int main(int argn, const char **argv) {
     //TODO:: arg to disable warnings
 
     bool arm = false;
+    string outputFile;
 
     stringstream in;
     if (argn == 2) {
@@ -32,13 +33,27 @@ int main(int argn, const char **argv) {
     } else if (argn == 3) {
         ifstream lecture(argv[1]);
         in << lecture.rdbuf();
-        if (string(argv[2]) == "-ARM"){
+        auto arg2 = string(argv[2]);
+        if (arg2 == "-ARM") {
+            arm = true;
+        } else if (arg2.back() == 's') {
+            outputFile = arg2;
+        } else {
+            cerr << "Option " << argv[2] << " unknown : try -ARM instead " << endl;
+        }
+    } else if (argn == 4) {
+        ifstream lecture(argv[1]);
+        in << lecture.rdbuf();
+        auto arg2 = string(argv[2]);
+        auto arg3 = string(argv[3]);
+        if (arg2.back() == 's' && arg3 == "-ARM") {
+            outputFile = arg2;
             arm = true;
         } else {
             cerr << "Option " << argv[2] << " unknown : try -ARM instead " << endl;
         }
     } else {
-        cerr << "usage: ifcc path/to/file.c [-ARM]" << endl;
+        cerr << "usage: ifcc path/to/file.c [path/to/file.s] [-ARM]" << endl;
         exit(1);
     }
 
@@ -57,7 +72,7 @@ int main(int argn, const char **argv) {
         cerr << "error: syntax error during parsing" << endl;
         exit(1);
     }
-    if(lexer.getNumberOfSyntaxErrors() != 0){
+    if (lexer.getNumberOfSyntaxErrors() != 0) {
         exit(1);
     }
 
@@ -67,17 +82,19 @@ int main(int argn, const char **argv) {
     vector<CFG *> cfgs;
     cfgs = prog->linearize();
 
+    ofstream srcFile(outputFile);
 
     //TODO : get from ifcc options
-    for(CFG * cfg : cfgs){
-        if (arm){   //ARM
-            cfg->gen_asm_ARM(cout);
+    for (CFG *cfg : cfgs) {
+        if (arm) {  //ARM
+            cfg->gen_asm_ARM(srcFile);
         } else {    //x86
-            cfg->gen_asm_x86(cout);
+            cfg->gen_asm_x86(srcFile);
         }
     }
     prog->symbolTable->warnUnusedSymbols();
-    //delete (syntaxErrorListener); //TODO Put back
+
+    delete (syntaxErrorListener);
     delete (prog);
     return 0;
 }

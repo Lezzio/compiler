@@ -60,15 +60,15 @@ void CFG::addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> par
  */
 void CFG::gen_asm_x86(ostream &o) {
     //TODO: adapt with functionName of block and multiple blocks?
-    cout << ".text\n";
+    o << ".text\n";
     string currentFunction = functionName;
     symbolTable->current_function = functionName;
 
 #ifdef __APPLE__
-    cout << ".globl _" + currentFunction + "\n"
+    o << ".globl _" + currentFunction + "\n"
                                            " _" + currentFunction + ": \n";
 #else
-    cout << ".globl	"+currentFunction+"\n"
+    o << ".globl	"+currentFunction+"\n"
             " "+currentFunction+": \n";
 #endif
     for (auto & bb : bbs) {
@@ -78,7 +78,7 @@ void CFG::gen_asm_x86(ostream &o) {
         return_bb->gen_asm_86(o);
     } else if(get_var_type(functionName, &GLOBAL_SCOPE)!= VOID) {
         if(functionName.compare("main")==0){
-            cout << "\tmovl\t\t$0, %eax\n";
+            o << "\tmovl\t\t$0, %eax\n";
         } else {
             cerr << "warning: control reaches end of non-void function [-Wreturn-type]" << endl;
             exit(1);
@@ -97,12 +97,12 @@ void CFG::gen_asm_x86(ostream &o) {
  */
 void CFG::gen_asm_ARM(ostream &o) {
     //TODO: adapt with functionName of block and multiple blocks?
-    cout << ".text\n";
+    o << ".text\n";
 #ifdef __APPLE__
-    cout << ".globl _main\n"
+    o << ".globl _main\n"
             " _main: \n";
 #else
-    cout << ".globl	main\n"
+    o << ".globl	main\n"
             " main: \n";
 #endif
     gen_asm_prologue_ARM(o);
@@ -227,12 +227,12 @@ void CFG::gen_asm_prologue_x86(ostream &o) {
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_epilogue_x86(ostream &o) {
-    cout << "\t#epilogue\n";
+    o << "\t#epilogue\n";
     if (get_var_type(functionName, &GLOBAL_SCOPE) == VOID) {
-        cout << "\tnop\n";
+        o << "\tnop\n";
     }
     //     "   popq %rbp\n"
-    cout << "\tleave\n"
+    o << "\tleave\n"
             "\tret\n";
 }
 
