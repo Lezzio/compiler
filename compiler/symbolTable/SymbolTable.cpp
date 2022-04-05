@@ -288,7 +288,7 @@ void SymbolTable::warnUnusedSymbols() {
             auto symbol = secondPair.second;
             char firstChar = symbol->getName().at(0);
             if (symbol->getStateSymbol() != FUNCTION && symbol->getStateSymbol() != PARAMETER && !symbol->used && firstChar != '!') {
-                ErrorManager::getInstance()->addError(new Error("the variable \'" + symbol->getName() + "\' is unused", symbol->symbolLine));
+                ErrorManager::getInstance()->addWarning(new Warning("the variable \'" + symbol->getName() + "\' is unused", symbol->symbolLine));
             }
         }
     }

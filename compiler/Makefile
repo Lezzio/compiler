@@ -14,7 +14,7 @@ IRINSTR=build/IRInstr.o
 CFG=build/CFG.o
 BB=build/BasicBlock.o
 AST=build/ast.o build/AstVisitor.o 
-ERRORMANAGEMENT=build/SyntaxErrorListener.o build/Error.o build/ErrorManager.o build/ErrorStrategy.o
+ERRORMANAGEMENT=build/SyntaxErrorListener.o build/Error.o build/Warning.o build/ErrorManager.o build/ErrorStrategy.o
 SCOPE=build/Scope.o
 MAIN=build/main.o
 
@@ -41,6 +41,10 @@ build/ErrorStrategy.o: error/ErrorStrategy.cpp
 	$(CC) $(CCFLAGS) -MMD -o $@ $<
 
 build/SyntaxErrorListener.o: error/SyntaxErrorListener.cpp
+	@mkdir -p build
+	$(CC) $(CCFLAGS) -MMD -o $@ $<
+
+build/Warning.o: error/Warning.cpp
 	@mkdir -p build
 	$(CC) $(CCFLAGS) -MMD -o $@ $<
 

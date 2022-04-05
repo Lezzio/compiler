@@ -30,7 +30,12 @@ ErrorManager * ErrorManager::getInstance() {
  * 
  * @param error : the error to add
  */
-void ErrorManager::addError(Error * error) {
-    std::cout << "Error detected : " << error->message << " at line " << error->line << endl;
+void ErrorManager::addError(Error *error) {
+    std::cout << "Error : " << error->message << " at line " << error->line << endl;
     this->errors.push_back(error);
+}
+
+void ErrorManager::addWarning(Warning *warning) {
+    std::cout << "Warning : " << warning->message << " at line " << warning->line << endl;
+    this->warnings.push_back(warning);
 }

@@ -764,15 +764,14 @@ antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context)
  * @param context : the context of the else block 
  * @return a pointer on the block
  */
-antlrcpp::Any AstVisitor::visitElseBlock(ifccParser::ElseBlockContext *context) 
-{
-    Block* elseBlock = nullptr;
-    if(context->statement()){
+antlrcpp::Any AstVisitor::visitElseBlock(ifccParser::ElseBlockContext *context) {
+    Block *elseBlock = nullptr;
+    if (context->statement()) {
         Statement *statement = (Statement *) visit(context->statement());
         elseBlock = new Block();
         elseBlock->addStatement(statement);
-    } else if(context->block()){
-        elseBlock = (Block*)visit(context->block());
+    } else if (context->block()) {
+        elseBlock = (Block *) visit(context->block());
     } else {
         Statement *statement = (Statement *) visit(context->ifBlock());
         elseBlock = new Block();

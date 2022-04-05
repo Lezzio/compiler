@@ -6,6 +6,7 @@
 #define COMPILER_ERRORMANAGER_H
 
 #include "Error.h"
+#include "Warning.h"
 #include <vector>
 #include <iostream>
 
@@ -17,10 +18,12 @@ public:
     ErrorManager();
     static ErrorManager * getInstance();
     void addError(Error * error);
+    void addWarning(Warning * warning);
+    vector<Error *> errors;
+    vector<Warning *> warnings;
 
 private:
     static ErrorManager * INSTANCE;
-    vector<Error *> errors;
 
 };
 

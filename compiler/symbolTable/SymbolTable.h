@@ -8,6 +8,8 @@
 #include "Symbol.h"
 #include <cstring>
 #include "../error/ErrorManager.h"
+#include "../error/Error.h"
+#include "../error/Warning.h"
 
 using namespace std;
 
