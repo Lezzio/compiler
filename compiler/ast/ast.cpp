@@ -825,6 +825,10 @@ string InstructionExpr::linearize(CFG *cfg) {
  */
 string Parameter::linearize(CFG *cfg) {
     cfg->add_to_symbol_table(name, type, PARAMETER);
+    
+    string var1 = cfg->create_new_tempvar(type);
+    cfg->addInstruction(IRInstr::copy, type, {var1, name});
+    cfg->setParametersTmp(name, var1, cfg->getCurrentScope());
     return name;
 }
 

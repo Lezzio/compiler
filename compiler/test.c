@@ -1,18 +1,15 @@
-int fibo(int n)
+void print_int(int x)
 {
-if ( n <= 0 )
+if(x<0)
 {
-return 0;
+putchar('-');
+x = -x;
 }
-else if (n == 1)
-{
-return 1;
+if(x/10 != 0)
+print_int(x/10);
+putchar(x%10 + '0');
 }
-return fibo(n-1)
-+ fibo(n-2);
-}
-int main()
-{
-    int a =  fibo(3);
-return a;
+int main() {
+    print_int(-273);
+    putchar(10);
 }

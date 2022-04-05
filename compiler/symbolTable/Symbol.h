@@ -49,6 +49,11 @@ public:
 
     TypeSymbol getParameterType(int position) const;
 
+    void setTmpRegister(string tmpRegister);
+
+    string getTmpRegister();
+
+    bool isCopyParam;
 protected:
     string name;
     int index{};
@@ -60,6 +65,7 @@ protected:
 
     vector<TypeSymbol> parameters;
     int number;
+    string tmpRegister;
 };
 
 #endif // SYMBOL_H  

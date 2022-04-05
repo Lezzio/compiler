@@ -142,6 +142,10 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
     symbolReturned = this->symbolTable->lookupParameter(reg+"_param", scope);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
+        if(symbolReturned->getTmpRegister().compare("")!=0 && symbolReturned->isCopyParam){
+            return IR_reg_to_asm(symbolReturned->getTmpRegister(),scope);
+        } 
+        symbolReturned->isCopyParam = true;
         return IR_reg_to_asm_param(position, symbolReturned->getTypeSymbol());
     }
     //debug
@@ -479,4 +483,9 @@ Scope *CFG::getCurrentScope() {
 
 bool CFG::setFunctionParameters(const string &name, const vector<TypeSymbol> &parameters, int number){
     return symbolTable->setFunctionParameters(name, parameters, number);
+}
+
+bool CFG::setParametersTmp(string name, string nameTmp,  Scope *scope)
+{
+    return symbolTable->setParametersTmp(name, nameTmp, scope);
 }

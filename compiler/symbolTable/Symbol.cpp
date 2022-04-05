@@ -30,6 +30,8 @@ Symbol::Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int 
     this->isConst = isConst;
 
     this->number = 0;
+    this->tmpRegister = "";
+    this->isCopyParam = false;
 }
 
 /**
@@ -175,6 +177,14 @@ TypeSymbol Symbol::getParameterType(int position) const {
         return parameters[position];
     }
     return VOID;
+}
+
+void Symbol::setTmpRegister(string tmpRegister) {
+    this->tmpRegister = tmpRegister;
+}
+
+string Symbol::getTmpRegister()  {
+    return this->tmpRegister;
 }
 
 

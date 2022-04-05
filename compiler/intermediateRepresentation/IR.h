@@ -204,6 +204,8 @@ public:
     void exitingScope();
     Scope *getCurrentScope();
 
+    bool setParametersTmp(string name, string nameTmp,  Scope *scope);
+
 protected:
     int highestLevel;
     vector<int> levelHistory;
