@@ -9,7 +9,7 @@
 string ExprVar::linearize(CFG *cfg) {
     //TODO Lookup symbol, if doesn't exist then we throw an undeclared identifier
     //TODO If exists, we could put it as used ? => how to handle the return use ? => how to handle not used in the self definition
-    cout << "linearized expr var " << varName << endl;
+    //cout << "linearized expr var " << varName << endl;
     Symbol *symbol = cfg->getSymbolTable()->lookupSymbol(varName, cfg->getCurrentScope());
     if (symbol != nullptr) {
         //Therefore this variable has been used and we tag it as such
@@ -17,6 +17,7 @@ string ExprVar::linearize(CFG *cfg) {
     } else {
         //The variable has been used in an expression without being declared prior to the usage
         ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + varName + "\'", line));
+        exit(1);
     }
     return varName;
 }
@@ -1004,8 +1005,6 @@ string ExprFunction::linearize(CFG *cfg) {
  * @return vector<CFG *> : vector of CFG
  */
 vector<CFG *> Prog::linearize() {
-    auto *symbolTable = new SymbolTable();
-
     symbolTable->defFunction("getchar@PLT", CHAR, -1);
     vector<TypeSymbol> params;
     int number =0;

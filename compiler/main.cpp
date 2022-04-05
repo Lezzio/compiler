@@ -75,8 +75,8 @@ int main(int argn, const char **argv) {
         } else {    //x86
             cfg->gen_asm_x86(cout);
         }
-        cfg->getSymbolTable()->warnUnusedSymbols();
     }
+    prog->symbolTable->warnUnusedSymbols();
     //delete (syntaxErrorListener); //TODO Put back
     delete (prog);
     return 0;

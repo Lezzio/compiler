@@ -446,18 +446,24 @@ class ExprFunction : public Expr
 };
 
 
-class Prog : public ASTNode
-{
-    public:
-        vector<CFG*> linearize();
-        void addFunction(Function * function);
-        Prog(): ASTNode()
-            {};
-        virtual ~Prog();
-    protected:
-        vector<Function *> functions;
-        vector<CFG*> cfgs;
-        
+class Prog : public ASTNode {
+public:
+    vector<CFG *> linearize();
+
+    void addFunction(Function *function);
+
+    Prog() : ASTNode() {
+        symbolTable = new SymbolTable();
+    };
+
+    virtual ~Prog();
+
+    SymbolTable *symbolTable;
+
+protected:
+    vector<Function *> functions;
+    vector<CFG *> cfgs;
+
 };
 
 #endif

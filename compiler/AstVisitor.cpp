@@ -277,7 +277,6 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
     }
     auto line = context->IDENT()->getSymbol()->getLine();
     auto *declaration = new Declaration(context->IDENT()->getText(), t, line);
-    cout << "Declaration line = " << declaration->line << endl;
     Expr *expr = (Expr *) visit(context->expression());
     auto *decAffectation = new DecAffectation(declaration, expr);
     return (Statement *) decAffectation;

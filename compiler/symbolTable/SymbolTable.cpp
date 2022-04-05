@@ -230,7 +230,7 @@ int SymbolTable::getOffsetType(TypeSymbol typeSymbol) {
  * @return SYMBOL 
  */
 Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
-    cout << "SYMBOL LOOK UP name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
+    //cout << "SYMBOL LOOK UP name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
     auto matchedMap = symbolTable.find(name+"_"+scope->name);
     //cout << "lookup point #1" << endl;
     if (matchedMap != symbolTable.end()) {
@@ -252,7 +252,7 @@ Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
             }
         }
     }
-    cout << "lookupSymbol # THE SYMBOL IS NULL" << endl;
+    //cout << "lookupSymbol # THE SYMBOL IS NULL" << endl;
     return nullptr;
 }
 
