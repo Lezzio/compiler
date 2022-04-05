@@ -45,19 +45,18 @@ whileBlock : 'while' '(' expression ')' (statement | block) ;
 forBlock : 'for' '(' (init=statement | ';') (test=expression) ';' (update=affectation)? ')' (statement | block) ;
 //deal with infinite loop ?
 
-expression : IDENT #varexpr
+expression :  '(' expression ')' #bracketexpr
+           | IDENT '(' (expression (',' expression)*)? ')' #functionexpr 
+           | IDENT '[' expression ']' #arrayexpr
+           | IDENT #varexpr
            | CONST #constexpr
            | CHARACTER #charexpr
+           | op=('-' | '!') expression #unaryexpr
            | expression op=('*' | '/' | '%') expression #multplicationexpr
-           | op=('-' | '!') expression #unaryexpr
            | expression op=('+' | '-') expression #additiveexpr
-           | expression op=('|' | '&' | '^') expression #bitsexpr
            | expression op=('<' | '<=' | '>=' | '>') expression #relationalexpr
-           | expression op=('==' | '!=') expression #equalityexpr
-           | op=('-' | '!') expression #unaryexpr
-           | '(' expression ')' #bracketexpr 
-           | IDENT '(' (expression (',' expression)*)? ')' #functionexpr 
-	         | IDENT '[' expression ']' #arrayexpr; 
+           | expression op=('==' | '!=') expression #equalityexpr  
+           | expression op=('|' | '&' | '^') expression #bitsexpr;
 
 type : INT | CHAR ;
 

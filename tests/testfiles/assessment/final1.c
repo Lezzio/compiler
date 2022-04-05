@@ -3,7 +3,8 @@ int alphabet(int n)
 {
 char a;
 a='A';
-while (a<'A'+n)
+char cond = 'A' +n;
+while (a<cond)
 {
 putchar(a);
 a=a+1;
