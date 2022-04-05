@@ -57,8 +57,9 @@ antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
         parameters = (Parameters *) visit(context->parameters());
     }
 
+    auto line = context->IDENT()->getSymbol()->getLine();
     Block * block = (Block *) visit(context->block());
-    auto * function = new Function(name, t, parameters, block);
+    auto * function = new Function(name, t, parameters, block, line);
     return (Function * ) function;
 }
 
@@ -242,7 +243,8 @@ antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *conte
     }
 
     for (const auto var : context->IDENT()) {
-        declarations->addDeclaration(new Declaration(var->getText(), t));
+        auto line = var->getSymbol()->getLine();
+        declarations->addDeclaration(new Declaration(var->getText(), t, line));
     }
     return (Statement *) declarations;
 }
@@ -272,8 +274,9 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
     if (res == "char") {
         t = CHAR;
     }
-
-    auto *declaration = new Declaration(context->IDENT()->getText(), t);
+    auto line = context->IDENT()->getSymbol()->getLine();
+    auto *declaration = new Declaration(context->IDENT()->getText(), t, line);
+    cout << "Declaration line = " << declaration->line << endl;
     Expr *expr = (Expr *) visit(context->expression());
     auto *decAffectation = new DecAffectation(declaration, expr);
     return (Statement *) decAffectation;

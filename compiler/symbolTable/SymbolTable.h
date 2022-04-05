@@ -7,6 +7,7 @@
 #include "Scope.h"
 #include "Symbol.h"
 #include <cstring>
+#include "../error/ErrorManager.h"
 
 using namespace std;
 
@@ -29,12 +30,14 @@ public :
      * Add a symbol to the symbolTable
      * @return the address or -1 if the symbol couldn't be added (e.g already exists)
      */
-    int addSymbol(const string& symbolName, Scope * symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
+    int addSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional,
+                  StateSymbol state, bool isConst, unsigned long symbolLine);
     /**
      * Declare a new symbol in the symbolTable
      * @return true or false whether the symbol already existed or not
      */
-    bool declareSymbol(const string& symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst);
+    bool declareSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional,
+                       StateSymbol stateSymbol, bool isConst, unsigned long symbolLine);
     int assignSymbol(Symbol * symbol);
     static int getOffsetType(TypeSymbol typeSymbol);
     void print_dictionary();

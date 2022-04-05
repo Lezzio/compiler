@@ -19,10 +19,10 @@ enum Operator {
 class ASTNode
 {
     public :
-        ASTNode() 
+        ASTNode()
            {};
         virtual ~ASTNode() = default;
-
+        unsigned long line;
 };
 
 class Expr : public ASTNode
@@ -266,8 +266,10 @@ class Declaration : public ASTNode
 {
     public :
         virtual string linearize(CFG * cfg);
-        Declaration(string name, TypeSymbol type) :
-            name(name),type(type){};
+        Declaration(string name, TypeSymbol type, unsigned long line) :
+            name(name), type(type){
+            ASTNode::line = line;
+        };
         virtual ~Declaration()= default;
     protected :
         string name;
@@ -402,18 +404,23 @@ class Parameters : public Statement
         vector<Parameter *> parameters;
 };
 
-class Function : public ASTNode
-{
-    public : 
-        string linearize(CFG * cfg);
-        Function(string name, TypeSymbol type, Parameters * parameters, Block * block): ASTNode(), block(block), name(name), type(type), parameters(parameters) 
-            {};
-        virtual ~Function();
-        string name;
-    protected:
-        Parameters * parameters;
-        Block * block;
-        TypeSymbol type;
+class Function : public ASTNode {
+public :
+    string linearize(CFG *cfg);
+
+    Function(string name, TypeSymbol type, Parameters *parameters, Block *block, unsigned long line)
+            : ASTNode(), block(block), name(name), type(type), parameters(parameters) {
+        ASTNode::line = line;
+    };
+
+    virtual ~Function();
+
+    string name;
+protected:
+    Parameters *parameters;
+    Block *block;
+    TypeSymbol type;
+    unsigned long line;
 };
 
 class ExprFunction : public Expr
