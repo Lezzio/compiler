@@ -1,67 +1,131 @@
-	.file	"test.c"
-	.text
-	.globl	print_int
-	.type	print_int, @function
-print_int:
-.LFB0:
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	subq	$16, %rsp
-	movl	%edi, -4(%rbp)
-	cmpl	$0, -4(%rbp)
-	jns	.L2
-	movl	$45, %edi
-	call	putchar@PLT
-	negl	-4(%rbp)
-	movl	-4(%rbp), %eax
-	jmp	.L1
-.L2:
-.L1:
+.text
+.globl	main
+ main: 
+.main_0:
+	#prologue
+	pushq		%rbp
+	movq		%rsp, %rbp
+
+	#offset
+	subq		$112, %rsp
+
+	#ldconst
+	movl		$0, -28(%rbp)
+
+	#cast
+	movslq		-28(%rbp), %rax
+  movq %rax, -28(%rbp)
+
+	#ldconst
+  movq $-24, -36(%rbp)
+
+	#add
+    movq %rbp, %rax
+  addq -36(%rbp), %rax
+  movq %rax, -36(%rbp)
+
+	#add
+  movq -28(%rbp), %rax
+  addq -36(%rbp), %rax
+  movq %rax, -36(%rbp)
+
+	#ldconst
+	movl		$0, -40(%rbp)
+
+	#wmem
+  movq -36(%rbp), %rax
+  movq -40(%rbp), %r10
+  movq %r10, (%rax)
+
+	#ldconst
+	movl		$8, -44(%rbp)
+
+	#cast
+	movslq		-44(%rbp), %rax
+  movq %rax, -44(%rbp)
+
+	#ldconst
+  movq $-24, -52(%rbp)
+
+	#add
+    movq %rbp, %rax
+  addq -52(%rbp), %rax
+  movq %rax, -52(%rbp)
+
+	#add
+  movq -44(%rbp), %rax
+  addq -52(%rbp), %rax
+  movq %rax, -52(%rbp)
+
+	#ldconst
+	movl		$1, -56(%rbp)
+
+	#wmem
+  movq -52(%rbp), %rax
+  movq -56(%rbp), %r10
+  movq %r10, (%rax)
+
+	#ldconst
+	movl		$16, -60(%rbp)
+
+	#cast
+	movslq		-60(%rbp), %rax
+  movq %rax, -60(%rbp)
+
+	#ldconst
+  movq $-24, -68(%rbp)
+
+	#add
+    movq %rbp, %rax
+  addq -68(%rbp), %rax
+  movq %rax, -68(%rbp)
+
+	#add
+  movq -60(%rbp), %rax
+  addq -68(%rbp), %rax
+  movq %rax, -68(%rbp)
+
+	#ldconst
+	movl		$3, -72(%rbp)
+
+	#wmem
+  movq -68(%rbp), %rax
+  movq -72(%rbp), %r10
+  movq %r10, (%rax)
+
+	#ldconst
+	movl		$8, -76(%rbp)
+
+	#cast
+	movslq		-76(%rbp), %rax
+  movq %rax, -92(%rbp)
+
+	#ldconst
+  movq $-24, -84(%rbp)
+
+	#add
+    movq %rbp, %rax
+  addq -84(%rbp), %rax
+  movq %rax, -84(%rbp)
+
+	#add
+  movq -92(%rbp), %rax
+  addq -84(%rbp), %rax
+  movq %rax, -84(%rbp)
+
+	#rmem
+  movq -84(%rbp), %rax
+  movq (%rax), %r10
+  movq %r10, -100(%rbp)
+
+	#ret
+  movq -100(%rbp), %rax
+  movq %rax, -104(%rbp)
+	jmp			.main_1
+.main_1:
+
+	#finret
+	movl		-104(%rbp), %eax
+	#epilogue
 	leave
-	.cfi_def_cfa 7, 8
 	ret
-	.cfi_endproc
-.LFE0:
-	.size	print_int, .-print_int
-	.globl	main
-	.type	main, @function
-main:
-.LFB1:
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	$-273, %edi
-	call	print_int
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE1:
-	.size	main, .-main
-	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
-	.section	.note.GNU-stack,"",@progbits
-	.section	.note.gnu.property,"a"
-	.align 8
-	.long	 1f - 0f
-	.long	 4f - 1f
-	.long	 5
-0:
-	.string	 "GNU"
-1:
-	.align 8
-	.long	 0xc0000002
-	.long	 3f - 2f
-2:
-	.long	 0x3
-3:
-	.align 8
-4:

@@ -14,29 +14,29 @@
 
 	#cast
 	movslq		-28(%rbp), %rax
-  movq %rax, -44(%rbp)
+	movq		%rax, -44(%rbp)
 
 	#ldconst
-  movq $-24, -36(%rbp)
+	movq		$-24, -36(%rbp)
 
 	#add
-    movq %rbp, %rax
-  addq -36(%rbp), %rax
-  movq %rax, -36(%rbp)
+	movq		%rbp, %rax
+	addq		-36(%rbp), %rax
+	movq		%rax, -36(%rbp)
 
 	#add
-  movq -44(%rbp), %rax
-  addq -36(%rbp), %rax
-  movq %rax, -36(%rbp)
+	movq		-44(%rbp), %rax
+	addq		-36(%rbp), %rax
+	movq		%rax, -36(%rbp)
 
 	#rmem
-  movq -36(%rbp), %rax
-  movq (%rax), %r10
-  movq %r10, -52(%rbp)
+	movq		-36(%rbp), %rax
+	movq		(%rax), %r10
+	movq		%r10, -52(%rbp)
 
 	#ret
-  movq -52(%rbp), %rax
-  movq %rax, -56(%rbp)
+	movslq		-52(%rbp), %rax
+	movq		%rax, -56(%rbp)
 	jmp			.main_1
 .main_1:
 

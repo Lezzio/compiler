@@ -70,7 +70,7 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movl	$-273, %edi
+	movl	$10, %edi
 	call	print_int
 	movl	$10, %edi
 	call	putchar@PLT

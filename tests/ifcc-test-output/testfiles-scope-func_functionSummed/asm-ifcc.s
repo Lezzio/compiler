@@ -7,21 +7,29 @@
 	movq		%rsp, %rbp
 
 	#offset
-	subq		$80, %rsp
+	subq		$96, %rsp
 
-	#add
+	#copy
 	movl		%edi, %eax
-	addl		%esi, %eax
 	movl		%eax, -4(%rbp)
 
-	#ret
-	movl		-4(%rbp), %eax
+	#copy
+	movl		%esi, %eax
 	movl		%eax, -8(%rbp)
+
+	#add
+	movl		-4(%rbp), %eax
+	addl		-8(%rbp), %eax
+	movl		%eax, -12(%rbp)
+
+	#ret
+	movl		-12(%rbp), %eax
+	movl		%eax, -16(%rbp)
 	jmp			.func_1
 .func_1:
 
 	#finret
-	movl		-8(%rbp), %eax
+	movl		-16(%rbp), %eax
 	#epilogue
 	leave
 	ret
@@ -34,21 +42,29 @@
 	movq		%rsp, %rbp
 
 	#offset
-	subq		$80, %rsp
+	subq		$96, %rsp
+
+	#copy
+	movl		%edi, %eax
+	movl		%eax, -20(%rbp)
+
+	#copy
+	movl		%esi, %eax
+	movl		%eax, -24(%rbp)
 
 	#add
-	movl		%edi, %eax
-	addl		%esi, %eax
-	movl		%eax, -12(%rbp)
+	movl		-20(%rbp), %eax
+	addl		-24(%rbp), %eax
+	movl		%eax, -28(%rbp)
 
 	#ret
-	movl		-12(%rbp), %eax
-	movl		%eax, -16(%rbp)
+	movl		-28(%rbp), %eax
+	movl		%eax, -32(%rbp)
 	jmp			.func2_1
 .func2_1:
 
 	#finret
-	movl		-16(%rbp), %eax
+	movl		-32(%rbp), %eax
 	#epilogue
 	leave
 	ret
@@ -61,47 +77,35 @@
 	movq		%rsp, %rbp
 
 	#offset
-	subq		$80, %rsp
+	subq		$96, %rsp
 
 	#ldconst
-	movl		$1, -20(%rbp)
-
-	#copy
-	movl		-20(%rbp), %eax
-	movl		%eax, -24(%rbp)
-
-	#ldconst
-	movl		$2, -28(%rbp)
-
-	#copy
-	movl		-28(%rbp), %eax
-	movl		%eax, -32(%rbp)
-
-	#ldconst
-	movl		$3, -36(%rbp)
+	movl		$1, -36(%rbp)
 
 	#copy
 	movl		-36(%rbp), %eax
 	movl		%eax, -40(%rbp)
 
 	#ldconst
-	movl		$4, -44(%rbp)
+	movl		$2, -44(%rbp)
 
 	#copy
 	movl		-44(%rbp), %eax
 	movl		%eax, -48(%rbp)
 
-	#copy
-	movl		-24(%rbp), %eax
-	movl		%eax, %edi
+	#ldconst
+	movl		$3, -52(%rbp)
 
 	#copy
-	movl		-32(%rbp), %eax
-	movl		%eax, %esi
+	movl		-52(%rbp), %eax
+	movl		%eax, -56(%rbp)
 
-	#call
-	call		func
-	movl		%eax, -52(%rbp)
+	#ldconst
+	movl		$4, -60(%rbp)
+
+	#copy
+	movl		-60(%rbp), %eax
+	movl		%eax, -64(%rbp)
 
 	#copy
 	movl		-40(%rbp), %eax
@@ -112,26 +116,38 @@
 	movl		%eax, %esi
 
 	#call
-	call		func2
-	movl		%eax, -56(%rbp)
-
-	#add
-	movl		-52(%rbp), %eax
-	addl		-56(%rbp), %eax
-	movl		%eax, -60(%rbp)
+	call		func
+	movl		%eax, -68(%rbp)
 
 	#copy
-	movl		-60(%rbp), %eax
-	movl		%eax, -64(%rbp)
+	movl		-56(%rbp), %eax
+	movl		%eax, %edi
+
+	#copy
+	movl		-64(%rbp), %eax
+	movl		%eax, %esi
+
+	#call
+	call		func2
+	movl		%eax, -72(%rbp)
+
+	#add
+	movl		-68(%rbp), %eax
+	addl		-72(%rbp), %eax
+	movl		%eax, -76(%rbp)
+
+	#copy
+	movl		-76(%rbp), %eax
+	movl		%eax, -80(%rbp)
 
 	#ret
-	movl		-64(%rbp), %eax
-	movl		%eax, -68(%rbp)
+	movl		-80(%rbp), %eax
+	movl		%eax, -84(%rbp)
 	jmp			.main_1
 .main_1:
 
 	#finret
-	movl		-68(%rbp), %eax
+	movl		-84(%rbp), %eax
 	#epilogue
 	leave
 	ret

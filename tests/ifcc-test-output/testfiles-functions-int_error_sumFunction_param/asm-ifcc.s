@@ -9,7 +9,15 @@
 	#offset
 	subq		$48, %rsp
 
-	#add
+	#copy
 	movl		%edi, %eax
-	addl		%esi, %eax
 	movl		%eax, -4(%rbp)
+
+	#copy
+	movl		%esi, %eax
+	movl		%eax, -8(%rbp)
+
+	#add
+	movl		-4(%rbp), %eax
+	addl		-8(%rbp), %eax
+	movl		%eax, -12(%rbp)

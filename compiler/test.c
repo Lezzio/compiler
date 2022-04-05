@@ -1,13 +1,7 @@
-#include <stdio.h>
-int print_int(int x)
-{
-if(x<0)
-{
-putchar('-');
-x = -x;
-return x;
-}
-}
 int main() {
-    return print_int(-273);
+    int tab[3];
+    tab[0] = 0;
+    tab[1] = 1;
+    tab[2] = 2;
+    return tab[2]+tab[1]+tab[0];
 }
