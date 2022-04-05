@@ -345,7 +345,7 @@ TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
     }
     //TODO: check error
     if (symbol == nullptr) {
-        ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + name + "\'", 0));
+        //ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + name + "\'", 0));
     }
     return symbol->getTypeSymbol();
 }

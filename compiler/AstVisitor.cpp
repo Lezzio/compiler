@@ -290,7 +290,8 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
  * @return a statement pointer of the affectation
  */
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
-    auto *exprVar = new ExprVar(context->IDENT()->getText();
+    auto exprVarLine = context->IDENT()->getSymbol()->getLine();
+    auto *exprVar = new ExprVar(context->IDENT()->getText(), exprVarLine);
     Expr *expr = (Expr *) visit(context->expression());
     auto *affectation = new Affectation(exprVar, expr);
     return (Statement *) affectation;
@@ -488,7 +489,8 @@ antlrcpp::Any AstVisitor::visitBracketexpr(ifccParser::BracketexprContext *conte
  * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitVarexpr(ifccParser::VarexprContext *context) {
-    ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
+    auto exprVarLine = context->IDENT()->getSymbol()->getLine();
+    auto *exprVar = new ExprVar(context->IDENT()->getText(), exprVarLine);
     return (Expr *) exprVar;
 }
 

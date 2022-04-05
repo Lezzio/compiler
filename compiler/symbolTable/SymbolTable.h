@@ -44,6 +44,7 @@ public :
     int defFunction(const string &name, TypeSymbol typeSymbol, unsigned long symbolLine);
     bool defParameter(const string &name, Scope *scope, TypeSymbol typeSymbol, unsigned long symbolLine);
     bool setFunctionParameters(const string &name, const vector<TypeSymbol> &parameters, int number);
+    void warnUnusedSymbols();
 
     string current_function; //TODO Check usage, maybe not needed anymore
     static int staticIndex;

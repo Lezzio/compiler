@@ -50,6 +50,7 @@ public:
     TypeSymbol getParameterType(int position) const;
 
     unsigned long symbolLine;
+    bool used;
 
 protected:
     string name;

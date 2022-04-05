@@ -281,3 +281,15 @@ SymbolTable::~SymbolTable() {
         }
     }
 }
+
+void SymbolTable::warnUnusedSymbols() {
+    for (const auto& firstPair : symbolTable) {
+        for (const auto secondPair: firstPair.second) {
+            auto symbol = secondPair.second;
+            char firstChar = symbol->getName().at(0);
+            if (symbol->getStateSymbol() != FUNCTION && symbol->getStateSymbol() != PARAMETER && !symbol->used && firstChar != '!') {
+                ErrorManager::getInstance()->addError(new Error("the variable \'" + symbol->getName() + "\' is unused", symbol->symbolLine));
+            }
+        }
+    }
+}

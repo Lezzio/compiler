@@ -37,13 +37,16 @@ class Expr : public ASTNode
 
 };
 
-class ExprVar : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprVar(string varName) :
-            Expr(varName){};
-        virtual ~ExprVar()= default;
+class ExprVar : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprVar(string varName, unsigned long line) :
+            Expr(varName), line(line) {};
+
+    virtual ~ExprVar() = default;
+
+    unsigned long line;
 
 };
 
