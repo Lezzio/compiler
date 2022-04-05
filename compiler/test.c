@@ -4,6 +4,7 @@ int test(int i) {
 }
 
 int main() {
-    int a = 10;
+    int a = 0;
+    int d = e + v;
     return 0;
 }

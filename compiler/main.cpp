@@ -47,11 +47,11 @@ int main(int argn, const char **argv) {
     ifccLexer lexer(&input);
     CommonTokenStream tokens(&lexer);
     tokens.fill();
-    //auto * syntaxErrorListener = new SyntaxErrorListener(); //TODO Check instantiation
+    auto * syntaxErrorListener = new SyntaxErrorListener(); //TODO Check instantiation
     ifccParser parser(&tokens);
    // Ref<ANTLRErrorStrategy> errorStrategyRef = make_shared<ErrorStrategy>();
    // parser.setErrorHandler(errorStrategyRef);
-   // parser.addErrorListener(syntaxErrorListener);
+    parser.addErrorListener(syntaxErrorListener);
     tree::ParseTree *tree = parser.axiom();
     if (parser.getNumberOfSyntaxErrors() != 0) {
         cerr << "error: syntax error during parsing" << endl;
