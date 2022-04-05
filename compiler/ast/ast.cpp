@@ -7,6 +7,18 @@
  * @return string : the name of the variable expression
  */
 string ExprVar::linearize(CFG *cfg) {
+    //TODO Lookup symbol, if doesn't exist then we throw an undeclared identifier
+    //TODO If exists, we could put it as used ? => how to handle the return use ? => how to handle not used in the self definition
+    //cout << "linearized expr var " << varName << endl;
+    Symbol *symbol = cfg->getSymbolTable()->lookupSymbol(varName, cfg->getCurrentScope());
+    if (symbol != nullptr) {
+        //Therefore this variable has been used and we tag it as such
+        symbol->used = true;
+    } else {
+        //The variable has been used in an expression without being declared prior to the usage
+        ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + varName + "\'", line));
+        exit(1);
+    }
     return varName;
 }
 
@@ -43,7 +55,7 @@ string ExprChar::linearize(CFG *cfg) {
  * @return string : the name of the array variable in the symbol table
  */
 string ExprArray::linearize(CFG *cfg) {
-    cfg->add_to_symbol_table(varName, type, DECLARED,size);
+    cfg->add_to_symbol_table(varName, type, DECLARED, size, 0); //TODO Symbol line
     return varName;
 }
 
@@ -576,7 +588,7 @@ DecAffectation::~DecAffectation() {
  * @return string : the name of the symbol
  */
 string Declaration::linearize(CFG *cfg) {
-    cfg->add_to_symbol_table(name, type, DECLARED);
+    cfg->add_to_symbol_table(name, type, DECLARED, line);
     return name;
 }
 
@@ -836,8 +848,8 @@ string InstructionExpr::linearize(CFG *cfg) {
  * @return string : the name of the symbol
  */
 string Parameter::linearize(CFG *cfg) {
-    cfg->add_to_symbol_table(name, type, PARAMETER);
-    
+    cfg->add_to_symbol_table(name, type, PARAMETER, line);
+
     string var1 = cfg->create_new_tempvar(type);
     cfg->addInstruction(IRInstr::copy, type, {var1, name});
     cfg->setParametersTmp(name, var1, cfg->getCurrentScope());
@@ -897,7 +909,7 @@ Function::~Function() {
  */
 string Function::linearize(CFG *cfg) {
     cfg->setCurrentFunction(name);
-    cfg->add_to_symbol_table(name, type, FUNCTION);
+    cfg->add_to_symbol_table(name, type, FUNCTION, line);
 
     auto *bb = new BasicBlock(cfg, cfg->new_BB_name());
     cfg->add_bb(bb);
@@ -1005,13 +1017,11 @@ string ExprFunction::linearize(CFG *cfg) {
  * @return vector<CFG *> : vector of CFG
  */
 vector<CFG *> Prog::linearize() {
-    auto *symbolTable = new SymbolTable();
-
-    symbolTable->defFunction("getchar@PLT", CHAR);
+    symbolTable->defFunction("getchar@PLT", CHAR, -1);
     vector<TypeSymbol> params;
-    int number =0;
+    int number = 0;
     symbolTable->setFunctionParameters("getchar@PLT", params, number);
-    symbolTable->defFunction("putchar@PLT", VOID);
+    symbolTable->defFunction("putchar@PLT", VOID, -1);
     number = 1;
     vector<TypeSymbol> params2;
     params2.push_back(CHAR);
@@ -1078,7 +1088,7 @@ string InstructionBreak::linearize(CFG * cfg){
  * @return string 
  */
 string InstructionContinue::linearize(CFG * cfg){
-    if(cfg->continueBBname.compare("")==0){
+    if(cfg->continueBBname.compare("") == 0){
         cerr<<"ERROR: a Continue statement can only be used in a loop" << endl;
         exit(1);
     }

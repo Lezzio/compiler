@@ -29,7 +29,7 @@ declaration : type IDENT (',' IDENT)*;
 
 affectation : type IDENT '=' expression #affectation1
             | IDENT '=' expression #affectation2
-            | expression '=' expression #affectation3; 
+            | expression '=' expression #affectation3;
 
 array : type IDENT'[' CONST ']' #declarationArray 
       | type IDENT'[' CONST? ']' '=' '{' expression (',' expression)* '}' #affectationArray;

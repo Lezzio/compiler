@@ -57,8 +57,9 @@ antlrcpp::Any AstVisitor::visitFunction(ifccParser::FunctionContext *context) {
         parameters = (Parameters *) visit(context->parameters());
     }
 
+    auto line = context->IDENT()->getSymbol()->getLine();
     Block * block = (Block *) visit(context->block());
-    auto * function = new Function(name, t, parameters, block);
+    auto * function = new Function(name, t, parameters, block, line);
     return (Function * ) function;
 }
 
@@ -220,7 +221,8 @@ antlrcpp::Any AstVisitor::visitParameter(ifccParser::ParameterContext *context)
     if (res == "char") {
         t = CHAR;
     }
-    auto * parameter = new Parameter(context->IDENT()->getText(), t);
+    auto line = context->IDENT()->getSymbol()->getLine();
+    auto * parameter = new Parameter(context->IDENT()->getText(), t, line);
 
     return (Parameter *) parameter;
 }
@@ -242,7 +244,8 @@ antlrcpp::Any AstVisitor::visitDeclaration(ifccParser::DeclarationContext *conte
     }
 
     for (const auto var : context->IDENT()) {
-        declarations->addDeclaration(new Declaration(var->getText(), t));
+        auto line = var->getSymbol()->getLine();
+        declarations->addDeclaration(new Declaration(var->getText(), t, line));
     }
     return (Statement *) declarations;
 }
@@ -272,8 +275,8 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
     if (res == "char") {
         t = CHAR;
     }
-
-    auto *declaration = new Declaration(context->IDENT()->getText(), t);
+    auto line = context->IDENT()->getSymbol()->getLine();
+    auto *declaration = new Declaration(context->IDENT()->getText(), t, line);
     Expr *expr = (Expr *) visit(context->expression());
     auto *decAffectation = new DecAffectation(declaration, expr);
     return (Statement *) decAffectation;
@@ -286,7 +289,8 @@ antlrcpp::Any AstVisitor::visitAffectation1(ifccParser::Affectation1Context *con
  * @return a statement pointer of the affectation
  */
 antlrcpp::Any AstVisitor::visitAffectation2(ifccParser::Affectation2Context *context) {
-    auto *exprVar = new ExprVar(context->IDENT()->getText());
+    auto exprVarLine = context->IDENT()->getSymbol()->getLine();
+    auto *exprVar = new ExprVar(context->IDENT()->getText(), exprVarLine);
     Expr *expr = (Expr *) visit(context->expression());
     auto *affectation = new Affectation(exprVar, expr);
     return (Statement *) affectation;
@@ -484,7 +488,8 @@ antlrcpp::Any AstVisitor::visitBracketexpr(ifccParser::BracketexprContext *conte
  * @return a pointer on the expression
  */
 antlrcpp::Any AstVisitor::visitVarexpr(ifccParser::VarexprContext *context) {
-    ExprVar *exprVar = new ExprVar(context->IDENT()->getText());
+    auto exprVarLine = context->IDENT()->getSymbol()->getLine();
+    auto *exprVar = new ExprVar(context->IDENT()->getText(), exprVarLine);
     return (Expr *) exprVar;
 }
 
@@ -759,15 +764,14 @@ antlrcpp::Any AstVisitor::visitIfBlock(ifccParser::IfBlockContext *context)
  * @param context : the context of the else block 
  * @return a pointer on the block
  */
-antlrcpp::Any AstVisitor::visitElseBlock(ifccParser::ElseBlockContext *context) 
-{
-    Block* elseBlock = nullptr;
-    if(context->statement()){
+antlrcpp::Any AstVisitor::visitElseBlock(ifccParser::ElseBlockContext *context) {
+    Block *elseBlock = nullptr;
+    if (context->statement()) {
         Statement *statement = (Statement *) visit(context->statement());
         elseBlock = new Block();
         elseBlock->addStatement(statement);
-    } else if(context->block()){
-        elseBlock = (Block*)visit(context->block());
+    } else if (context->block()) {
+        elseBlock = (Block *) visit(context->block());
     } else {
         Statement *statement = (Statement *) visit(context->ifBlock());
         elseBlock = new Block();

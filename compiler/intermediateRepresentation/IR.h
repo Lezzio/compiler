@@ -12,6 +12,7 @@
 #include "../symbolTable/typeSymbol.h"
 #include "../symbolTable/Symbol.h"
 #include "../symbolTable/SymbolTable.h"
+#include "../error/Error.h"
 
 class BasicBlock;
 class CFG;
@@ -175,8 +176,8 @@ public:
     void gen_asm_epilogue_ARM(ostream &o);
 
     // symbol table methods
-    void add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol);
-    void add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, int size);
+    void add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, unsigned long symbolLine);
+    void add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, int size, unsigned long symbolLine);
     string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
     TypeSymbol get_var_type(const string& name, Scope *scope);

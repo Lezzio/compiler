@@ -1,13 +1,10 @@
-#include <stdio.h>
-int print_int(int x)
-{
-if(x<0)
-{
-putchar('-');
-x = -x;
-return x;
+
+int test(int i) {
+    return 10;
 }
-}
+
 int main() {
-    return print_int(-273);
+    int a = 0;
+    int d = e + v;
+    return 0;
 }

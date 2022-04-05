@@ -3,10 +3,11 @@
 //
 
 #include "Error.h"
+
+#include <utility>
+
 /**
  * @brief Construct a new Error:: Error object
- * 
+ *
  */
-Error::Error() {
-
-}
+Error::Error(string message, unsigned long line) : message(std::move(message)), line(line) {}

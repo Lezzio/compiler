@@ -19,58 +19,59 @@ SymbolTable::SymbolTable() {
 
 /**
  * @brief Method which creates and adds a symbol to the symbol table
- * 
+ *
  * @param symbolName : the name of the new symbol to add
  * @param symbolScope : the scope of the new symbol
  * @param typeSymbol : the type
  * @param additional : additional information as for instance in case of a array the number of elements it contains
  * @param state : DECLARED, ASSIGNED...
  * @param isConst : bool, symbol is a const or not
- * @return int : return the address of the new symbol 
+ * @return int : return the address of the new symbol
  */
-int SymbolTable::addSymbol(const string &symbolName, Scope * symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst) {
+int SymbolTable::addSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional,
+                           StateSymbol state, bool isConst, unsigned long symbolLine) {
     int index = staticIndex + getOffsetType(typeSymbol);
     if(additional != 0){
         index = staticIndex + additional;
     }
-    auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst);
+    auto *newSymbol = new Symbol(symbolName, symbolScope, index, typeSymbol, additional, state, isConst, symbolLine);
     if (!doesSymbolExist(newSymbol, true)) {
         this->symbolTable[newSymbol->getName() + "_" + symbolScope->name][symbolScope->getCurrentLevel()] = newSymbol;
         staticIndex = index;
         highestIndex = index;
         return newSymbol->getAddress();
     } else {
-        //cout << "Error detected can't declare symbol twice ADD_SYMBOL" << endl; debug
+        ErrorManager::getInstance()->addError(new Error("redeclaration of \'" + symbolName + "\'", symbolLine));
+        //cout << "Error detected can't declare symbol twice ADD_SYMBOL" << endl;
     }
-    print_dictionary();
-    cout << "===========" << endl;
     delete newSymbol;
     return -1;
 }
 
 /**
- * @brief Method which declares a symbol (save the memory space for the new symbol) 
- * 
+ * @brief Method which declares a symbol (save the memory space for the new symbol)
+ *
  * @param symbolName : the name of the new symbol to add
  * @param symbolScope : the scope of the new symbol
  * @param typeSymbol : the type
  * @param additional : additional information as for instance in case of a array the number of elements it contains
  * @param state : DECLARED, ASSIGNED...
- * @param isConst : bool, symbol is a const or not 
+ * @param isConst : bool, symbol is a const or not
  * @return true : if the symbol doesn't exists in the table (haven't been declared already)
  * @return false : if the symbol exists already in the symbol table -> error case
  */
-bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
-    
-    auto *newSymbol = new Symbol(symbolName, symbolScope, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst);
+bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional,
+                                StateSymbol stateSymbol, bool isConst, unsigned long symbolLine) {
+
+    auto *newSymbol = new Symbol(symbolName, symbolScope, DECLARATION_INDEX, typeSymbol, additional, stateSymbol, isConst, symbolLine);
 
     if (!doesSymbolExist(newSymbol, true)) {
         this->symbolTable[newSymbol->getName()+"_"+symbolScope->name][symbolScope->getCurrentLevel()] = newSymbol;
         return true;
     } else {
         //Error, can't declare a symbol twice
-        //ErrorManager::getInstance()->addError(new Error());
-        //cout << "Error detected can't declare symbol twice DECLARE_SYMBOL" << endl; debug
+        ErrorManager::getInstance()->addError(new Error("redeclaration of \'" + symbolName + "\'", symbolLine));
+        //cout << "Error detected can't declare symbol twice DECLARE_SYMBOL" << symbolLine << endl;
     }
     delete newSymbol;
     return false;
@@ -78,7 +79,7 @@ bool SymbolTable::declareSymbol(const string &symbolName, Scope *symbolScope, Ty
 
 /**
  * @brief Method which assigns a symbol in the symbol table which means it gives it an fixed address in the table
- * 
+ *
  * @param symbol : symbol to assign
  * @return int : the symbol address
  */
@@ -91,17 +92,16 @@ int SymbolTable::assignSymbol(Symbol *symbol) {
 }
 
 /**
- * @brief Method which creates a function in the symbol table  
- * 
+ * @brief Method which creates a function in the symbol table
+ *
  * @param name : name of the function
  * @param typeSymbol : type of the return
  * @return int : value which permits to know if the adding succeed or not
  */
-int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
-    
-    auto *newSymbol = new Symbol(name, &GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false);
+int SymbolTable::defFunction(const string &name, TypeSymbol typeSymbol, unsigned long symbolLine) {
+    auto *newSymbol = new Symbol(name, &GLOBAL_SCOPE, DECLARATION_INDEX, typeSymbol, 0, FUNCTION, false, symbolLine);
     if (!doesSymbolExist(newSymbol)) {
-        this->symbolTable[newSymbol->getName()+"_"+GLOBAL_SCOPE.name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
+        this->symbolTable[newSymbol->getName() + "_" + GLOBAL_SCOPE.name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
         return 0;
     }
     delete newSymbol;
@@ -109,16 +109,16 @@ int SymbolTable::defFunction(const string& name, TypeSymbol typeSymbol) {
 }
 
 /**
- * @brief Method which creates a parameter in the symbol table  
- * 
+ * @brief Method which creates a parameter in the symbol table
+ *
  * @param name : name of the parameter
  * @param scope : scope of the parameter in the program
- * @param typeSymbol : type of the parameter 
+ * @param typeSymbol : type of the parameter
  * @return true : adding succeed
  * @return false : adding failed (symbol alreay exists in the symbol table)
  */
-bool SymbolTable::defParameter(const string& name, Scope *scope, TypeSymbol typeSymbol) {
-    auto *newSymbol = new Symbol(name, scope, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false);
+bool SymbolTable::defParameter(const string &name, Scope *scope, TypeSymbol typeSymbol, unsigned long symbolLine) {
+    auto *newSymbol = new Symbol(name, scope, DECLARATION_INDEX, typeSymbol, 0, PARAMETER, false, symbolLine);
     if (!doesSymbolExist(newSymbol, true)) {
         this->symbolTable[newSymbol->getName()+"_"+"param"+"_"+scope->name][GLOBAL_SCOPE.getCurrentLevel()] = newSymbol;
         return true;
@@ -137,8 +137,8 @@ bool SymbolTable::setFunctionParameters(const string &name, const vector<TypeSym
 }
 
 /**
- * @brief Method which permits to print the content of symbol table 
- * 
+ * @brief Method which permits to print the content of symbol table
+ *
  */
 void SymbolTable::print_dictionary() {
     cout << endl << "***   Actual Symbol Table   ***" << endl;
@@ -168,7 +168,7 @@ void SymbolTable::print_dictionary() {
 
 /**
  * @brief Method which permits to know if a symbol exist or not at the time in the symbol table
- * 
+ *
  * @param symbol : symbol to check
  * @param scopedCurrent : bool telling if the scope is current
  * @return true : symbol exists in the symbol table
@@ -180,7 +180,7 @@ bool SymbolTable::doesSymbolExist(Symbol *symbol, bool scopedCurrent) {
 
 /**
  * @brief Method which permits to know if a symbol exist or not at the time in the symbol table
- * 
+ *
  * @param name : name of the symbol to check
  * @param scope : scope when the method is called
  * @param scopedCurrent : bool telling if the scope is current
@@ -200,7 +200,7 @@ bool SymbolTable::doesSymbolExist(const string& name, Scope *scope, bool scopedC
 
 /**
  * @brief Method which gives in function of a type the offset to apply on the address in the symbol table
- * 
+ *
  * @param typeSymbol : type we want to know the offset to apply
  * @return int : the offset to apply
  */
@@ -257,15 +257,15 @@ Symbol *SymbolTable::lookupSymbol(const string& name, Scope *scope) {
 }
 
 /**
- * @brief lookup function 
- * 
+ * @brief lookup function
+ *
  * @param name : name of the symbol to lookup
  * @param scope : scope when the method is called
- * @return Symbol* 
+ * @return Symbol*
  */
 Symbol *SymbolTable::lookupParameter(const string& name, Scope *scope) {
     //cout << "LOOKING UP PARAMETER HENCE SYMBOL" << endl;
-    return lookupSymbol(name, scope);
+    return lookupSymbol(name + "_param", scope);
 }
 
 bool SymbolTable::setParametersTmp(string name, string nameTmp,  Scope *scope){
@@ -281,12 +281,24 @@ bool SymbolTable::setParametersTmp(string name, string nameTmp,  Scope *scope){
 
 /**
  * @brief Destroy the Symbol Table:: Symbol Table object
- * 
+ *
  */
 SymbolTable::~SymbolTable() {
     for (const auto& firstPair : symbolTable) {
         for (const auto secondPair: firstPair.second) {
             delete secondPair.second;
+        }
+    }
+}
+
+void SymbolTable::warnUnusedSymbols() {
+    for (const auto& firstPair : symbolTable) {
+        for (const auto secondPair: firstPair.second) {
+            auto symbol = secondPair.second;
+            char firstChar = symbol->getName().at(0);
+            if (symbol->getStateSymbol() != FUNCTION && symbol->getStateSymbol() != PARAMETER && !symbol->used && firstChar != '!') {
+                ErrorManager::getInstance()->addWarning(new Warning("the variable \'" + symbol->getName() + "\' is unused", symbol->symbolLine));
+            }
         }
     }
 }

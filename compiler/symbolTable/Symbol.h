@@ -13,7 +13,7 @@ public:
     Symbol();
 
     Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int additional,
-           StateSymbol stateSymbol, bool isConst);
+           StateSymbol stateSymbol, bool isConst, unsigned long declarationLine);
 
     ~Symbol();
 
@@ -54,6 +54,9 @@ public:
     string getTmpRegister();
 
     bool isCopyParam;
+    unsigned long symbolLine;
+    bool used;
+
 protected:
     string name;
     int index{};

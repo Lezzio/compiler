@@ -20,7 +20,7 @@ Symbol::Symbol() {}
  * @param stateSymbol : state of the symbol
  * @param isConst : bool true if symbol is const, false otherwise
  */
-Symbol::Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst) {
+Symbol::Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst, unsigned long symbolLine) {
     this->name = std::move(name);
     this->scope = scope;
     this->index = index;
@@ -28,7 +28,7 @@ Symbol::Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int 
     this->additional = additional;
     this->stateSymbol = stateSymbol;
     this->isConst = isConst;
-
+    this->symbolLine = symbolLine;
     this->number = 0;
     this->tmpRegister = "";
     this->isCopyParam = false;

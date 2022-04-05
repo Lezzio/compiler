@@ -7,6 +7,9 @@
 #include "Scope.h"
 #include "Symbol.h"
 #include <cstring>
+#include "../error/ErrorManager.h"
+#include "../error/Error.h"
+#include "../error/Warning.h"
 
 using namespace std;
 
@@ -29,20 +32,22 @@ public :
      * Add a symbol to the symbolTable
      * @return the address or -1 if the symbol couldn't be added (e.g already exists)
      */
-    int addSymbol(const string& symbolName, Scope * symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol state, bool isConst);
+    int addSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional,
+                  StateSymbol state, bool isConst, unsigned long symbolLine);
     /**
      * Declare a new symbol in the symbolTable
      * @return true or false whether the symbol already existed or not
      */
-    bool declareSymbol(const string& symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst);
+    bool declareSymbol(const string &symbolName, Scope *symbolScope, TypeSymbol typeSymbol, int additional,
+                       StateSymbol stateSymbol, bool isConst, unsigned long symbolLine);
     int assignSymbol(Symbol * symbol);
     static int getOffsetType(TypeSymbol typeSymbol);
     void print_dictionary();
-    int defFunction(const string& name, TypeSymbol typeSymbol);
-    bool defParameter(const string& name, Scope *scope, TypeSymbol typeSymbol);
+    int defFunction(const string &name, TypeSymbol typeSymbol, unsigned long symbolLine);
+    bool defParameter(const string &name, Scope *scope, TypeSymbol typeSymbol, unsigned long symbolLine);
     bool setFunctionParameters(const string &name, const vector<TypeSymbol> &parameters, int number);
     bool setParametersTmp(string name, string nameTmp,  Scope *scope);
-
+    void warnUnusedSymbols();
 
     string current_function; //TODO Check usage, maybe not needed anymore
     static int staticIndex;

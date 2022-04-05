@@ -7,7 +7,7 @@ using namespace std;
 
 /**
  * @brief Construct a new CFG::CFG object
- * 
+ *
  * @param symbolTable : la table où sont stockés tous les symboles du programme à compiler
  * @param name : nom du cfg
  */
@@ -19,7 +19,7 @@ CFG::CFG(SymbolTable *symbolTable, string name)
 
 /**
  * @brief Destroy the CFG::CFG object
- * 
+ *
  */
 CFG::~CFG() {
     for (BasicBlock *bb: bbs) {
@@ -31,7 +31,7 @@ CFG::~CFG() {
 
 /**
  * @brief ajoute un basic bloc a la liste des basic blocs
- * 
+ *
  * @param bb : le basic bloc a ajouter
  */
 void CFG::add_bb(BasicBlock *bb, bool updateScope) {
@@ -44,7 +44,7 @@ void CFG::add_bb(BasicBlock *bb, bool updateScope) {
 
 /**
  * @brief ajoute une instruction au basic bloc
- * 
+ *
  * @param op : l'operation a ajouter
  * @param t : le type du symbole
  * @param params : les parametres lies a l'instruction
@@ -55,7 +55,7 @@ void CFG::addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> par
 
 /**
  * @brief genere les parties differentes pour x86 entre mac et windows
- * 
+ *
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_x86(ostream &o) {
@@ -71,8 +71,8 @@ void CFG::gen_asm_x86(ostream &o) {
     cout << ".globl	"+currentFunction+"\n"
             " "+currentFunction+": \n";
 #endif
-    for (auto it = bbs.begin(); it != bbs.end(); it++) {
-        (*it)->gen_asm_86(o);
+    for (auto & bb : bbs) {
+        bb->gen_asm_86(o);
     }
     if (get_var_type(functionName, &GLOBAL_SCOPE) != VOID && isReturnSet) {
         return_bb->gen_asm_86(o);
@@ -92,7 +92,7 @@ void CFG::gen_asm_x86(ostream &o) {
 
 /**
  * @brief genere les parties differentes pour arm entre mac et windows
- * 
+ *
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_ARM(ostream &o) {
@@ -123,10 +123,10 @@ void CFG::gen_asm_ARM(ostream &o) {
 
 /**
  * @brief Recupere le symbople associe au regsitre dans la symbolTable
- * 
+ *
  * @param reg : le registre considere
  * @param scope : le scope du registre
- * @return le registre associe au symbole 
+ * @return le registre associe au symbole
  */
 string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
     /* debug
@@ -139,7 +139,7 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
         string returnVal = "-" + to_string(symbolReturned->getIndex()) + "(%rbp)";
         return returnVal;
     }
-    symbolReturned = this->symbolTable->lookupParameter(reg+"_param", scope);
+    symbolReturned = this->symbolTable->lookupParameter(reg, scope);
     if (symbolReturned != nullptr) {
         int position = symbolReturned->getIndex();
         if(symbolReturned->getTmpRegister().compare("")!=0 && symbolReturned->isCopyParam){
@@ -160,7 +160,7 @@ string CFG::IR_reg_to_asm(const string &reg, Scope *scope) {
 
 /**
  * @brief selectionne le bon registre en fonction de la position
- * 
+ *
  * @param position : la position
  * @return string : le registre a mettre dans l'assembleur
  */
@@ -212,7 +212,7 @@ string CFG::IR_reg_to_asm_param(int position, TypeSymbol type) {
 
 /**
  * @brief genere le prologue pour l'architecture x86
- * 
+ *
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_prologue_x86(ostream &o) {
@@ -223,7 +223,7 @@ void CFG::gen_asm_prologue_x86(ostream &o) {
 
 /**
  * @brief : genere l'epilogue pour l'architecture x86
- * 
+ *
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_epilogue_x86(ostream &o) {
@@ -238,7 +238,7 @@ void CFG::gen_asm_epilogue_x86(ostream &o) {
 
 /**
  * @brief genere le prologue pour l'architecture arm
- * 
+ *
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_prologue_ARM(ostream &o) {
@@ -250,7 +250,7 @@ void CFG::gen_asm_prologue_ARM(ostream &o) {
 
 /**
  * @brief : genere l'epilogue pour l'architecture arm
- * 
+ *
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_epilogue_ARM(ostream &o) {
@@ -264,52 +264,52 @@ void CFG::gen_asm_epilogue_ARM(ostream &o) {
 // symbol symbolTable methods
 /**
  * @brief Ajoute un symbole à la symbolTable
- * 
+ *
  * @param name : nom du symbole
  * @param t : type du symbole
  * @param stateSymbol : etat du symbole
  */
-void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol) {
+void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, unsigned long symbolLine) {
     //cout << "--------------" << endl; debug
     //cout << "About to add symbol named = " << name << endl; debug
     if (stateSymbol == PARAMETER) {
-        this->symbolTable->defParameter(name, getCurrentScope(), t);
+        this->symbolTable->defParameter(name, getCurrentScope(), t, symbolLine);
     } else if (stateSymbol == FUNCTION) {
-        this->symbolTable->defFunction(name, t);
+        this->symbolTable->defFunction(name, t, symbolLine);
     } else if (stateSymbol == DECLARED) {
-        this->symbolTable->declareSymbol(name, getCurrentScope(), t, 0, DECLARED, false);
+        this->symbolTable->declareSymbol(name, getCurrentScope(), t, 0, DECLARED, false, symbolLine);
     } else {
-        symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false);
+        symbolTable->addSymbol(name, getCurrentScope(), t, 0, stateSymbol, false, symbolLine);
     }
 }
 
 /**
  * @brief Ajoute un symbole de taille variable à la symbolTable
- * 
+ *
  * @param name : nom du symbole
  * @param t : type du symbole
  * @param stateSymbol : etat du symbole
  * @param size : la taille du symbole
  */
-void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, int size){
-    symbolTable->addSymbol(name, getCurrentScope(), t, size, stateSymbol, false);
+void CFG::add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, int size, unsigned long symbolLine) {
+    symbolTable->addSymbol(name, getCurrentScope(), t, size, stateSymbol, false, symbolLine);
 }
 
 /**
- * @brief Method which set the parameters position a function named by name  
- * 
+ * @brief Method which set the parameters position a function named by name
+ *
  * @param name : name of the function containing the parameters
  * @param position : position to put for symbol
  * @param pScope : the scope of the parameters
  */
 void CFG::setParametersPosition(const string &name, int position, Scope *pScope) {
-    Symbol *symbol = symbolTable->lookupParameter(name+"_param", pScope);
+    Symbol *symbol = symbolTable->lookupParameter(name, pScope);
     symbol->setIndex(position);
 }
 
 /**
  * @brief Crée une variable temporaire (!tmp+[incrementationNBvarTemporaires])
- * 
+ *
  * @param t : le type du symbole
  * @return string : le nom de la variable temporaire
  */
@@ -317,13 +317,13 @@ string CFG::create_new_tempvar(TypeSymbol t) {
     string name = "!tmp" + to_string(nextTmpVarNumber);
     nextTmpVarNumber++;
 
-    symbolTable->addSymbol(name, getCurrentScope(), t, 0, ASSIGNED, false);
+    symbolTable->addSymbol(name, getCurrentScope(), t, 0, ASSIGNED, false, 0);
     return name;
 }
 
 /**
  * @brief recupere l'index (l'adresse) de la variable
- * 
+ *
  * @param name : le nom de la variable
  * @return int : l'adresse de la variable recuperee
  */
@@ -336,18 +336,21 @@ int CFG::get_var_index(string name) {
 
 /**
  * @brief recupere dans la table des symboles le type de la variable
- * 
+ *
  * @param name : le nom de la variable
  * @param scope : le scope de la variable
  * @return TypeSymbol : le type de la variable trouvee
  */
 TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
-    //cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl; 
+    //cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
     Symbol *symbol = symbolTable->lookupSymbol(name, scope);
     if (symbol == nullptr) {
-        symbol = symbolTable->lookupParameter(name+"_param", scope);
+        symbol = symbolTable->lookupParameter(name, scope);
     }
     //TODO: check error
+    if (symbol == nullptr) {
+        //ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + name + "\'", 0));
+    }
     return symbol->getTypeSymbol();
 }
 
@@ -364,7 +367,7 @@ string CFG::new_BB_name() {
 
 /**
  * @brief Method which assigns an address to a symbol named in the parameter in the symbol table
- * 
+ *
  * @param name : name of the symbol to assign
  * @param scope : current scope
  */
@@ -375,10 +378,10 @@ void CFG::assignSymbol(const string& name, Scope *scope) {
 
 /**
  * @brief determine si le basic bloc est le premier de la liste ou non
- * 
+ *
  * @param bb : la basic bloc dont on cherche la position
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool CFG::firstBB(BasicBlock *bb) {
     return (bb == bbs.front());
@@ -386,11 +389,11 @@ bool CFG::firstBB(BasicBlock *bb) {
 
 /**
  * @brief determine si une valeur est assignee au symbole
- * 
+ *
  * @param name : le nom du symbole
  * @param scope : le scope du symbole
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool CFG::isSymbolAssigned(const string& name, Scope *scope) {
     Symbol *symbolReturned = this->symbolTable->lookupSymbol(name, scope);
@@ -403,7 +406,7 @@ bool CFG::isSymbolAssigned(const string& name, Scope *scope) {
 
 /**
  * @brief ajoute un symbole à la table des symbole, s'il n'existe pas deja
- * 
+ *
  * @param name : le nom du symbole a jouter
  * @param scope : le scope du symbole
  */
@@ -414,17 +417,17 @@ void CFG::setReturnSymbol(const string& name, Scope *scope) {
     isReturnSet = true;
     //cout << " #setReturnSymbol - Scope name = " << scope->name << " scope ctx = " << scope->getLevelContextAsString() << endl; debug
     if (!symbolTable->doesSymbolExist(name, scope)) {
-        symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, false);
+        symbolTable->addSymbol(name, scope, INT, 0, ASSIGNED, false, 0);
     }
 }
 
 /**
  * @brief verifie l'existence du symbole dans la table des symboles
- * 
+ *
  * @param name : le nom du symbole
  * @param scope : le scope du symbole
- * @return true 
- * @return false 
+ * @return true
+ * @return false
  */
 bool CFG::doesSymbolExist(const string& name, Scope *scope) {
     return symbolTable->doesSymbolExist(name, scope);
@@ -432,7 +435,7 @@ bool CFG::doesSymbolExist(const string& name, Scope *scope) {
 
 /**
  * @brief recupere l'offset associé à un symbole de la symbolTable
- * 
+ *
  * @return string : l'offset du symbole
  */
 string CFG::getOffset() {
@@ -441,16 +444,16 @@ string CFG::getOffset() {
 
 /**
  * @brief recupere la symboleTable
- * 
- * @return SymbolTable* 
+ *
+ * @return SymbolTable*
  */
 SymbolTable *CFG::getSymbolTable() {
     return symbolTable;
 }
 
 /**
- * @brief Method which permits to change the current scope 
- * 
+ * @brief Method which permits to change the current scope
+ *
  */
 void CFG::enteringScope() {
     //cout << "Entering scope" << endl; debug
@@ -461,8 +464,8 @@ void CFG::enteringScope() {
 }
 
 /**
- * @brief Method which permits to jump off the lastest scope 
- * 
+ * @brief Method which permits to jump off the lastest scope
+ *
  */
 void CFG::exitingScope() {
     levelHistory.pop_back();
@@ -470,8 +473,8 @@ void CFG::exitingScope() {
 
 /**
  * @brief recupere le scope actuel
- * 
- * @return Scope* 
+ *
+ * @return Scope*
  */
 Scope *CFG::getCurrentScope() {
     int level = levelHistory.back();

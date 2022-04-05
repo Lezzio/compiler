@@ -12,9 +12,9 @@ using namespace std;
 class Error {
 
 public:
-    Error();
+    Error(string message, unsigned long line);
     string message;
-    int line;
+    unsigned long line;
 
 };
 
