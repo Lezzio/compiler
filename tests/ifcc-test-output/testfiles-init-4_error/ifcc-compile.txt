@@ -1,4 +1,4 @@
 line 2:9 no viable alternative at input 'int a 42'
-error: syntax error during parsing
+Error : no viable alternative at input 'int a 42' at line 2
 
 return code: 1

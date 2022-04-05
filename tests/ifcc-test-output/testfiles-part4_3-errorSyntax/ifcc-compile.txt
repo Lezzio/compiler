@@ -1,4 +1,4 @@
 line 3:13 no viable alternative at input 'variable 10'
-error: syntax error during parsing
+Error : no viable alternative at input 'variable 10' at line 3
 
 return code: 1

@@ -1,4 +1,4 @@
 line 1:0 mismatched input 'func' expecting <EOF>
-error: syntax error during parsing
+Error : mismatched input 'func' expecting <EOF> at line 1
 
 return code: 1

@@ -1,4 +1,4 @@
 line 2:0 missing '{' at '}'
-error: syntax error during parsing
+Error : missing '{' at '}' at line 2
 
 return code: 1

@@ -1,4 +1,4 @@
 line 2:12 no viable alternative at input 'INTEGER variable'
-error: syntax error during parsing
+Error : no viable alternative at input 'INTEGER variable' at line 2
 
 return code: 1

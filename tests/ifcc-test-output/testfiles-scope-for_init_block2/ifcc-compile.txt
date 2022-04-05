@@ -1,2 +1,3 @@
+Warning : the variable 'a' is unused at line 2
 
 return code: 0

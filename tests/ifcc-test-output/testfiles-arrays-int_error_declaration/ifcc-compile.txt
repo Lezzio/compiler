@@ -1,4 +1,4 @@
 line 2:8 no viable alternative at input 'int ['
-error: syntax error during parsing
+Error : no viable alternative at input 'int [' at line 2
 
 return code: 1

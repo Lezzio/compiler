@@ -1,6 +1,4 @@
 line 2:4 extraneous input 'void' expecting {'(', '}', 'if', 'while', 'for', '-', '!', 'return', CONST, 'int', 'char', 'break', 'continue', IDENT, CHARACTER}
-line 2:15 no viable alternative at input 'func(){'
-line 3:4 mismatched input 'return' expecting <EOF>
-error: syntax error during parsing
+Error : extraneous input 'void' expecting {'(', '}', 'if', 'while', 'for', '-', '!', 'return', CONST, 'int', 'char', 'break', 'continue', IDENT, CHARACTER} at line 2
 
 return code: 1

@@ -1,4 +1,3 @@
-warning: ‘return’ with a value, in function returning void [-Wreturn-type]
 .text
 .globl	func
  func: 

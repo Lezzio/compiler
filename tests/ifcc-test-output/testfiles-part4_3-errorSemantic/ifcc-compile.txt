@@ -1,5 +1,5 @@
 line 3:17 token recognition error at: '.'
 line 3:18 no viable alternative at input 'variable = 105'
-error: syntax error during parsing
+Error : no viable alternative at input 'variable = 105' at line 3
 
 return code: 1

@@ -1,5 +1,4 @@
 line 1:12 extraneous input '{' expecting {'(', '}', 'if', 'while', 'for', '-', '!', 'return', CONST, 'int', 'char', 'break', 'continue', IDENT, CHARACTER}
-line 1:14 mismatched input ';' expecting <EOF>
-error: syntax error during parsing
+Error : extraneous input '{' expecting {'(', '}', 'if', 'while', 'for', '-', '!', 'return', CONST, 'int', 'char', 'break', 'continue', IDENT, CHARACTER} at line 1
 
 return code: 1
