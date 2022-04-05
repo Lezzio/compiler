@@ -60,7 +60,9 @@ string ExprLArray::linearize(CFG *cfg) {
     
     TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
     if(t1 != INT64_T){
-        cfg->addInstruction(IRInstr::cast, INT64_T, {var1, to_string(t1)});
+        string var2 = cfg->create_new_tempvar(INT64_T);
+        cfg->addInstruction(IRInstr::cast, INT64_T, {var1, to_string(t1), var2});
+        var1 = var2;
     }
 
     cfg->addInstruction(IRInstr::ldconst, INT64_T, {tmpVar, "$"+to_string(offset)});
@@ -245,10 +247,15 @@ string ExprRelational::linearize(CFG *cfg) {
         typeTmp = CHAR;
     }
 
+
     if (t1 != typeTmp){
-        cfg->addInstruction(IRInstr::cast, typeTmp, {var1, to_string(t1)});
+        string tempVarCast = cfg->create_new_tempvar(typeTmp);
+        cfg->addInstruction(IRInstr::cast, typeTmp, {var1, to_string(t1), tempVarCast});
+        var1 = tempVarCast;
     } else if (t2 != typeTmp){
-        cfg->addInstruction(IRInstr::cast, typeTmp, {var2, to_string(t2)});
+        string tempVarCast = cfg->create_new_tempvar(typeTmp);
+        cfg->addInstruction(IRInstr::cast, typeTmp, {var2, to_string(t2), tempVarCast});
+        var2 = tempVarCast;
     }
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
@@ -292,10 +299,15 @@ string ExprEqual::linearize(CFG *cfg) {
         typeTmp = CHAR;
     }
 
+
     if (t1 != typeTmp){
-        cfg->addInstruction(IRInstr::cast, typeTmp, {var1, to_string(t1)});
+        string tempVarCast = cfg->create_new_tempvar(typeTmp);
+        cfg->addInstruction(IRInstr::cast, typeTmp, {var1, to_string(t1), tempVarCast});
+        var1 = tempVarCast;
     } else if (t2 != typeTmp){
-        cfg->addInstruction(IRInstr::cast, typeTmp, {var2, to_string(t2)});
+        string tempVarCast = cfg->create_new_tempvar(typeTmp);
+        cfg->addInstruction(IRInstr::cast, typeTmp, {var2, to_string(t2), tempVarCast});
+        var2 = tempVarCast;
     }
 
 

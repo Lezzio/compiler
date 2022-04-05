@@ -24,7 +24,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             o << "\t#ldconst\n";
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string value = this->params[1];
-            o << getMovInstr(value, destination);
+            o << getMovInstr(value, destination, t);
             break;
         }
         case ret: {
@@ -34,7 +34,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string endBBname = bb->cfg->return_bb->label;
             o << getMovInstr(origin, reg);
-            o << getMovInstr(reg, destination);
+            o << getMovInstr(reg, destination, t);
             o << getJumpInstr(endBBname);
             break;
         }
@@ -80,11 +80,12 @@ void IRInstr::gen_asm_x86(ostream &o) {
                 o << getMovInstr(lvalue, "%rax", INT64_T);
             } else {
                 lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
-                o << getMovInstr(lvalue, reg);
+                TypeSymbol ltype = this->bb->cfg->getSymbolTable()->lookupSymbol(this->params[1], this->bb->scope)->getTypeSymbol();
+                o << getMovInstr(lvalue, reg, ltype);
             } 
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
             o << getAddInstr(rvalue, reg);
-            o << getMovInstr(reg, destination);
+            o << getMovInstr(reg, destination, t);
         }
             break;
         case sub: {
@@ -193,9 +194,9 @@ void IRInstr::gen_asm_x86(ostream &o) {
             }
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
-            o << getMovInstr(origin, reg);
-            o << getMovInstr("(" + reg + ")", "%r10");
-            o << getMovInstr("%r10", destination);
+            o << getMovInstr(origin, reg, INT64_T);
+            o << getMovInstr("(" + reg + ")", "%r10", INT64_T);
+            o << getMovInstr("%r10", destination, INT64_T);
             break;
         }
         case wmem: {
@@ -207,9 +208,9 @@ void IRInstr::gen_asm_x86(ostream &o) {
             }*/
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string origin = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
-            o << getMovInstr(origin, reg);
-            o << getMovInstr(destination, "%r10");
-            o << getMovInstr("%r10", "(" + reg + ")");
+            o << getMovInstr(origin, reg, INT64_T);
+            o << getMovInstr(destination, "%r10", INT64_T);
+            o << getMovInstr("%r10", "(" + reg + ")", INT64_T);
             break;
         }
         case call: {
@@ -340,7 +341,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
                 destination = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
             }
             o << getCastInstr(source, reg, type_from);
-            o << getMovInstr(reg, destination);
+            o << getMovInstr(reg, destination, t);
             break;
         }
         default:
@@ -685,11 +686,19 @@ string IRInstr::getCastInstr(const string &origine, const string &destination, T
             cerr << "Invalid type_to : " << t << endl;
         }
 
+
         if (sign){
             signed_ = "s";
         } else {
             signed_ = "z";
         }
+
+        if ((from == "l" && to == "b") || (from == "q" && from != to)){  //downcast
+            from = "";
+            to ="";
+            signed_ = "";
+        }
+
         return "\tmov" + signed_ + from + to + "\t\t" + origine + ", " + destination + "\n";
     } else {    //ARM
         string type_b, action;
@@ -708,6 +717,42 @@ string IRInstr::getCastInstr(const string &origine, const string &destination, T
 
 string IRInstr::getMovInstr(const string &origine, const string &destination, TypeSymbol type, Arch arch, bool cst) {
     if (arch == x86) {
+        string from, to, signed_;
+
+
+        if(type == CHAR || type == INT8_T){
+            from = "b";
+        } else if (type == INT){
+            from = "l";
+        } else {
+            //from = "q";
+        }
+
+        if(t == CHAR || t == INT8_T){
+            to = "b";
+        } else if (t == INT){
+            to = "l";
+        } else {
+            to = "q";
+        }
+
+        if (from == to || (from == "l" && to == "b") || (from == "q" && from != to)){  //same type or downcast
+            from = "";
+        }
+
+        if(to != "" && from != ""){
+            signed_ = "z";
+        }
+         if(to == "q" && from != ""){
+             signed_ = "s";
+         }
+
+         if (to == "q" && from == ""){
+             signed_ = "";
+         }
+
+        return "\tmov" + signed_ + from + to + "\t\t" + origine + ", " + destination + "\n";
+
         if (type == INT) {
             string action = "\tmovl\t\t";
             if (t == CHAR) {
