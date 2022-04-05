@@ -68,7 +68,7 @@ Notre compilateur est capable de comprendre un programme C composé :
 
 Voici un schéma qui montre le fonctionnement de notre compilateur:
 
-![compilo](https://user-images.githubusercontent.com/60465886/161510394-27916fc3-ed75-40e5-bbd8-4b943fca712e.png)
+![compilo-Page-1 drawio](https://user-images.githubusercontent.com/60465886/161779932-e4795247-dc5d-495e-a30b-2009c3b5bbb4.png)
 
 Dans un premier temps, le fichier .c est parsé et l'AST est construit à partir du parsing. Si une erreur est détectée à ce stade, la compilation échoue et l'utilisateur est averti. Chaque symbole est stocké dans la table des symboles, et cette table est utilisée par toutes les briques de base du programme. Enfin, le Backend construit l'exécutable demandé (x86 ou arm).
 
