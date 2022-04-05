@@ -269,7 +269,7 @@ Symbol *SymbolTable::lookupParameter(const string& name, Scope *scope) {
 }
 
 bool SymbolTable::setParametersTmp(string name, string nameTmp,  Scope *scope){
-    Symbol * param = lookupParameter(name+"_param", scope);
+    Symbol * param = lookupParameter(name, scope);
     if(param == nullptr) {
         return false;
     } 
