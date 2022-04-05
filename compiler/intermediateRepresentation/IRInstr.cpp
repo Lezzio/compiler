@@ -80,7 +80,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
                 o << getMovInstr(lvalue, "%rax", INT64_T);
             } else {
                 lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
-                TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+                TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
                 o << getMovInstr(lvalue, reg, ltype);
             } 
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
@@ -95,7 +95,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
 
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getSubInstr(rvalue, reg);
@@ -109,7 +109,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
 
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getMulInstr(rvalue, reg);
@@ -123,7 +123,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
 
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getDivInstr(rvalue, reg);
@@ -137,7 +137,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
 
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getDivInstr(rvalue, reg);
@@ -151,7 +151,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
 
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getOrInstr(rvalue, reg);
@@ -165,7 +165,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
 
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getAndInstr(rvalue, reg);
@@ -179,7 +179,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
 
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getXorInstr(rvalue, reg);
@@ -192,7 +192,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string value = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
 
-            TypeSymbol type = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol type = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(value, reg, type);
             o << getNegInstr(reg);
@@ -205,7 +205,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string value = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
 
-            TypeSymbol type = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol type = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(value, reg, type);
             o << getNotInstr(reg);
@@ -257,7 +257,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getCompInstr(rvalue, reg);
@@ -274,7 +274,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getCompInstr(rvalue, reg);
@@ -291,7 +291,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getCompInstr(rvalue, reg);
@@ -308,7 +308,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getCompInstr(rvalue, reg);
@@ -325,7 +325,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getCompInstr(rvalue, reg);
@@ -342,7 +342,7 @@ void IRInstr::gen_asm_x86(ostream &o) {
             string destination = this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope);
             string lvalue = this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope);
             string rvalue = this->bb->cfg->IR_reg_to_asm(this->params[2], this->bb->scope);
-            TypeSymbol ltype = this->bb->cfg->get_var_type(this->params[1], this->bb->scope);
+            TypeSymbol ltype = this->bb->cfg->getVarType(this->params[1], this->bb->scope);
 
             o << getMovInstr(lvalue, reg, ltype);
             o << getCompInstr(rvalue, reg);

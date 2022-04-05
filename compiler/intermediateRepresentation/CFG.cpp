@@ -74,9 +74,9 @@ void CFG::gen_asm_x86(ostream &o) {
     for (auto & bb : bbs) {
         bb->gen_asm_86(o);
     }
-    if (get_var_type(functionName, &GLOBAL_SCOPE) != VOID && isReturnSet) {
+    if (getVarType(functionName, &GLOBAL_SCOPE) != VOID && isReturnSet) {
         return_bb->gen_asm_86(o);
-    } else if(get_var_type(functionName, &GLOBAL_SCOPE)!= VOID) {
+    } else if(getVarType(functionName, &GLOBAL_SCOPE) != VOID) {
         if(functionName.compare("main")==0){
             o << "\tmovl\t\t$0, %eax\n";
         } else {
@@ -228,7 +228,7 @@ void CFG::gen_asm_prologue_x86(ostream &o) {
  */
 void CFG::gen_asm_epilogue_x86(ostream &o) {
     o << "\t#epilogue\n";
-    if (get_var_type(functionName, &GLOBAL_SCOPE) == VOID) {
+    if (getVarType(functionName, &GLOBAL_SCOPE) == VOID) {
         o << "\tnop\n";
     }
     //     "   popq %rbp\n"
@@ -341,19 +341,9 @@ int CFG::get_var_index(string name) {
  * @param scope : le scope de la variable
  * @return TypeSymbol : le type de la variable trouvee
  */
-TypeSymbol CFG::get_var_type(const string& name, Scope *scope) {
-    //cout << "GET VAR TYPE name = " << name << " scope context = " << scope->getLevelContextAsString() << endl;
-    Symbol *symbol = symbolTable->lookupSymbol(name, scope);
-    if (symbol == nullptr) {
-        symbol = symbolTable->lookupParameter(name, scope);
-    }
-    //TODO: check error
-    if (symbol == nullptr) {
-        //ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + name + "\'", 0));
-    }
-    return symbol->getTypeSymbol();
+TypeSymbol CFG::getVarType(const string& name, Scope *scope) {
+    return symbolTable->lookupSymbolAndParameter(name, scope)->getTypeSymbol();
 }
-
 
 /**
  * @return a newly generated functionName for a basic block following the format :

@@ -28,6 +28,7 @@ public :
     bool doesSymbolExist(const string& name, Scope *scope, bool scopedCurrent = false);
     Symbol * lookupSymbol(const string& name, Scope *scope);
     Symbol * lookupParameter(const string& name, Scope *scope);
+    Symbol *lookupSymbolAndParameter(const string& name, Scope *scope);
     /**
      * Add a symbol to the symbolTable
      * @return the address or -1 if the symbol couldn't be added (e.g already exists)

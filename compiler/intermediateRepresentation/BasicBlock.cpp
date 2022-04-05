@@ -95,7 +95,7 @@ void BasicBlock::gen_asm_86(ostream &o)
         o << "\tjmp\t\t\t" << exit_true->label << "\n";
     } else {
         string address = cfg->IR_reg_to_asm(test_var_name, this->scope);
-        TypeSymbol t = cfg->get_var_type(test_var_name, this->scope);
+        TypeSymbol t = cfg->getVarType(test_var_name, this->scope);
 
         string action = "\tcmpl";
         if (t == CHAR) {

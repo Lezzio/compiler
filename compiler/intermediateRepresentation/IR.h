@@ -180,7 +180,7 @@ public:
     void add_to_symbol_table(const string &name, TypeSymbol t, StateSymbol stateSymbol, int size, unsigned long symbolLine);
     string create_new_tempvar(TypeSymbol t);
     int get_var_index(string name);
-    TypeSymbol get_var_type(const string& name, Scope *scope);
+    TypeSymbol getVarType(const string& name, Scope *scope);
     void assignSymbol(const string& name, Scope *scope);
     bool isSymbolAssigned(const string& name, Scope *scope);
     void setReturnSymbol(const string& name, Scope *scope);

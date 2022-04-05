@@ -7,10 +7,10 @@
  * @return string : the name of the variable expression
  */
 string ExprVar::linearize(CFG *cfg) {
-    //TODO Lookup symbol, if doesn't exist then we throw an undeclared identifier
-    //TODO If exists, we could put it as used ? => how to handle the return use ? => how to handle not used in the self definition
+    //Lookup symbol, if doesn't exist then we throw an undeclared identifier
+    //If exists, we could put it as used ?
     //cout << "linearized expr var " << varName << endl;
-    Symbol *symbol = cfg->getSymbolTable()->lookupSymbol(varName, cfg->getCurrentScope());
+    Symbol *symbol = cfg->getSymbolTable()->lookupSymbolAndParameter(varName, cfg->getCurrentScope());
     if (symbol != nullptr) {
         //Therefore this variable has been used and we tag it as such
         symbol->used = true;
@@ -69,7 +69,7 @@ string ExprLArray::linearize(CFG *cfg) {
     int offset = -cfg->get_var_index(varName);
     string tmpVar = cfg->create_new_tempvar(INT64_T);
     
-    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol t1 = cfg->getVarType(var1, cfg->getCurrentScope());
     if(t1 != INT64_T){
         string var2 = cfg->create_new_tempvar(INT64_T);
         cfg->addInstruction(IRInstr::cast, INT64_T, {var1, to_string(t1), var2});
@@ -101,7 +101,7 @@ string ExprRArray::linearize(CFG *cfg) {
     int offset = -cfg->get_var_index(varName);
     string tmpVar = cfg->create_new_tempvar(INT64_T);
 
-    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol t1 = cfg->getVarType(var1, cfg->getCurrentScope());
     if(t1 != INT64_T){
         string var2 = cfg->create_new_tempvar(INT64_T);
         cfg->addInstruction(IRInstr::cast, INT64_T, {var1, to_string(t1), var2});
@@ -135,8 +135,8 @@ string ExprMult::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
-    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
+    TypeSymbol t1 = cfg->getVarType(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->getVarType(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -174,8 +174,8 @@ string ExprAdd::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
-    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
+    TypeSymbol t1 = cfg->getVarType(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->getVarType(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -211,8 +211,8 @@ string ExprBits::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
-    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
+    TypeSymbol t1 = cfg->getVarType(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->getVarType(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -250,8 +250,8 @@ string ExprRelational::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
-    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
+    TypeSymbol t1 = cfg->getVarType(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->getVarType(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -302,8 +302,8 @@ string ExprEqual::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t1 = cfg->get_var_type(var1, cfg->getCurrentScope());
-    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
+    TypeSymbol t1 = cfg->getVarType(var1, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->getVarType(var2, cfg->getCurrentScope());
     if (t1 == INT || t2 == INT) {
         typeTmp = INT;
     } else {
@@ -350,7 +350,7 @@ string ExprUnary::linearize(CFG *cfg) {
     string var2 = rExpr->linearize(cfg);
 
     TypeSymbol typeTmp;
-    TypeSymbol t2 = cfg->get_var_type(var2, cfg->getCurrentScope());
+    TypeSymbol t2 = cfg->getVarType(var2, cfg->getCurrentScope());
     typeTmp = t2;
 
     string tempVar = cfg->create_new_tempvar(typeTmp);
@@ -416,10 +416,10 @@ string Affectation::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
-    TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol typeTmp = cfg->getVarType(var1, cfg->getCurrentScope());
 
     ExprFunction * function = dynamic_cast<ExprFunction *>(rExpr);
-    if(function && cfg->get_var_type(function->getName(), &GLOBAL_SCOPE) == VOID){
+    if(function && cfg->getVarType(function->getName(), &GLOBAL_SCOPE) == VOID){
         cerr << "error: void value not ignored as it ought to be" << endl;
         exit(1);
     }
@@ -451,10 +451,10 @@ string ExprAffectation::linearize(CFG *cfg) {
     string var1 = lExpr->linearize(cfg);
     string var2 = rExpr->linearize(cfg);
 
-    TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol typeTmp = cfg->getVarType(var1, cfg->getCurrentScope());
 
     ExprFunction * function = dynamic_cast<ExprFunction *>(rExpr);
-    if(function && cfg->get_var_type(function->getName(), &GLOBAL_SCOPE) == VOID){
+    if(function && cfg->getVarType(function->getName(), &GLOBAL_SCOPE) == VOID){
         cerr << "error: void value not ignored as it ought to be" << endl;
         exit(1);
     }
@@ -555,12 +555,12 @@ string DecAffectation::linearize(CFG *cfg) {
     //cout << " POINT #2 " << endl; debug
 
     ExprFunction * function = dynamic_cast<ExprFunction *>(rExpr);
-    if(function && cfg->get_var_type(function->getName(), &GLOBAL_SCOPE) == VOID){
+    if(function && cfg->getVarType(function->getName(), &GLOBAL_SCOPE) == VOID){
         cerr << "error: void value not ignored as it ought to be" << endl;
         exit(1);
     }
 
-    TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
+    TypeSymbol typeTmp = cfg->getVarType(var1, cfg->getCurrentScope());
     //cout << " POINT #3 " << endl; debug
 
     if (!cfg->isSymbolAssigned(var1, cfg->getCurrentScope())) {
@@ -633,8 +633,8 @@ Declarations::~Declarations() {
 string Return::linearize(CFG *cfg) {
     string var1 = expr->linearize(cfg);
 
-    TypeSymbol typeTmp = cfg->get_var_type(var1, cfg->getCurrentScope());
-    if(cfg->get_var_type(cfg->functionName, &GLOBAL_SCOPE) == VOID){
+    TypeSymbol typeTmp = cfg->getVarType(var1, cfg->getCurrentScope());
+    if(cfg->getVarType(cfg->functionName, &GLOBAL_SCOPE) == VOID){
         cout << "warning: ‘return’ with a value, in function returning void [-Wreturn-type]" << endl;
     } else {
         cfg->setReturnSymbol("!retvalue", cfg->getCurrentScope()); //TODO Return symbol
@@ -971,7 +971,7 @@ string ExprFunction::linearize(CFG *cfg) {
         varName = varName + "@PLT";
     }
 
-    TypeSymbol typeFunc = cfg->get_var_type(varName, &GLOBAL_SCOPE);
+    TypeSymbol typeFunc = cfg->getVarType(varName, &GLOBAL_SCOPE);
 
     Symbol * function = cfg->getSymbolTable()->lookupSymbol(varName, &GLOBAL_SCOPE);
 
@@ -989,7 +989,7 @@ string ExprFunction::linearize(CFG *cfg) {
     for (Expr *e : parameters) {
         string var = e->linearize(cfg);
 
-        TypeSymbol typeTmp = cfg->get_var_type(var, cfg->getCurrentScope());
+        TypeSymbol typeTmp = cfg->getVarType(var, cfg->getCurrentScope());
 
         if (!cfg->isSymbolAssigned(var, cfg->getCurrentScope())) {
             cfg->assignSymbol(var, cfg->getCurrentScope());
