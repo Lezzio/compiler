@@ -7,7 +7,15 @@
 	movq		%rsp, %rbp
 
 	#offset
-	subq		$16, %rsp
+	subq		$32, %rsp
+
+	#copy
+	movl		%edi, %eax
+	movl		%eax, -4(%rbp)
+
+	#copy
+	movb		%sil, %al
+	movb		%al, -5(%rbp)
 	#epilogue
 	nop
 	leave
@@ -21,28 +29,28 @@
 	movq		%rsp, %rbp
 
 	#offset
-	subq		$16, %rsp
+	subq		$32, %rsp
 
 	#ldconst
-	movl		$1, -4(%rbp)
+	movl		$1, -9(%rbp)
 
 	#copy
-	movl		-4(%rbp), %eax
-	movl		%eax, -8(%rbp)
+	movl		-9(%rbp), %eax
+	movl		%eax, -13(%rbp)
 
 	#ldconst
-	movl		$2, -12(%rbp)
+	movl		$2, -17(%rbp)
 
 	#copy
-	movb		-12(%rbp), %al
-	movb		%al, -13(%rbp)
+	movb		-17(%rbp), %al
+	movb		%al, -18(%rbp)
 
 	#copy
-	movl		-8(%rbp), %eax
+	movl		-13(%rbp), %eax
 	movl		%eax, %edi
 
 	#copy
-	movb		-13(%rbp), %al
+	movb		-18(%rbp), %al
 	movb		%al, %sil
 
 	#call

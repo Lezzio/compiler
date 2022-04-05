@@ -9,14 +9,18 @@
 	#offset
 	subq		$32, %rsp
 
-	#ret
+	#copy
 	movb		%dil, %al
-	movb		%al, -4(%rbp)
+	movb		%al, -1(%rbp)
+
+	#ret
+	movb		-1(%rbp), %al
+	movb		%al, -5(%rbp)
 	jmp			.func_1
 .func_1:
 
 	#finret
-	movl		-4(%rbp), %eax
+	movl		-5(%rbp), %eax
 	#epilogue
 	leave
 	ret
@@ -32,32 +36,32 @@
 	subq		$32, %rsp
 
 	#ldconst
-	movl		$1, -8(%rbp)
-
-	#copy
-	movb		-8(%rbp), %al
-	movb		%al, -9(%rbp)
+	movl		$1, -9(%rbp)
 
 	#copy
 	movb		-9(%rbp), %al
+	movb		%al, -10(%rbp)
+
+	#copy
+	movb		-10(%rbp), %al
 	movb		%al, %dil
 
 	#call
 	call		func
-	movb		%al, -10(%rbp)
+	movb		%al, -11(%rbp)
 
 	#copy
-	movl		-10(%rbp), %eax
-	movl		%eax, -14(%rbp)
+	movl		-11(%rbp), %eax
+	movl		%eax, -15(%rbp)
 
 	#ret
-	movl		-14(%rbp), %eax
-	movl		%eax, -18(%rbp)
+	movl		-15(%rbp), %eax
+	movl		%eax, -19(%rbp)
 	jmp			.main_1
 .main_1:
 
 	#finret
-	movl		-18(%rbp), %eax
+	movl		-19(%rbp), %eax
 	#epilogue
 	leave
 	ret

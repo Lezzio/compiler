@@ -25,23 +25,23 @@
 
 	#cast
 	movsbl		-13(%rbp), %eax
-	movl		%eax, -13(%rbp)
+	movl		%eax, -17(%rbp)
 
 	#cmp_ge
-	movl		-13(%rbp), %eax
+	movl		-17(%rbp), %eax
 	cmpl		-8(%rbp), %eax
 	setge		%al
 	movzbl		%al, %eax
-	movl		%eax, -17(%rbp)
+	movl		%eax, -21(%rbp)
 
 	#ret
-	movl		-17(%rbp), %eax
-	movl		%eax, -21(%rbp)
+	movl		-21(%rbp), %eax
+	movl		%eax, -25(%rbp)
 	jmp			.main_1
 .main_1:
 
 	#finret
-	movl		-21(%rbp), %eax
+	movl		-25(%rbp), %eax
 	#epilogue
 	leave
 	ret

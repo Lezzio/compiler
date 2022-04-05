@@ -9,66 +9,70 @@
 	#offset
 	subq		$48, %rsp
 
+	#copy
+	movl		%edi, %eax
+	movl		%eax, -4(%rbp)
+
 	#ldconst
-	movb		$65, -1(%rbp)
+	movb		$65, -5(%rbp)
 
 	#copy
-	movb		-1(%rbp), %al
-	movb		%al, -2(%rbp)
+	movb		-5(%rbp), %al
+	movb		%al, -6(%rbp)
 	jmp			.alphabet_3
 .alphabet_3:
 
 	#ldconst
-	movb		$65, -3(%rbp)
+	movb		$65, -7(%rbp)
 
 	#add
-	movl		-3(%rbp), %eax
-	addl		%edi, %eax
-	movl		%eax, -7(%rbp)
+	movzbl		-7(%rbp), %eax
+	addl		-4(%rbp), %eax
+	movl		%eax, -11(%rbp)
 
 	#cast
-	movsbl		-2(%rbp), %eax
-	movl		%eax, -2(%rbp)
+	movsbl		-6(%rbp), %eax
+	movl		%eax, -15(%rbp)
 
 	#cmp_lt
-	movl		-2(%rbp), %eax
-	cmpl		-7(%rbp), %eax
+	movl		-15(%rbp), %eax
+	cmpl		-11(%rbp), %eax
 	setl		%al
 	movzbl		%al, %eax
-	movl		%eax, -11(%rbp)
-	cmpl		$0, -11(%rbp)
+	movl		%eax, -19(%rbp)
+	cmpl		$0, -19(%rbp)
 	je			.alphabet_4
 .alphabet_2:
 
 	#copy
-	movb		-2(%rbp), %al
+	movb		-6(%rbp), %al
 	movb		%al, %dil
 
 	#call
 	call		putchar@PLT
 
 	#ldconst
-	movl		$1, -15(%rbp)
+	movl		$1, -23(%rbp)
 
 	#add
-	movl		-2(%rbp), %eax
-	addl		-15(%rbp), %eax
-	movl		%eax, -19(%rbp)
+	movzbl		-6(%rbp), %eax
+	addl		-23(%rbp), %eax
+	movl		%eax, -27(%rbp)
 
 	#copy
-	movb		-19(%rbp), %al
-	movb		%al, -2(%rbp)
+	movb		-27(%rbp), %al
+	movb		%al, -6(%rbp)
 	jmp			.alphabet_3
 .alphabet_4:
 
 	#ret
-	movb		-2(%rbp), %al
-	movb		%al, -23(%rbp)
+	movb		-6(%rbp), %al
+	movb		%al, -31(%rbp)
 	jmp			.alphabet_1
 .alphabet_1:
 
 	#finret
-	movl		-23(%rbp), %eax
+	movl		-31(%rbp), %eax
 	#epilogue
 	leave
 	ret
@@ -84,28 +88,28 @@
 	subq		$48, %rsp
 
 	#ldconst
-	movl		$15, -27(%rbp)
+	movl		$15, -35(%rbp)
 
 	#copy
-	movl		-27(%rbp), %eax
+	movl		-35(%rbp), %eax
 	movl		%eax, %edi
 
 	#call
 	call		alphabet
-	movl		%eax, -31(%rbp)
+	movl		%eax, -39(%rbp)
 
 	#copy
-	movl		-31(%rbp), %eax
-	movl		%eax, -35(%rbp)
+	movl		-39(%rbp), %eax
+	movl		%eax, -43(%rbp)
 
 	#ret
-	movl		-35(%rbp), %eax
-	movl		%eax, -39(%rbp)
+	movl		-43(%rbp), %eax
+	movl		%eax, -47(%rbp)
 	jmp			.main_1
 .main_1:
 
 	#finret
-	movl		-39(%rbp), %eax
+	movl		-47(%rbp), %eax
 	#epilogue
 	leave
 	ret
