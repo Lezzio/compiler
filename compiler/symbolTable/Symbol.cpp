@@ -21,6 +21,7 @@ Symbol::Symbol() {}
  * @param isConst : bool true if symbol is const, false otherwise
  */
 Symbol::Symbol(string name, Scope *scope, int index, TypeSymbol typeSymbol, int additional, StateSymbol stateSymbol, bool isConst, unsigned long symbolLine) {
+    this->used = false;
     this->name = std::move(name);
     this->scope = scope;
     this->index = index;
