@@ -68,7 +68,7 @@ Notre compilateur est capable de comprendre un programme C composé :
 
 Voici un schéma qui montre le fonctionnement de notre compilateur:
 
-![compilo-Page-1 drawio (1)](https://user-images.githubusercontent.com/60465886/161802460-e69f1183-e837-406e-9f10-25e9c304069d.png)
+![compilo-Page-1 drawio](https://user-images.githubusercontent.com/60465886/162623633-36393358-172a-4270-8224-b79ad6b61ec3.png)
 
 Dans un premier temps, le fichier .c est parsé et l'AST est construit à partir du parsing. Si une erreur est détectée à ce stade, la compilation échoue et l'utilisateur est averti. Chaque symbole est stocké dans la table des symboles, et cette table est utilisée par toutes les briques de base du programme. Enfin, le Backend construit l'exécutable demandé (x86 ou arm).
 
@@ -98,7 +98,7 @@ Notre compilateur est un projet universitaire. A ce titre, il ne réalise qu'une
 - compiler un programme contenant plusieurs sources
 - utiliser les directives pré-processeur
 - utiliser les pointeurs
-- utiliser de la COO
+- utiliser de la POO
 - utiliser des fonctions de plus de 6 arguments
 - utiliser des types de variables autres que int et char
 
