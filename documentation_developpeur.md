@@ -56,6 +56,7 @@ Pour pouvoir utiliser le projet sur les machines du département (distribution f
 Si vous choisissez de compiler en ARM, il faut avoir l'émulateur `qemu` que vous pouvez installer sous fedora avec cette commande `sudo dnf -y install gcc-arm-linux-gnu glibc-arm-linux-gnu qemu-user`.
 
 ## Fonctionnalités implémentées
+
 Notre compilateur est capable de comprendre un programme C composé :
 - d'un seul fichier source (les directives pré-processing sont ignorées)
 - d’un main et son retour
@@ -65,6 +66,12 @@ Notre compilateur est capable de comprendre un programme C composé :
 - de boucles
 - de fonctions
 - d’opérations arithmétiques [ARM]
+
+Voici un schéma qui montre le fonctionnement de notre compilateur:
+
+![compilo-Page-1 drawio](https://user-images.githubusercontent.com/60465886/162623633-36393358-172a-4270-8224-b79ad6b61ec3.png)
+
+Dans un premier temps, le fichier .c est parsé et l'AST est construit à partir du parsing. Si une erreur est détectée à ce stade, la compilation échoue et l'utilisateur est averti. Chaque symbole est stocké dans la table des symboles, et cette table est utilisée par toutes les briques de base du programme. Enfin, le Backend construit l'exécutable demandé (x86 ou arm).
 
 Les options avec [ARM] sont celles qui sont implémentées en ARM.
 
