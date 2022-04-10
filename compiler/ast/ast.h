@@ -3,8 +3,9 @@
 
 #include "../intermediateRepresentation/IR.h"
 
-#include <string> 
+#include <string>
 #include <vector>
+
 using namespace std;
 
 enum Operator {
@@ -16,24 +17,26 @@ enum Operator {
     NEG, NOT
 };
 
-class ASTNode
-{
-    public :
-        ASTNode()
-           {};
-        virtual ~ASTNode() = default;
-        unsigned long line;
+class ASTNode {
+public :
+    ASTNode() {};
+
+    virtual ~ASTNode() = default;
+
+    unsigned long line;
 };
 
-class Expr : public ASTNode
-{
-    public : 
-        virtual string linearize(CFG * cfg) = 0;
-        Expr(string varName) :
-            ASTNode(), varName(varName){};
-        virtual ~Expr()= default;
-    protected :
-        string varName;
+class Expr : public ASTNode {
+public :
+    virtual string linearize(CFG *cfg) = 0;
+
+    Expr(string varName) :
+            ASTNode(), varName(varName) {};
+
+    virtual ~Expr() = default;
+
+protected :
+    string varName;
 
 };
 
@@ -50,84 +53,100 @@ public :
 
 };
 
-class ExprConst : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprConst(string varName="", int value = 0) :
-            Expr(varName), value(value){};
-        virtual ~ExprConst()= default;
-        int getValue(){return value;};
-    protected : 
-        int value;
+class ExprConst : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprConst(string varName = "", int value = 0) :
+            Expr(varName), value(value) {};
+
+    virtual ~ExprConst() = default;
+
+    int getValue() { return value; };
+protected :
+    int value;
 };
 
-class ExprChar : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprChar(string varName, int value) :
-            Expr(varName), value(value){};
-        virtual ~ExprChar()= default;
-        int getValue(){return value;};
-    protected : 
-        int value;
+class ExprChar : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprChar(string varName, int value) :
+            Expr(varName), value(value) {};
+
+    virtual ~ExprChar() = default;
+
+    int getValue() { return value; };
+protected :
+    int value;
 };
 
-class ExprArray : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprArray(string varName, TypeSymbol type, int size) :
-            Expr(varName), size(size), type(type){};
-        virtual ~ExprArray()= default;
-    protected : 
-        TypeSymbol type;
-        int size;
+class ExprArray : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
 
-};
+    ExprArray(string varName, TypeSymbol type, int size, unsigned long line) :
+            Expr(varName), size(size), type(type), line(line) {};
 
+    virtual ~ExprArray() = default;
 
-class ExprLArray : public Expr  
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprLArray(string varName, TypeSymbol type, Expr* position) :
-            Expr(varName), position(position), type(type){};
-        virtual ~ExprLArray();
-    protected : 
-        TypeSymbol type;
-        Expr* position;
+protected :
+    TypeSymbol type;
+    int size;
+    unsigned long line;
 
 };
 
-class ExprRArray : public Expr 
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprRArray(string varName, TypeSymbol type, Expr *position) :
-            Expr(varName), position(position), type(type){};
-        virtual ~ExprRArray();
-        TypeSymbol getType() { return type; };
-        Expr * getPosition() { return position; };
-        string getName() { return varName; };
-    protected : 
-        TypeSymbol type;
-         Expr* position;
+
+class ExprLArray : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprLArray(string varName, TypeSymbol type, Expr *position) :
+            Expr(varName), position(position), type(type) {};
+
+    virtual ~ExprLArray();
+
+protected :
+    TypeSymbol type;
+    Expr *position;
 
 };
 
-class ExprMult : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprMult(string varName, Expr * lExpr, Expr * rExpr, Operator op) :
-            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op){};
-        virtual ~ExprMult();
-    protected :
-        Operator op; 
-        Expr *lExpr;
-        Expr *rExpr;
+class ExprRArray : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprRArray(string varName, TypeSymbol type, Expr *position, unsigned long line) :
+            Expr(varName), position(position), type(type), line(line) {};
+
+    virtual ~ExprRArray();
+
+    TypeSymbol getType() { return type; };
+
+    Expr *getPosition() { return position; };
+
+    string getName() { return varName; };
+protected :
+    TypeSymbol type;
+    Expr *position;
+    unsigned long line;
+
+};
+
+class ExprMult : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprMult(string varName, Expr *lExpr, Expr *rExpr, Operator op) :
+            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op) {};
+
+    virtual ~ExprMult();
+
+protected :
+    Operator op;
+    Expr *lExpr;
+    Expr *rExpr;
 };
 
 class ExprAdd : public Expr {
@@ -145,242 +164,282 @@ protected :
     Expr *rExpr;
 };
 
-class ExprBits : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprBits(string varName, Expr * lExpr, Expr * rExpr, Operator op) :
-            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op){};
-        virtual ~ExprBits();
-    protected :
-        Operator op; 
-        Expr *lExpr;
-        Expr *rExpr;
+class ExprBits : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprBits(string varName, Expr *lExpr, Expr *rExpr, Operator op) :
+            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op) {};
+
+    virtual ~ExprBits();
+
+protected :
+    Operator op;
+    Expr *lExpr;
+    Expr *rExpr;
 };
 
-class ExprRelational : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprRelational(string varName, Expr * lExpr, Expr * rExpr, Operator op) :
-            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op){};
-        virtual ~ExprRelational();
-    protected :
-        Operator op; 
-        Expr *lExpr;
-        Expr *rExpr;
+class ExprRelational : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprRelational(string varName, Expr *lExpr, Expr *rExpr, Operator op) :
+            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op) {};
+
+    virtual ~ExprRelational();
+
+protected :
+    Operator op;
+    Expr *lExpr;
+    Expr *rExpr;
 };
 
-class ExprEqual : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprEqual(string varName, Expr * lExpr, Expr * rExpr, Operator op) :
-            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op){};
-        virtual ~ExprEqual();
-    protected :
-        Operator op; 
-        Expr *lExpr;
-        Expr *rExpr;
+class ExprEqual : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprEqual(string varName, Expr *lExpr, Expr *rExpr, Operator op) :
+            Expr(varName), lExpr(lExpr), rExpr(rExpr), op(op) {};
+
+    virtual ~ExprEqual();
+
+protected :
+    Operator op;
+    Expr *lExpr;
+    Expr *rExpr;
 };
 
-class ExprUnary : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        ExprUnary(string varName, Expr * rExpr, Operator op) :
-            Expr(varName), rExpr(rExpr), op(op){};
-        virtual ~ExprUnary();
-    protected :
-        Operator op; 
-        Expr *rExpr;
+class ExprUnary : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprUnary(string varName, Expr *rExpr, Operator op) :
+            Expr(varName), rExpr(rExpr), op(op) {};
+
+    virtual ~ExprUnary();
+
+protected :
+    Operator op;
+    Expr *rExpr;
 };
 
-class Statement : public ASTNode 
-{
-    public :
-        virtual string linearize(CFG * cfg) = 0;
-        Statement(): ASTNode()
-            {};
-        virtual ~Statement()= default;
+class Statement : public ASTNode {
+public :
+    virtual string linearize(CFG *cfg) = 0;
+
+    Statement() : ASTNode() {};
+
+    virtual ~Statement() = default;
 };
 
-class Block : public ASTNode 
-{
-    public:
-        virtual void linearize(CFG * cfg);
-        void addStatement(Statement * statement);
-        Block(): ASTNode()
-            {};
-        virtual ~Block();
-    protected:
-        vector<Statement *> statements;
+class Block : public ASTNode {
+public:
+    virtual void linearize(CFG *cfg);
+
+    void addStatement(Statement *statement);
+
+    Block() : ASTNode() {};
+
+    virtual ~Block();
+
+protected:
+    vector<Statement *> statements;
 };
 
-class Affectation : public Statement
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        Affectation(ExprVar * lExpr, Expr * rExpr) :
+class Affectation : public Statement {
+public :
+    virtual string linearize(CFG *cfg);
+
+    Affectation(ExprVar *lExpr, Expr *rExpr) :
             Statement(), lExpr(lExpr), rExpr(rExpr) {};
-        virtual ~Affectation();
-    protected :
-        ExprVar *lExpr;
-        Expr *rExpr;
+
+    virtual ~Affectation();
+
+protected :
+    ExprVar *lExpr;
+    Expr *rExpr;
 };
 
-class ExprAffectation : public Statement 
-{
-    public :
-        virtual string linearize(CFG * cfg);
-         ExprAffectation(Expr * lExpr, Expr * rExpr) :
+class ExprAffectation : public Statement {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprAffectation(Expr *lExpr, Expr *rExpr) :
             Statement(), lExpr(lExpr), rExpr(rExpr) {};
-        virtual ~ExprAffectation();
-    protected :
-        Expr *lExpr;
-        Expr *rExpr;
+
+    virtual ~ExprAffectation();
+
+protected :
+    Expr *lExpr;
+    Expr *rExpr;
 };
 
-class ArrayAffectation : public Statement 
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        void addStatement(ExprAffectation * statement);
-        void setArray(ExprArray * exprArray);
-         ArrayAffectation() :
+class ArrayAffectation : public Statement {
+public :
+    virtual string linearize(CFG *cfg);
+
+    void addStatement(ExprAffectation *statement);
+
+    void setArray(ExprArray *exprArray);
+
+    ArrayAffectation() :
             Statement() {};
-        virtual ~ArrayAffectation();
-    protected :
-        vector<ExprAffectation *> array_values;
-        ExprArray * arrayD;
+
+    virtual ~ArrayAffectation();
+
+protected :
+    vector<ExprAffectation *> array_values;
+    ExprArray *arrayD;
 
 };
 
-class ExprDeclaration : public Statement  
-{
-    public :
-        virtual string linearize(CFG * cfg);
-         ExprDeclaration(Expr * expr) :
+class ExprDeclaration : public Statement {
+public :
+    virtual string linearize(CFG *cfg);
+
+    ExprDeclaration(Expr *expr) :
             Statement(), expr(expr) {};
-        virtual ~ExprDeclaration();
-    protected :
-        Expr * expr;
+
+    virtual ~ExprDeclaration();
+
+protected :
+    Expr *expr;
 };
 
-class Declaration : public ASTNode
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        Declaration(string name, TypeSymbol type, unsigned long line) :
-            name(name), type(type){
-            ASTNode::line = line;
-        };
-        virtual ~Declaration()= default;
-    protected :
-        string name;
-        TypeSymbol type;
+class Declaration : public ASTNode {
+public :
+    virtual string linearize(CFG *cfg);
+
+    Declaration(string name, TypeSymbol type, unsigned long line) :
+            name(name), type(type) {
+        ASTNode::line = line;
+    };
+
+    virtual ~Declaration() = default;
+
+protected :
+    string name;
+    TypeSymbol type;
 };
 
-class DecAffectation : public Statement
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        DecAffectation(Declaration *declaration, Expr * rExpr) :
-            Statement(), declaration(declaration), rExpr(rExpr){};
-        virtual ~DecAffectation();
-    protected :
-        Declaration *declaration;
-        Expr *rExpr;
-        TypeSymbol type;
+class DecAffectation : public Statement {
+public :
+    virtual string linearize(CFG *cfg);
 
-};
+    DecAffectation(Declaration *declaration, Expr *rExpr) :
+            Statement(), declaration(declaration), rExpr(rExpr) {};
 
+    virtual ~DecAffectation();
 
-class Declarations : public Statement
-{
-    public :
-        void addDeclaration(Declaration *declaration);
-        virtual string linearize(CFG * cfg);
-        Declarations() :
-                Statement(){};
-            virtual ~Declarations();
-    protected :
-        vector<Declaration *> declarations;
-};
-
-class Return : public Statement
-{
-    public :
-        Return(Expr * returnExpr) : Statement(), expr(returnExpr){};
-        virtual ~Return();
-        virtual string linearize(CFG * cfg);
-    protected :
-        Expr * expr;
+protected :
+    Declaration *declaration;
+    Expr *rExpr;
+    TypeSymbol type;
 
 };
 
-class InstructionIF : public Statement
-{
-    public:
-        virtual string linearize(CFG * cfg);
-        InstructionIF(Expr* test, Block * then, Block * elseb) : Statement(), test(test), falseCodeBlock(elseb), trueCodeBlock(then){};
-        virtual ~InstructionIF();
-    protected :
-        Expr * test;
-        Block * trueCodeBlock;
-        Block * falseCodeBlock;
+
+class Declarations : public Statement {
+public :
+    void addDeclaration(Declaration *declaration);
+
+    virtual string linearize(CFG *cfg);
+
+    Declarations() :
+            Statement() {};
+
+    virtual ~Declarations();
+
+protected :
+    vector<Declaration *> declarations;
 };
 
-class InstructionWhile : public Statement
-{
-    public:
-        virtual string linearize(CFG * cfg);
-        InstructionWhile(Expr* test, Block * block) : Statement(), test(test), block(block) {};
-        virtual ~InstructionWhile();
-    protected:
-        Expr * test;
-        Block * block;
+class Return : public Statement {
+public :
+    Return(Expr *returnExpr) : Statement(), expr(returnExpr) {};
+
+    virtual ~Return();
+
+    virtual string linearize(CFG *cfg);
+
+protected :
+    Expr *expr;
+
 };
 
-class InstructionFor : public Statement
-{
-    public:
-        virtual string linearize(CFG * cfg);
-        InstructionFor(Statement* init, Expr* test, Statement* update, Block * block) : Statement(), test(test), block(block), init(init), update(update) {};
-        virtual ~InstructionFor();
-    protected:
-        Statement * init;
-        Expr * test;
-        Statement * update;
-        Block * block;
+class InstructionIF : public Statement {
+public:
+    virtual string linearize(CFG *cfg);
+
+    InstructionIF(Expr *test, Block *then, Block *elseb)
+            : Statement(), test(test), falseCodeBlock(elseb), trueCodeBlock(then) {};
+
+    virtual ~InstructionIF();
+
+protected :
+    Expr *test;
+    Block *trueCodeBlock;
+    Block *falseCodeBlock;
 };
 
-class InstructionExpr : public Statement
-{
-    public:
-        virtual string linearize(CFG * cfg);
-        InstructionExpr(Expr * expr): Statement(), expr(expr) {};
-        virtual ~InstructionExpr(){delete(expr);};
-    protected:
-        Expr * expr;
+class InstructionWhile : public Statement {
+public:
+    virtual string linearize(CFG *cfg);
+
+    InstructionWhile(Expr *test, Block *block) : Statement(), test(test), block(block) {};
+
+    virtual ~InstructionWhile();
+
+protected:
+    Expr *test;
+    Block *block;
 };
 
-class InstructionBreak : public Statement
-{
-    public:
-        virtual string linearize(CFG * cfg);
-        virtual ~InstructionBreak() = default;
-        InstructionBreak(): Statement() {};
-    protected:
+class InstructionFor : public Statement {
+public:
+    virtual string linearize(CFG *cfg);
+
+    InstructionFor(Statement *init, Expr *test, Statement *update, Block *block)
+            : Statement(), test(test), block(block), init(init), update(update) {};
+
+    virtual ~InstructionFor();
+
+protected:
+    Statement *init;
+    Expr *test;
+    Statement *update;
+    Block *block;
 };
 
-class InstructionContinue : public Statement
-{
-    public:
-        virtual string linearize(CFG * cfg);
-        virtual ~InstructionContinue() = default;
-        InstructionContinue(): Statement() {};
-    protected:
+class InstructionExpr : public Statement {
+public:
+    virtual string linearize(CFG *cfg);
+
+    InstructionExpr(Expr *expr) : Statement(), expr(expr) {};
+
+    virtual ~InstructionExpr() { delete (expr); };
+protected:
+    Expr *expr;
+};
+
+class InstructionBreak : public Statement {
+public:
+    virtual string linearize(CFG *cfg);
+
+    virtual ~InstructionBreak() = default;
+
+    InstructionBreak() : Statement() {};
+protected:
+};
+
+class InstructionContinue : public Statement {
+public:
+    virtual string linearize(CFG *cfg);
+
+    virtual ~InstructionContinue() = default;
+
+    InstructionContinue() : Statement() {};
+protected:
 };
 
 class Parameter : public ASTNode {
@@ -400,17 +459,20 @@ protected :
     TypeSymbol type;
 };
 
-class Parameters : public Statement
-{
-    public :
-        void addParameter(Parameter *parameter);
-        virtual string linearize(CFG * cfg);
-        Parameters() :
-                Statement(){};
-            virtual ~Parameters();
-        vector<Parameter *> getParameters() {return parameters;}; 
-    protected :
-        vector<Parameter *> parameters;
+class Parameters : public Statement {
+public :
+    void addParameter(Parameter *parameter);
+
+    virtual string linearize(CFG *cfg);
+
+    Parameters() :
+            Statement() {};
+
+    virtual ~Parameters();
+
+    vector<Parameter *> getParameters() { return parameters; };
+protected :
+    vector<Parameter *> parameters;
 };
 
 class Function : public ASTNode {
@@ -432,17 +494,20 @@ protected:
     unsigned long line;
 };
 
-class ExprFunction : public Expr
-{
-    public :
-        virtual string linearize(CFG * cfg);
-        void addParameter(Expr * expr);
-        ExprFunction(string varName) :
-            Expr(varName){};
-        virtual ~ExprFunction();
-        string getName() const {return varName;};
-    protected : 
-        vector<Expr *> parameters;
+class ExprFunction : public Expr {
+public :
+    virtual string linearize(CFG *cfg);
+
+    void addParameter(Expr *expr);
+
+    ExprFunction(string varName) :
+            Expr(varName) {};
+
+    virtual ~ExprFunction();
+
+    string getName() const { return varName; };
+protected :
+    vector<Expr *> parameters;
 };
 
 

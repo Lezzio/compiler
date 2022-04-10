@@ -50,7 +50,7 @@ public :
     bool setParametersTmp(string name, string nameTmp,  Scope *scope);
     void warnUnusedSymbols();
 
-    string current_function; //TODO Check usage, maybe not needed anymore
+    string current_function;
     static int staticIndex;
     //TODO: reset when change function
     int highestIndex;

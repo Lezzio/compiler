@@ -8,8 +8,7 @@
  */
 string ExprVar::linearize(CFG *cfg) {
     //Lookup symbol, if doesn't exist then we throw an undeclared identifier
-    //If exists, we could put it as used ?
-    //cout << "linearized expr var " << varName << endl;
+    //If exists, we put it as used
     Symbol *symbol = cfg->getSymbolTable()->lookupSymbolAndParameter(varName, cfg->getCurrentScope());
     if (symbol != nullptr) {
         //Therefore this variable has been used and we tag it as such
@@ -54,7 +53,7 @@ string ExprChar::linearize(CFG *cfg) {
  * @return string : the name of the array variable in the symbol table
  */
 string ExprArray::linearize(CFG *cfg) {
-    cfg->add_to_symbol_table(varName, type, DECLARED, size, 0); //TODO Symbol line
+    cfg->add_to_symbol_table(varName, type, DECLARED, size, line);
     return varName;
 }
 
@@ -97,6 +96,17 @@ ExprLArray::~ExprLArray(){
  * @return string : the temporary variable's name just created
  */
 string ExprRArray::linearize(CFG *cfg) {
+    //Lookup symbol, if doesn't exist then we throw an undeclared identifier
+    //If exists, we put it as used
+    Symbol *symbol = cfg->getSymbolTable()->lookupSymbolAndParameter(varName, cfg->getCurrentScope());
+    if (symbol != nullptr) {
+        //Therefore this variable has been used and we tag it as such
+        symbol->used = true;
+    } else {
+        //The variable has been used in an expression without being declared prior to the usage
+        ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + varName + "\'", line));
+        exit(1);
+    }
     string var1 = this->position->linearize(cfg);
     int offset = -cfg->get_var_index(varName);
     string tmpVar = cfg->create_new_tempvar(INT64_T);

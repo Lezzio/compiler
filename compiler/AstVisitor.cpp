@@ -340,7 +340,8 @@ antlrcpp::Any AstVisitor::visitDeclarationArray(ifccParser::DeclarationArrayCont
     }
 
     string name = context->IDENT()->getText();
-    ExprArray * arrayD = new ExprArray(name,t, size*offset);
+    auto line = context->IDENT()->getSymbol()->getLine();
+    ExprArray *arrayD = new ExprArray(name, t, size * offset, line);
     return (Statement *) new ExprDeclaration(arrayD);
 }
 
@@ -383,7 +384,8 @@ antlrcpp::Any AstVisitor::visitAffectationArray(ifccParser::AffectationArrayCont
         size ++;
     }
 
-    ExprArray * arrayD = new ExprArray(name,t, size*offset);
+    auto line = context->IDENT()->getSymbol()->getLine();
+    ExprArray * arrayD = new ExprArray(name, t, size * offset, line);
     arrayAff->setArray(arrayD);
 
     return (Statement *) arrayAff;
@@ -715,7 +717,8 @@ antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context){
         position = (Expr *) new ExprMult("", offset, new ExprConst("", 8), MULT);
     }
 
-    ExprRArray * rArray = new ExprRArray(varname, INT64_T, position);
+    auto line = context->IDENT()->getSymbol()->getLine();
+    ExprRArray * rArray = new ExprRArray(varname, INT64_T, position, line);
     return (Expr *) rArray;
 }
 
