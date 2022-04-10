@@ -47,7 +47,7 @@ Notre compilateur est un projet universitaire. A ce titre, il ne réalise qu'une
 - compiler un programme contenant plusieurs sources
 - utiliser les directives pré-processeur
 - utiliser les pointeurs
-- utiliser de la COO
+- utiliser des structures
 - utiliser des fonctions de plus de 6 arguments
 - utiliser des types de variables autres que int et char
 
