@@ -5,7 +5,7 @@
 enum TypeSymbol {
   INT,
   INT8_T,
-  CHAR, //TODO: SHOULD WE CHECK OVERFLOW ?
+  CHAR,
   VOID,
   INT64_T,
 };

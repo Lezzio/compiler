@@ -21,7 +21,6 @@ using namespace antlr4;
 using namespace std;
 
 int main(int argn, const char **argv) {
-    //TODO:: arg to disable warnings
 
     bool arm = false;
     string outputFile;
@@ -84,7 +83,6 @@ int main(int argn, const char **argv) {
 
     ofstream srcFile(outputFile);
 
-    //TODO : get from ifcc options
     for (CFG *cfg : cfgs) {
         if (arm) {  //ARM
             cfg->gen_asm_ARM(srcFile);

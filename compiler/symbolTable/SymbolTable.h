@@ -52,7 +52,6 @@ public :
 
     string current_function;
     static int staticIndex;
-    //TODO: reset when change function
     int highestIndex;
     static int staticTempIndex;
 

@@ -1,7 +1,7 @@
 # PLD compilateur : documentation développeur
 
 ## Introduction
-Ce répertoire contient le code source d'un projet étudiant (4A INSA Lyon) visant à créer un compilateur pour un sous-ensemble simple du langage C. L'exécutable peut être produit pour 2 architectures différentes : x86 (par défaut) et arm. Ce projet est réalisé en C++, suivant la méthodologie du Test Driven Development et utilise le framework antlr4. 
+Ce répertoire contient le code source d'un projet étudiant (4A INSA Lyon) visant à créer un compilateur pour un sous-ensemble simple du langage C. L'exécutable peut être produit pour 2 architectures différentes : x86 (par défaut) et arm. Ce projet est réalisé en C++, suivant la méthodologie du Test Driven Development et utilise le framework antlr4.
 
 Ce projet a été créé par l'hexanome H4212 composé de :
 - Bouvier Julien
@@ -28,12 +28,12 @@ Le code du projet est organisé de la manière suivante :
 - `compiler/ast/` : code relatif à la création et au parcours de l'AST
 
 - `compiler/error/` : code relatif à la gestion des erreurs du compilateur
-  
+
 - `compiler/intermediateRepresentation/` : code relatif à l'IR et au CFG
-  
+
 - `compiler/symbolTable/` : code relatif à la gestion de la table des symboles
-  
-`tests/` : contient tous les fichiers et les scripts relatifs aux tests du projet. 
+
+`tests/` : contient tous les fichiers et les scripts relatifs aux tests du projet.
 
 
 Dans ces dossiers, vous trouverez quelques fichiers clefs pour le projet. En voici une description sommaire:
@@ -75,7 +75,7 @@ Notre compilateur est capable de détecter différentes erreurs. La détection d
 - détection des erreurs sémantiques simples
 
 ## Gestion des tests
-Ce projet a été développé selon la méthodologie du Test Driven Development (TDD). Les tests ont donc été créés en amont. 
+Ce projet a été développé selon la méthodologie du Test Driven Development (TDD). Les tests ont donc été créés en amont.
 
 Les tests, placés dans le répertoire `tests/`, fonctionnent de la manière suivante. Notre compilateur essaye de compiler différents fichiers .c créés spécifiquement pour les tests. Les mêmes fichiers sont compilés en parallèle avec gcc, le compilateur officiel du langage c, et les résultats obtenus sont alors comparés. Cette gestion des tests nous permet de contrôler le fait que tout nouveau développement n'entraîne pas de changements néfastes au niveau des exécutables produits par notre compilateur.
 
@@ -85,7 +85,7 @@ Selon la distribution sur laquelle les tests sont lancés, il se peut qu'ils se 
 
 Il est aussi possible de lancer les tests pour une architecture arm. Pour cela il suffit de se placer dans le dossier ARM et lancer les tests de cette manière : `./ifcc-test-arm.py ../testfiles/`. Il est possible de changer le chemin passé en argument pour effectuer le test sur n'importe quel fichier .c ou dossier comprenant uniquement des fichiers c.
 Dans le cas où les tests sont lancés sur une architecture autre que ARM, il est possible de d'installer un émulateur, voici la manipulation pour une distribution ubuntu (résumé de la manipulation décrite sur `https://gist.github.com/luk6xff/9f8d2520530a823944355e59343eadc1`:
-1 - `sudo apt-get install gcc-arm-linux-gnueabihf libc6-dev-armhf-cross qemu-user-static` 
+1 - `sudo apt-get install gcc-arm-linux-gnueabihf libc6-dev-armhf-cross qemu-user-static`
 2 - `sudo apt-get install qemu`
 
 
@@ -99,3 +99,6 @@ Notre compilateur est un projet universitaire. A ce titre, il ne réalise qu'une
 - utiliser des types de variables autres que int et char
 
 Si vous ne respectez pas les consignes ci-dessus, vous vous exposez à un comportement ératique du compilateur. Une erreur ne sera pas forcément levée car ces fonctionnalités n'ont pas été prises en considération dans la conception du projet.
+
+## Annexes
+Dans le dossier `docs` vous pouvez tous les fichiers de rendu pdf, c'est-à-dire les documentations développeur et utilisateur et les diapositives de la présentation finale.

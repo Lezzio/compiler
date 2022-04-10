@@ -8,7 +8,6 @@
 #include <deque>
 
 // Declarations from the parser -- replace with your own
-//TODO: fix path
 #include "../symbolTable/typeSymbol.h"
 #include "../symbolTable/Symbol.h"
 #include "../symbolTable/SymbolTable.h"

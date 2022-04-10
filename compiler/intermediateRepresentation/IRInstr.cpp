@@ -437,10 +437,6 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             break;
         }
         case copy: {
-            /*
-            if (!bb->cfg->isSymbolAssigned(this->params[0], this->bb->scope)) {
-                this->bb->cfg->assignSymbol(this->params[0], this->bb->scope);
-            }*/
             string destination = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[0], this->bb->scope));
             string origin = shrink_x86_to_ARM(this->bb->cfg->IR_reg_to_asm(this->params[1], this->bb->scope));
             o << getMovInstr(origin, "r3", t, ARM);
@@ -551,7 +547,7 @@ void IRInstr::gen_asm_ARM(ostream &o) {
             //TODO : wmem
             break;
         }
-        case call: {//TODO:
+        case call: {//TODO: call function
             break;
         }
         case cmp_eq: {

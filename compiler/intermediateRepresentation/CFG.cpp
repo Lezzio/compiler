@@ -59,7 +59,6 @@ void CFG::addInstruction(IRInstr::Operation op, TypeSymbol t, vector<string> par
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_x86(ostream &o) {
-    //TODO: adapt with functionName of block and multiple blocks?
     o << ".text\n";
     string currentFunction = functionName;
     symbolTable->current_function = functionName;
@@ -96,7 +95,6 @@ void CFG::gen_asm_x86(ostream &o) {
  * @param o : le stream de sortie
  */
 void CFG::gen_asm_ARM(ostream &o) {
-    //TODO: adapt with functionName of block and multiple blocks?
     o << ".text\n";
 #ifdef __APPLE__
     o << ".globl _main\n"
@@ -243,9 +241,6 @@ void CFG::gen_asm_epilogue_x86(ostream &o) {
  */
 void CFG::gen_asm_prologue_ARM(ostream &o) {
     o << "\tpush\t{r7, lr}" << endl;
-    //o << "\tsub\tsp, sp, #space_needed" << endl;
-    //o << "\tadd\tr7, sp, #0" << endl;
-    //TODO : gerer le sp et r7
 }
 
 /**
@@ -329,7 +324,6 @@ string CFG::create_new_tempvar(TypeSymbol t) {
  */
 int CFG::get_var_index(string name) {
     Symbol *symbol = symbolTable->lookupSymbol(name, getCurrentScope());
-    //TODO: check error
 
     return symbol->getIndex();
 }

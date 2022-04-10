@@ -473,7 +473,7 @@ string ExprAffectation::linearize(CFG *cfg) {
         cfg->assignSymbol(var1, cfg->getCurrentScope());
     }
 
-    cfg->addInstruction(IRInstr::wmem, INT64_T, {var2, var1}); //TODO:Verify
+    cfg->addInstruction(IRInstr::wmem, INT64_T, {var2, var1});
     return var1;
 }
 
@@ -647,7 +647,7 @@ string Return::linearize(CFG *cfg) {
     if(cfg->getVarType(cfg->functionName, &GLOBAL_SCOPE) == VOID){
         cout << "warning: ‘return’ with a value, in function returning void [-Wreturn-type]" << endl;
     } else {
-        cfg->setReturnSymbol("!retvalue", cfg->getCurrentScope()); //TODO Return symbol
+        cfg->setReturnSymbol("!retvalue", cfg->getCurrentScope());
         cfg->addInstruction(IRInstr::ret, typeTmp, {"!retvalue", var1});
     }
 
@@ -802,7 +802,6 @@ string InstructionFor::linearize(CFG * cfg)
 
     if(init != nullptr) {
         beforeForBB->exit_true = initForBB;
-        //TODO Unit testing of the for loop init scope
         cfg->add_bb(initForBB);
         cfg->enteringScope();
         init->linearize(cfg);

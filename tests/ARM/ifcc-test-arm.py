@@ -173,9 +173,9 @@ for jobname in jobs:
     gccstatus=command("arm-linux-gnueabihf-gcc -static -S -o asm-gcc.s input.c", "gcc-compile.txt")
     if gccstatus == 0:
         # test-case is a valid program. we should run it
-        gccstatus=command("arm-linux-gnueabihf-gcc -static -o exe-gcc asm-gcc.s", "gcc-link.txt")
+        gccstatus=command("arm-linux-gnueabihf-gcc -static -o exe-gcc.elf asm-gcc.s", "gcc-link.txt")
     if gccstatus == 0: # then both compile and link stage went well
-        exegccstatus=command("./exe-gcc", "gcc-execute.txt")
+        exegccstatus=command("qemu-arm -L /usr/arm-linux-gnueabihf/ exe-gcc.elf", "gcc-execute.txt")
         if args.verbose >=2:
             dumpfile("gcc-execute.txt")
             

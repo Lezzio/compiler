@@ -711,7 +711,7 @@ antlrcpp::Any AstVisitor::visitArrayexpr(ifccParser::ArrayexprContext *context){
 
     Expr * offset = (Expr *) visit(context->expression());
     Expr * position;
-    if(checkConst(offset)){             //TODO: Handle char
+    if(checkConst(offset)){
         position = (Expr *) new ExprConst("", 8*getConstValue(offset));
     } else {
         position = (Expr *) new ExprMult("", offset, new ExprConst("", 8), MULT);

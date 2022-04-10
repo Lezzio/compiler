@@ -309,9 +309,5 @@ Symbol* SymbolTable::lookupSymbolAndParameter(const string &name, Scope *scope) 
     if (symbol == nullptr) {
         symbol = lookupParameter(name, scope);
     }
-    //TODO: check error
-    if (symbol == nullptr) {
-        //ErrorManager::getInstance()->addError(new Error("use of undeclared identifier \'" + name + "\'", 0));
-    }
     return symbol;
 }
